@@ -1,0 +1,118 @@
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 20px;
+//   font-family: system-ui, sans-serif;
+  font-size: 14px;
+  color: #333;
+  background-color: #fdfdfd;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto!important;
+  img {
+    border-radius: 20px;
+    max-width: 100%;
+  }
+}
+
+.tabs {
+  margin-bottom: 24px;
+}
+
+.tabsList {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.intro {
+  font-size: 16px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.techList {
+  margin-bottom: 32px;
+  padding-left: 16px;
+  li {
+    list-style:  disc inside!important;
+  }
+}
+
+span.link {
+      text-decoration: underline;
+      font-weight: bold;
+      &:hover {
+        text-decoration: none;
+        cursor: pointer;
+      }
+    }
+a {
+  font-weight: bold;
+}
+.section {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.sectionList {
+  padding-left: 16px;
+  line-height: 1.6;
+  li {
+    list-style:  disc inside!important;
+  }
+}
+
+.form {
+  padding: 20px;
+  overflow-y: auto!important;
+  > div {
+    margin-bottom: 20px;
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, textarea {
+      width: 100%;
+      border: #aaa solid 1px;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    textarea {
+      height: 80px;
+    }
+  }
+}
+
+.methods {
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  ul li{
+    word-break: break-all;
+    max-width: 300px;
+    margin: 10px;
+    text-align: center;
+    a {
+      font-size: smaller;
+    }
+  }
+}

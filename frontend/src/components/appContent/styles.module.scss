@@ -1,0 +1,15 @@
+.reportForm {
+    padding: 20px;
+    > div {
+        margin-bottom: 10px;
+    }
+    label {
+        font-size: 14px;
+    }
+    textarea {
+        width: 100%;
+        height: 150px;
+        border-radius: 10px;
+        border-color: #aaa;
+    }
+}

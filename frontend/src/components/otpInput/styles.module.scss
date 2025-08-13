@@ -1,0 +1,17 @@
+.otpBox {
+    display: flex;
+
+    input {
+        width: 20px;
+        text-align: center;
+        border: gray 2px solid;
+        border-radius: 5px;
+        margin: 5px;
+        height: 45px!important;
+        font-weight: bold;
+        &:focus {
+            outline: none;
+            border-color: #ff520b;
+        }
+    }
+}

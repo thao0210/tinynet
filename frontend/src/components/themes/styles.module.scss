@@ -1,0 +1,273 @@
+.absolute {
+  position: absolute;
+}
+
+.roundedFull {
+  border-radius: 9999px;
+}
+
+.wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 0; // nằm dưới nội dung khác
+  pointer-events: none; // để không ảnh hưởng đến các thao tác của user trên content chính
+}
+
+.skyTheme,
+.waterTheme,
+.riceTheme {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: linear-gradient(#b6db5b, #c0f04a);
+}
+
+.waterFlow,
+.bubbles,
+.rice {
+  pointer-events: none;
+}
+
+.active {
+  display: block;
+}
+
+/* SKY THEME */
+.skyTheme {
+  background: linear-gradient(to bottom, #87ceeb, #ffffff);
+  z-index: 1;
+}
+
+/* ☁️ Cloud theme */
+.cloud {
+  position: absolute;
+  opacity: 0.5;
+  animation: cloudMove 60s linear infinite;
+}
+
+@keyframes cloudMove {
+  0% {
+    transform: translateX(-200px);
+  }
+  100% {
+    transform: translateX(110vw);
+  }
+}
+
+/* 🌊 River theme */
+.waterTheme {
+  background: linear-gradient(to top, #1e90ff, #87ceeb);
+}
+
+.waterFlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.05), transparent);
+  animation: flow 20s linear infinite;
+  z-index: 1;
+}
+
+@keyframes flow {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes wave {
+  0% {
+    background-position-x: 0%;
+  }
+  100% {
+    background-position-x: 100%;
+  }
+}
+
+.fish {
+  position: absolute;
+  left: -80px;
+  width: 60px;
+  animation: fishSwim 40s linear infinite;
+  z-index: 3;
+}
+
+.fishReverse {
+  position: absolute;
+  right: -80px;
+  width: 60px;
+  transform: scaleX(-1);
+  animation: fishSwimReverse 40s linear infinite;
+  z-index: 3;
+}
+
+@keyframes fishSwim {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(150vw);
+  }
+}
+
+@keyframes fishSwimReverse {
+  0% {
+    transform: scaleX(-1) translateX(0);
+  }
+  100% {
+    transform: scaleX(-1) translateX(-150vw);
+  }
+}
+
+.bubble {
+  position: absolute;
+  bottom: 10%;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: bubbleUp 4s ease-in-out infinite;
+  z-index: 4;
+}
+
+@keyframes bubbleUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-200px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* 🌾 Rice field */
+.rice {
+  position: absolute;
+  width: 40px;
+  animation: riceSway 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes riceSway {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(10deg);
+  }
+}
+
+.musicTheme {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #f5f7fa, #e3edf7);
+  overflow: hidden;
+  z-index: 0;
+}
+
+// Các dòng nhạc SVG
+.musicLine {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  animation: waveLine 6s ease-in-out infinite alternate;
+  pointer-events: none;
+
+  path {
+    stroke: rgba(0, 0, 0, 0.2);
+    stroke-width: 1.2;
+    fill: transparent;
+  }
+}
+
+@keyframes waveLine {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(2px);
+  }
+}
+
+// Nốt nhạc bay lên
+.musicNote {
+  position: absolute;
+  animation-name: noteFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+  opacity: 0.8;
+  color: #333;
+  pointer-events: none;
+}
+
+@keyframes noteFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.9;
+  }
+  30% {
+    transform: translateY(-15px) rotate(20deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-15px) rotate(-10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.8;
+  }
+}
+
+.balloonTheme {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+  background: linear-gradient(#badbf1, #e6f5ff);
+}
+
+.balloon {
+  position: absolute;
+  bottom: -80px;
+  animation-name: floatUp;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.05);
+    opacity: 0.4;
+  }
+}

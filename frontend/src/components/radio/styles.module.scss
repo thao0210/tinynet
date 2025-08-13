@@ -1,0 +1,38 @@
+.radioList {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 5px;
+    &.vertical {
+        display: block;
+        li {
+            justify-content:start;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+    }
+    li {
+        display: flex;
+        justify-content: center;
+        padding: 0!important;
+        margin-right: 15px;
+        > svg {
+            font-size: 22px;
+        }
+        label {
+            margin-left: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            > span {
+                margin-left: 10px;
+                width: 83px;
+               justify-content: center;
+            }
+        }
+        
+        &.disabled {
+            pointer-events: none;
+            color: #aaa;
+        }
+    }
+}

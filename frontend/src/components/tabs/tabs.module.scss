@@ -1,0 +1,30 @@
+.tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabsList {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.trigger {
+  padding: 8px 16px;
+  background-color: #eee;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #ddd;
+  }
+}
+
+.triggerActive {
+  @extend .trigger;
+  background-color: #333;
+  color: white;
+}

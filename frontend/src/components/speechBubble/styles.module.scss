@@ -1,0 +1,291 @@
+.bubbleContainer {
+  position: relative;
+  display: inline-block;
+  padding: 20px;
+  max-width: 300px;
+  width: 100%;
+}
+
+.svgBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+$arrowSize: 60px;
+$arrowSize2: 100px;
+$arrowWidth: 10px;
+
+@mixin arrow($direction) {
+  &::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    z-index: 0;
+    opacity: var(--bubble-opacity);
+  }
+
+  @if $direction == top {
+    &::after {
+      border-left: $arrowWidth solid transparent;
+      border-right: $arrowWidth solid transparent;
+      border-bottom: $arrowSize solid var(--bubble-fill, white);
+    }
+  } @else if $direction == bottom {
+    &::after {
+      border-left: $arrowWidth solid transparent;
+      border-right: $arrowWidth solid transparent;
+      border-top: $arrowSize solid var(--bubble-fill, white);
+    }
+  } @else if $direction == left {
+    &::after {
+      border-top: $arrowWidth solid transparent;
+      border-bottom: $arrowWidth solid transparent;
+      border-right: $arrowSize2 solid var(--bubble-fill, white);
+    }
+  } @else if $direction == right {
+    &::after {
+      border-top: $arrowWidth solid transparent;
+      border-bottom: $arrowWidth solid transparent;
+      border-left: $arrowSize2 solid var(--bubble-fill, white);
+    }
+  }
+}
+
+// === ARROW POSITIONS FOR TYPE "speech" ===
+
+.top-left.speech {
+  @include arrow(top);
+  &::after {
+    top: -$arrowSize;
+    left: 40px;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+    transform: rotate(-15deg);
+  }
+}
+
+.top-left.speech.ellipse::after,
+.top-left.speech.starburst::after{
+  top:  -$arrowSize + 40px;
+  left: 50px;
+}
+
+.top-left.speech.cloud::after,
+.top-left.speech.comic::after{
+  top:  -$arrowSize + 20px;
+  left: 50px;
+}
+
+.top-center.speech {
+  @include arrow(top);
+  &::after {
+    top: -$arrowSize;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 -2px -2px rgba(0, 0, 0, 0.1));
+  }
+}
+
+.top-center.speech.ellipse::after,
+.top-center.speech.starburst::after,
+.top-center.speech.cloud::after{
+  top:  -$arrowSize + 30px;
+}
+
+.top-right.speech {
+  @include arrow(top);
+  &::after {
+    top: -$arrowSize;
+    right: 40px;
+    filter: drop-shadow(0 -2px -2px rgba(0, 0, 0, 0.1));
+    transform: rotate(15deg);
+  }
+}
+
+.top-right.speech.ellipse::after,
+.top-right.speech.starburst::after{
+  top:  -$arrowSize + 40px;
+  right: 50px;
+}
+
+.top-right.speech.cloud::after,
+.top-right.speech.comic::after{
+  top:  -$arrowSize + 40px;
+  right: 50px;
+}
+
+.bottom-left.speech {
+  @include arrow(bottom);
+  &::after {
+    bottom: -$arrowSize;
+    left: 40px;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+    transform: rotate(15deg);
+  }
+}
+
+.bottom-left.speech.ellipse::after,
+.bottom-left.speech.starburst::after{
+  bottom:  -$arrowSize + 45px;
+  left: 50px;
+}
+
+.bottom-left.speech.cloud::after,
+.bottom-left.speech.comic::after{
+  bottom:  -$arrowSize + 40px;
+  left: 50px;
+}
+
+.bottom-center.speech {
+  @include arrow(bottom);
+  &::after {
+    bottom: -$arrowSize + 35;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+  }
+}
+
+.bottom-right.speech {
+  @include arrow(bottom);
+  &::after {
+    bottom: -$arrowSize + 30;
+    right: 50px;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+    transform: rotate(-15deg);
+  }
+}
+.bottom-right.speech.ellipse::after,
+.bottom-right.speech.cloud::after,
+.bottom-right.speech.starburst::after{
+  bottom:  -$arrowSize + 45px;
+  right: 50px;
+}
+
+.left-center.speech {
+  @include arrow(left);
+  &::after {
+    left: -$arrowSize;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.right-center.speech {
+  @include arrow(right);
+  &::after {
+    right: -$arrowSize;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+// === THOUGHT DOTS ===
+
+.thought {
+  position: relative;
+}
+
+.dots {
+  position: absolute;
+  display: flex;
+
+  span {
+    display: block;
+    border-radius: 50%;
+    background-color: var(--bubble-fill, #fff);
+    opacity: var(--bubble-opacity, 1);
+  }
+
+  .dot1 {
+    width: 15px;
+    height: 15px;
+  }
+  .dot2 {
+    width: 10px;
+    height: 10px;
+    margin: 8px 0;
+  }
+  .dot3 {
+    width: 5px;
+    height: 5px;
+  }
+
+  // === DIRECTION POSITIONS ===
+
+  &.bottom-center {
+    flex-direction: column;
+    align-items: center;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.top-center {
+    flex-direction: column-reverse;
+    align-items: center;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.left-center {
+    flex-direction: row-reverse;
+    align-items: center;
+    left: -50px;
+    top: 50%;
+    transform: translateY(-50%);
+    span {
+      margin: 0 4px;
+    }
+  }
+
+  &.right-center {
+    flex-direction: row;
+    align-items: center;
+    right: -50px;
+    top: 50%;
+    transform: translateY(-50%);
+    span {
+      margin: 0 4px;
+    }
+  }
+
+  &.bottom-left {
+    flex-direction: column;
+    align-items: flex-start;
+    bottom: -50px;
+    left: 50px;
+  }
+
+  &.bottom-right {
+    flex-direction: column;
+    align-items: flex-end;
+    bottom: -50px;
+    right: 50px;
+  }
+
+  &.top-left {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    top: -50px;
+    left: 50px;
+  }
+
+  &.top-right {
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    top: -50px;
+    right: 50px;
+  }
+}

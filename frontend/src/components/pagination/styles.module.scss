@@ -1,0 +1,42 @@
+.paginationWrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+
+    strong {
+        margin-right: 20px;
+    }
+  }
+  
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 6px;
+  }
+  
+  .pageItem {
+    cursor: pointer;
+  }
+  
+  .pageLink {
+    padding: 8px 12px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    transition: background 0.3s;
+  }
+  
+  .pageLink:hover {
+    background: #ddd;
+  }
+  
+  .active .pageLink {
+    background: #043097;
+    color: white;
+  }
+  
+  .disabled .pageLink {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  

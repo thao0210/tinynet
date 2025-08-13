@@ -1,0 +1,254 @@
+input.text {
+  width: 100%;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+.drawing {
+    .board {
+      position: relative;
+      width: 100wh;
+      height: 100vh;
+      .next {
+        position: absolute;
+        right: 25px;
+        bottom: 15px;
+        z-index: 9002;
+        width: 100px;
+        height: 40px;
+        border-radius: 10px;
+        padding: 0;
+      }
+      .startDrawing {
+        // width: 200px;
+        height: 200px;
+        border-radius: 10px;
+        border: dashed 3px #ccc;
+        text-align: center;
+        background: white;
+        cursor: pointer;
+        img {
+          margin-top: 50px;
+        }
+      }
+      width: 100%;
+      height: 200px;
+      // transition: width 2s, height 2s;
+      &.expand {
+        position: absolute;
+        left: 0;
+        top: 0;
+        // z-index: 9001;
+        width: 100vw;
+        height: 100vh;
+        background-color: #ddd;
+        padding: 10px;
+        .startDrawing {
+          display: none;
+        }
+        .dboard {
+          border: solid 1px #ccc;
+          border-radius: 10px;
+          display: flex;
+
+          &.imageOnly {
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: none;
+            border: none;
+            > img {
+              flex-shrink: 0;
+              max-height: 100vh;
+              max-width: 1000px;
+              &+* {
+                display: none;
+              }
+            }
+          }
+          
+          background-color: #f6f6f6;
+          &:focus-visible {
+            outline: none;
+          }
+          .closeBox {
+            width: 100vw;
+            height: 100vh;
+            background-color: #00000060;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 10000;
+            > div {
+              background: white;
+              padding: 10px 20px 20px;
+              border-radius: 20px;
+              width: 400px;
+              // height: 170px;
+              text-align: center;
+              > div:last-child {
+                margin-top: 20px;
+              }
+            }
+          }
+        }
+        .startDrawing {
+          height: 40px;
+          width: 40px;
+          img {
+            height: 20px;
+          }
+        }
+        .menus {
+          width: 50px;
+          background: linear-gradient(to right, #aaa, #bbb);
+          text-align: center;
+          border-radius: 10px 0 0 10px;
+          // box-shadow: 2px 0px 5px #00000060;
+          > div {
+            margin: 8px 5px;
+            position: relative;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            input[type=number] {
+              width: 50px;
+            }
+            svg {
+              font-size: 22px;
+              cursor: pointer;
+            }
+            .arrow {
+              position: absolute;
+              right:-8px;
+              bottom: 8px;
+            }
+            &:hover, &.active {
+              background-color: #ddd;
+              border-radius: 10px;
+              box-shadow: inset 1px 1px 5px #00000080;
+            }
+            .subMenus {
+              position: absolute;
+              left: 30px;
+              top: 8px;
+              width: max-content;
+              z-index: 10000;
+              background: #222;
+              color: white;
+              border-radius: 10px;
+              padding: 10px;
+              box-shadow: 1px 2px 5px #00000060;
+              > div {
+                margin-bottom: 10px;
+                text-align: center;
+
+                input[type=range] {
+                  width: 80px;
+                }
+                > div {
+                  width: 100%;
+                }
+                &:last-child {
+                  margin-bottom: 0;
+                }
+                label {
+                  font-size: 12px;
+                  line-height: 18px;
+                }
+                .groupSvg {
+                  svg {
+                    color: #FFFFFF80;
+                    &.active {
+                      color: #FFFFFF;
+                    }
+                  }
+                  svg + svg {
+                    margin-left: 10px;
+                  }
+                }
+                li {
+                  font-size: 12px;
+                  padding: 3px 5px;
+                  border-radius: 5px;
+                  background-color: #666;
+                  color: white;
+                  margin-bottom: 5px;
+                  font-weight: bold;
+                  cursor: pointer;
+                  &:last-child {
+                    margin-bottom: 0;
+                  }
+                  &:hover, &.active {
+                    background-color: #ccc;
+                    color: black;
+                  }
+                  &.disabled {
+                    pointer-events: none;
+                  }
+                }
+                &.upload {
+                  position: relative;
+                  font-size: 12px;
+                  background: #FFFFFF30;
+                  border-radius: 10px;
+                  padding: 5px;
+                  border: white dashed 1px;
+                  input[type=file] {
+                    opacity: 0;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100px;
+                  }
+                  span.close {
+                    cursor: pointer;
+                    display: block;
+                    position: absolute;
+                    right: -5px;
+                    top: -5px;
+                    width: 25px;
+                    height: 25px;
+                    background: #FFFFFFCC;
+                    color: black;
+                    font-size: 20px;
+                    border-radius: 50%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  }
+                }
+              }
+            }
+          }
+        }
+        canvas {
+          flex-grow: 1;
+        }
+      }
+    }
+  }
+
+  .coloringList {
+    padding: 20px;
+    > div {
+      overflow-y: auto;
+      max-height: calc(100vh - 120px);
+    }
+    img {
+      margin: 10px;
+      cursor: pointer;
+      border: white solid 5px;
+      border-radius: 10px;
+      &:hover {
+        border-color: orange;
+      }
+    }
+  }

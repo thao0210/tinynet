@@ -1,0 +1,84 @@
+.pointsHistory {
+    padding: 20px;
+    button {
+        min-width: 100px;
+    }
+    h1 {
+        span {
+            font-size: 20px;
+            cursor: pointer;
+            border-left: #aaa solid 1px;
+            padding-left: 10px;
+            margin-left: 10px;
+        }
+    }
+    ul.list {
+        border-top: #ccc solid 1px;
+        max-height: calc(100vh - 240px);
+        overflow-y: auto;
+        li {
+            padding: 10px 0;
+            border-bottom: #ccc solid 1px;
+            display: flex;
+            align-items: center;
+            img {
+                margin-right: 10px;
+            }
+            &.red {
+                color: red;
+            }
+            > span.date {
+                width: 200px;
+                color: #666;
+                font-size: smaller;
+            }
+
+            > span.type {
+                flex-grow: 1;
+            }
+        }
+    }
+}
+
+.sendStars {
+    > div {
+        margin-bottom: 20px;
+        label {
+            font-size: 14px;
+        }
+        > div {
+            margin-top: 5px;
+        }
+        .stars {
+            display: flex;
+            align-items: center;
+
+            input {
+                padding: 5px 10px;
+                width: 120px;
+            }
+        }
+    }
+}
+
+.starsList {
+    li {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: solid 1px #ccc;
+        border-top: solid 1px #eee;
+        &:hover {
+            background: #eee;
+        }
+    }
+}
+
+.paypalPay {
+    padding: 20px;
+    > div {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+}

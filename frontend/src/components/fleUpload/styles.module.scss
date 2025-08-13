@@ -1,0 +1,53 @@
+.wrapper {
+  border: 2px dashed #aaa;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  background-color: #f9f9f9;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:active {
+    background-color: #eee;
+  }
+  &.disabled {
+    pointer-events: none;
+    border-color: #ddd;
+    p.previewText {
+    color: #aaa;
+    }
+  }
+}
+
+.previewImage,
+.previewMedia {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 6px;
+}
+
+.previewText {
+  font-size: 14px;
+  color: #666;
+  margin-top: 10px;
+}
+
+.hint {
+  font-size: 13px;
+  color: #999;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+.uploadIcon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: #fff;
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  color: #666;
+}

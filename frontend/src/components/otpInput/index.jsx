@@ -1,0 +1,47 @@
+import React, { useState, useRef } from "react";
+import classes from './styles.module.scss';
+
+const OtpInput = ({ length = 6, onComplete }) => {
+  const [otp, setOtp] = useState(Array(length).fill(""));
+  const inputRefs = useRef([]);
+
+  const handleChange = (index, value) => {
+    if (!/^\d?$/.test(value)) return; // Chỉ cho phép nhập số
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value !== "" && index < length - 1) {
+      inputRefs.current[index + 1].focus();
+    }
+
+    if (newOtp.every((num) => num !== "")) {
+      onComplete(newOtp.join(""));
+    }
+  };
+
+  const handleKeyDown = (index, event) => {
+    if (event.key === "Backspace" && index > 0 && otp[index] === "") {
+      inputRefs.current[index - 1].focus();
+    }
+  };
+
+  return (
+    <div className={classes.otpBox}>
+      {otp.map((digit, index) => (
+        <input
+          key={index}
+          ref={(el) => (inputRefs.current[index] = el)}
+          type="text"
+          maxLength="1"
+          value={digit}
+          onChange={(e) => handleChange(index, e.target.value)}
+          onKeyDown={(e) => handleKeyDown(index, e)}
+        />
+      ))}
+    </div>
+  );
+};
+
+export default OtpInput;

@@ -1,0 +1,29 @@
+.flyPoint {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 60px;
+    font-weight: bold;
+    color: orangered;
+    text-shadow: 2px 2px 0 white;
+    animation: flyUp 2s ease-out forwards;
+    &.plus {
+        color: green
+    }
+}
+
+@keyframes flyUp {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    80% {
+      opacity: 0;
+      transform: translate(-50%, -100%) scale(1.4);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, 0) scale(1);
+    }
+  }

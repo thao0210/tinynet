@@ -1,0 +1,26 @@
+
+.star {
+    display: inline-flex;
+    align-items: center;
+    img {
+        margin-left: 2px;
+    }
+    &.cost {
+        &::before{
+            content: '-';
+        }
+        padding: 2px 5px;
+        border: #ffd07a 2px solid;
+        border-radius: 20px;
+        font-weight: bold;
+        color: orangered;
+        background: white;
+        &.active {
+            border-color: orangered;
+        }
+    }
+}
+
+.info {
+    color: orange;
+}

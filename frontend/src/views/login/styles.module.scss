@@ -1,0 +1,207 @@
+.content {
+    margin-top: 30px;
+}
+
+.login {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    &.page > div{
+        background: #efefef;
+        border-radius: 20px;
+        box-shadow: inset 2px 2px 5px #bcbcbc, inset -2px -2px 5px #ffffff, 2px 2px 5px #bcbcbc, -2px -2px 5px #ffffff;
+
+    }
+    > div {
+        width: 100%;
+        max-width: 450px;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+        padding: 20px 35px;
+        text-align: left;
+        &.register {
+            max-width: 500px;
+        }
+        &.resetPass {
+
+        }
+        > label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .center {
+            text-align: center;
+        }
+        p {
+            font-size: 14px;
+            strong {
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+        }
+        h1 {
+            font-size: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            svg {
+                margin-left: 10px;
+            }
+        }
+        h2 {
+            margin-top: -10px;
+            color: #000000AA;
+        }
+        strong {
+            color: #002d94;
+            cursor: pointer;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        a {
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        > div {
+            margin-bottom: 20px;
+            margin-top: 0;
+            position: relative;
+            > svg {
+                position: absolute;
+                top: 8px;
+                right: 10px;
+                font-size: 25px;
+                color: #00000090;
+            }
+            > span {
+                font-size: small;
+                line-height: 14px;
+                color: #666;
+                display: block;
+                margin-top: 5px;
+            }
+            .or {
+                color: rgb(153, 153, 153);
+                display: flex;
+                font-size: 18px;
+                font-weight: 700;
+                line-height: 1.5;
+                margin: 16px auto;
+                &::before {
+                    content: '';
+                    margin: 0px 22px 8px 0px;
+                    flex: 1 1 0%;
+                    border-bottom: 1px solid rgb(230, 230, 230);
+                }
+                &::after {
+                    content: '';
+                    margin: 0px 0px 8px 22px;
+                    flex: 1 1 0%;
+                    border-bottom: 1px solid rgb(230, 230, 230);
+                }
+            }
+
+            .others {
+                display: flex;
+                justify-content: center;
+                span {
+                    margin: 0 5px;
+                    width: 120px;
+                    cursor: pointer;
+                    padding: 10px;
+                    border: #ccc solid 1px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    img {
+                        margin-right: 10px;
+                    }
+                }
+            }
+        }
+        .errors {
+            display: none;
+            color: red;
+            margin-top: -15px;
+            &.show {
+                display: block!important;
+            }
+        }
+
+        .info {
+            font-size: 0.8em;
+            color: #00000090;
+            width: 350px;
+            margin: 0 auto;
+        }
+        .subOptions {
+            display: flex;
+            align-items: center;
+            > div {
+                display: inline-flex;
+                flex-grow: 1;
+                align-items: center;
+                svg {
+                    font-size: 30px;
+                    margin-right: 10px;
+                }
+            }
+            strong {
+                font-weight: normal;
+            }
+        }
+
+        input {
+            width: 100%;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: #00000090 solid 2px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 16px;
+            &::placeholder {
+                font-size: 16px;
+            }
+            &:focus {
+                outline: #ff520b 2px solid;
+            }
+        }
+
+        .errorInput input{
+            border-color: red;
+        }
+
+        .errorInput > span {
+            color: red;
+        }
+        button {
+            width: 100%;
+            padding: 10px 20px;
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .login {
+        > div {
+            h1 {
+                font-size: 27px;
+                svg {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+}

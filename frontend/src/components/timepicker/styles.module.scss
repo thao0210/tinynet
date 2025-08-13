@@ -1,0 +1,22 @@
+.datePicker {
+    > div {
+        display: block;
+        input {
+            width: 100%;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: #aaa solid 1px;
+            font-size: 14px;
+        }
+    }
+    > span {
+        font-size: small;
+    }
+    button {
+        box-shadow: none;
+        min-width: auto!important;
+    }
+    h2 {
+        text-align: center!important;
+    }
+}
