@@ -10,8 +10,13 @@ PM2_APP_NAME="tinynet-backend"
 
 echo "=== 1. Push local code to GitHub ==="
 git add .
-git commit -m "Auto deploy"
-git push origin main
+# Nếu có gì mới thì commit, nếu không thì bỏ qua
+if ! git diff --cached --quiet; then
+    git commit -m "Auto deploy"
+    git push origin main
+else
+    echo "No changes to commit. Skipping git push."
+fi
 
 echo "=== 2. SSH into VPS & pull latest code ==="
 ssh ${REMOTE_USER}@${REMOTE_HOST} "
@@ -43,4 +48,3 @@ ssh ${REMOTE_USER}@${REMOTE_HOST} "
 scp -r ./fe_build/* ${REMOTE_USER}@${REMOTE_HOST}:/var/www/tinynet/fe_build/
 
 echo "=== Deployment completed successfully! ==="
-
