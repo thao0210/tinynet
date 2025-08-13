@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useStore } from '@/store/useStore';
 import RadioList from '@/components/radio';
-import SearchUsers from '@/components/SearchUsers';
+import SearchUsers from '@/components/searchUsers';
 import { LoadingDots } from "@/components/loader";
 import { uploadBase64ToR2 } from "@/utils/file";
 import urls from '@/sharedConstants/urls';
