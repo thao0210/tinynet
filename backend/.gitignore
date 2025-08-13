@@ -22,3 +22,4 @@ temp/
 # System files
 .DS_Store
 Thumbs.db
+deploy.sh
