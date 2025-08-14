@@ -47,7 +47,7 @@ span.disabled {
 .read-the-docs {
   color: #888;
 }
-.pastel .head, .simple .head{
+.pastel, .simple, .contrast {
   background: white;
 }
 .contrast .head{
@@ -57,7 +57,7 @@ span.disabled {
   background: white;
 }
 
-.dark .head {
+.dark{
   background: rgba(0, 0, 0, 0.7);
 }
 
