@@ -1,4 +1,14 @@
-require('dotenv').config({ path: __dirname + '/.env' });
+const path = require('path');
+const fs = require('fs');
+
+const envPaths = [
+  path.resolve(__dirname, '.env.local'),
+  path.resolve(__dirname, '.env.production'),
+  path.resolve(__dirname, '.env')
+];
+const envFile = envPaths.find(p => fs.existsSync(p));
+// require('dotenv').config({ path: __dirname + '/.env' });
+require('dotenv').config({ path: envFile });
 const app = require("./src/app");
 const mongoose = require("mongoose");
 const { PORT, MONGO_URI } = require('./src/config');

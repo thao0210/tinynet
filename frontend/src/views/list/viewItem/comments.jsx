@@ -8,9 +8,11 @@ import { formatDate } from "@/utils/numbers";
 import ItemMenus from '@/components/itemMenu';
 import { LikeIcon } from '../list-components';
 import { FaSmile } from 'react-icons/fa';
-import EmojiPicker from 'emoji-picker-react';
+// import EmojiPicker from 'emoji-picker-react';
 import { useStore } from '@/store/useStore';
 import DOMPurify from 'dompurify';
+import EmojiPickerLite from '@/components/emojiPicker';
+import Dropdown from '@/components/dropdown';
 
 const CommentItem = ({comment, setLoadComments, setComment, setCurCommentId, user, setShowModal}) => {
     const myComment = comment?.author && comment?.author?.username && (user?.username === comment?.author?.username);
@@ -70,7 +72,6 @@ const Comments = ({item, setShowComments}) => {
     const [comment, setComment] = useState('');
     const editorRef = useRef();
     const [curCommentId, setCurCommentId] = useState('');
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const {user, setShowModal} = useStore();
 
     const commentOnChange = () => {
@@ -106,8 +107,7 @@ const Comments = ({item, setShowComments}) => {
     }
 
     const addEmoji = (emojiObject) => {
-        setComment(comment + emojiObject.emoji);
-        setShowEmojiPicker(false);
+        setComment(comment + emojiObject);
       };
 
     useEffect(()=>{
@@ -117,7 +117,7 @@ const Comments = ({item, setShowComments}) => {
     }, [loadComments]);
 
     return (
-        <div className={classes.comments}>
+        <div className={classes.comments} id='comments'>
             <h2>Comments{
                     commentsList.length > 0 &&
                     <sup>{commentsList.length}</sup>
@@ -149,10 +149,14 @@ const Comments = ({item, setShowComments}) => {
                     dangerouslySetInnerHTML={{__html: comment}}
                     ref={editorRef}
                 />
-                <FaSmile onClick={() => setShowEmojiPicker(!showEmojiPicker)} className={classes.emoji}/>
-                {showEmojiPicker && 
-                <EmojiPicker onEmojiClick={addEmoji} className={classes.emojiBox} />
-                }
+                <Dropdown
+                    trigger={<FaSmile className={classes.emoji} />}
+                    className={classes.emojiPicker}
+                    dropdownContainerSelector='#comments'
+                    tippy='Emoji Picker'
+                >
+                    <EmojiPickerLite onSelect={addEmoji} className={classes.emojiBox} />
+                </Dropdown>
                 <IoSend size={20} onClick={saveComment} className={classes.add}/>
             </div>
         </div>

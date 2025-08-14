@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { FaVideo } from 'react-icons/fa';
 import { MdOutlineRadioButtonUnchecked, MdOutlineRadioButtonChecked, MdFiberManualRecord } from "react-icons/md";
-import ffmpeg from 'ffmpeg.js';
+// import ffmpeg from 'ffmpeg.js';
 import Tippy from "@tippyjs/react";
 import Dropdown from "@/components/dropdown";
 import classes from '../styles.module.scss';
@@ -44,22 +44,24 @@ const AddVideo = ({editor, error, setError}) => {
             reader.readAsDataURL(blob);
           });
       
-        if (file.size > MAX_VIDEO_SIZE) {
-          const arrayBuffer = await file.arrayBuffer();
-          const result = await ffmpeg({
-            MEMFS: [{ name: 'input.mp4', data: new Uint8Array(arrayBuffer) }],
-            arguments: ['-i', 'input.mp4', '-b:v', '500k', '-preset', 'fast', 'output.mp4'],
-          });
+        // if (file.size > MAX_VIDEO_SIZE) {
+        //   const arrayBuffer = await file.arrayBuffer();
+        //   const result = await ffmpeg({
+        //     MEMFS: [{ name: 'input.mp4', data: new Uint8Array(arrayBuffer) }],
+        //     arguments: ['-i', 'input.mp4', '-b:v', '500k', '-preset', 'fast', 'output.mp4'],
+        //   });
       
-          const outputFile = result.MEMFS[0];
-          const compressedBlob = new Blob([outputFile.data], { type: 'video/mp4' });
+        //   const outputFile = result.MEMFS[0];
+        //   const compressedBlob = new Blob([outputFile.data], { type: 'video/mp4' });
       
-          const base64 = await toBase64(compressedBlob);
-          callback(base64);
-        } else {
+        //   const base64 = await toBase64(compressedBlob);
+        //   callback(base64);
+        // } else {
+        //   const base64 = await toBase64(file);
+        //   callback(base64);
+        // }
           const base64 = await toBase64(file);
           callback(base64);
-        }
       };
 
       const addVideo = () => {

@@ -61,7 +61,7 @@
 
     .banner {
       width: 800px;
-      height: 420px;
+      min-height: 420px;
       background: none;
       text-align: left;
       box-shadow: none;
@@ -126,6 +126,7 @@
                 margin-right: 10px;
                 width: 130px;
                 text-align: center;
+                flex-shrink: 0;
                 img {
                   padding: 5px;
                   max-width: 120px;
@@ -155,8 +156,12 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 10px;
+            line-height: 30px;
             &:first-child {
               font-size: 30px;
+            }
+            strong {
+              flex-grow: 1;
             }
             &:nth-child(2) {
               font-size: 27px;
@@ -197,5 +202,53 @@
     }
     100% {
       opacity: 0;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .introduction {
+      > button {
+        font-size: 30px;
+      }
+      .banner {
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+        > .banner1,.banner2 {
+          border-radius: 0;
+        };
+        .content {
+          flex-direction: column;
+          align-items: center;
+          max-height: 100vh;
+          overflow-y: auto;
+          > div {
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+          }
+          > img {
+            width: 200px;
+          }
+          .flex {
+            flex-direction: column;
+            align-items: center;
+            > div {
+              width: 100%!important;
+              margin: 0!important;
+              padding: 5px!important;
+              text-align: center;
+              justify-content: center;
+              .image {
+                width: 100px;
+                img {
+                  max-width: 90px;
+                  max-height: 90px;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }

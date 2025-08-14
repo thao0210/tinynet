@@ -243,13 +243,17 @@ const Home = () => {
                 }
                 {hasMore && <div ref={ref} style={{ height: 20 }} />}
             </div>
-            <Filters 
-                setFilters={setFilters} 
-                setShowFilters={setShowFilters} 
-                showFilters={showFilters} 
-                filters={filters}
-                setIsDarkTheme={setIsDarkTheme}
-            />
+            {
+                list && list.length > 0 &&
+                <Filters 
+                    setFilters={setFilters} 
+                    setShowFilters={setShowFilters} 
+                    showFilters={showFilters} 
+                    filters={filters}
+                    setIsDarkTheme={setIsDarkTheme}
+                />
+            }
+            
             <div className={classes.bMenusLeft} ref={infoRef}>
                 <Tippy content='Website Information'>
                     <img src='/info.svg' alt='info' height={30} onClick={() => setShowInfo(true)} />

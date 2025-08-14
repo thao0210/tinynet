@@ -57,11 +57,17 @@ const Login = ({nextModal}) => {
     }
 
     const googleLogin = () => {
-        window.location.href = "http://localhost:5008/api/auth/google";
+        // Redirect to Google OAuth
+        if (import.meta.env.VITE_GOOGLE_URL) {
+            window.location.href = import.meta.env.VITE_GOOGLE_URL; 
+        }
     }
 
     const facebookLogin = () => {
-        window.location.href = "http://localhost:5008/api/auth/facebook";
+        if (import.meta.env.VITE_FACEBOOK_URL) {
+            // Redirect to Facebook OAuth
+            window.location.href = import.meta.env.VITE_FACEBOOK_URL; 
+        }
     }
     return (
     <div className={classNames(styles.login, {[styles.page]: location.pathname.includes('login')})}>

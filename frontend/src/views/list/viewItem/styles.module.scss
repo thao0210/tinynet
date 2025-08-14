@@ -158,9 +158,15 @@
             color: #666;
             cursor: pointer;
         }
-        svg.emoji {
+        .emojiPicker {
+            position: absolute;
+            bottom: 8px;
             right: 35px;
-            bottom: 12px;
+            z-index: 10000;
+            svg.emoji {
+                color: #666;
+                cursor: pointer;
+            }
         }
         svg.add {
             right: 8px;

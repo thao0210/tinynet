@@ -80,6 +80,7 @@ const postUserRegister = async (req, res) => {
         if (emailExists) return res.status(400).json({ error: "Email already exists" });
         const hashedPassword = await bcrypt.hash(password, 10);
         
+        const totalUsers = await User.countDocuments();
         const user = new User({ 
           email, 
           username, 
@@ -93,9 +94,9 @@ const postUserRegister = async (req, res) => {
           following: [], // Chưa follow ai
           followers: [], // Chưa có ai follow
           noOfComments: 0,
+          role: totalUsers === 0 ? "admin" : "user"
          });
         await user.save();
-        const totalUsers = await User.countDocuments();
         let bonusPoints = 0;
 
         if (totalUsers < 10) bonusPoints = 10000;
@@ -274,7 +275,7 @@ const getGoogleCallback = () => {
     res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict" });
 
-    res.redirect("http://localhost:5173/"); // Điều hướng về trang chính
+    res.redirect(process.env.VITE_FE_URL); // Điều hướng về trang chính
   }
 }
 
@@ -289,7 +290,7 @@ const getFacebookCallback = () => {
     res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict" });
 
-    res.redirect("http://localhost:5173/");
+    res.redirect(process.env.VITE_FE_URL);
   }
 }
 module.exports = {checkAuth, refreshToken, postUserRegister, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword}

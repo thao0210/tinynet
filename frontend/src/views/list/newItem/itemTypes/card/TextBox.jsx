@@ -11,13 +11,14 @@ import { generateCartoonShadow, generateRainboxShadow } from "@/utils/color";
 import { TEXT_SHADOWS } from "@/sharedConstants/data";
 import FrameOptionsForm from "./TextBoxFrame";
 import SpeechBubble from "@/components/speechBubble";
-import EmojiPicker from "emoji-picker-react";
+import EmojiPickerLite from "@/components/emojiPicker";
+// import EmojiPicker from "emoji-picker-react";
 
 const TEXT_EFFECTS = ['none', 'typing', 'zoom', 'dancing', 'bounce', 'wave', 'shock', 'explode', 'spider'];
 
 const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteTextbox, setActiveIndex, screen}) => {
     const addEmoji = (emojiObject) => {
-        updateTextbox(index, { text: box.text + emojiObject.emoji });
+        updateTextbox(index, { text: box.text + emojiObject });
     }
     const renderEditableBox = () => (
         <div
@@ -196,7 +197,7 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                         dropdownContainerSelector='#item-card'
                         tippy='Emoji'
                         >
-                            <EmojiPicker onEmojiClick={addEmoji} className={classes.emojiBox} />
+                            <EmojiPickerLite onSelect={addEmoji} className={classes.emojiBox} />
                         </Dropdown>
                     </div>                   
                     <Dropdown

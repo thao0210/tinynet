@@ -1,15 +1,16 @@
 // components/DateTimePicker.jsx
-import React, { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import classes from './styles.module.scss';
-
+import React from "react";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/themes/material_orange.css";
+import classes from "./styles.module.scss";
 /**
  * @param {Object} props
- * @param {Date|null} props.value - ngày đang chọn
+ * @param {Date|string|null} props.value - ngày đang chọn
  * @param {Function} props.onChange - callback khi đổi giá trị
  * @param {boolean} props.includeTime - có chọn giờ không?
  * @param {string} props.label - nhãn hiển thị
+ * @param {boolean} props.isFuture - chỉ cho phép chọn ngày giờ tương lai
+ * @param {string|null} props.field - tên field (nếu muốn trả về object)
  */
 export default function DateTimePicker({
   value,
@@ -20,7 +21,9 @@ export default function DateTimePicker({
   field = null
 }) {
   const now = new Date();
-  const handleChange = (newDate) => {
+
+  const handleChange = (selectedDates) => {
+    const newDate = selectedDates[0] || null;
     if (field && typeof onChange === "function") {
       onChange((prev) => ({
         ...prev,
@@ -30,20 +33,22 @@ export default function DateTimePicker({
       onChange(newDate);
     }
   };
+
   return (
     <div className={classes.datePicker}>
       {label && <label>{label}</label>}
-      <DatePicker
-        selected={value ? new Date(value) : null}
+      <Flatpickr
+        value={value || ""}
         onChange={handleChange}
-        showTimeSelect={includeTime}
-        timeFormat="HH:mm"
-        timeIntervals={15}
-        dateFormat={includeTime ? "Pp" : "dd/MM/yyyy"}
-        placeholderText={includeTime ? "Date and time" : "Choose the date"}
+        options={{
+          enableTime: includeTime,
+          dateFormat: includeTime ? "d/m/Y H:i" : "d/m/Y",
+          time_24hr: true,
+          minuteIncrement: 15,
+          minDate: isFuture ? now : null,
+        }}
         className="border px-3 py-2 rounded"
-        minDate={isFuture ? now : null}
-        // minTime={includeTime && isFuture ? now : null}
+        placeholder={includeTime ? "Date and time" : "Choose the date"}
       />
     </div>
   );

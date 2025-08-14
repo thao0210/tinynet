@@ -13,7 +13,8 @@ import FontFamily from '@tiptap/extension-font-family';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEffect, useRef, useState } from 'react';
 import { FontSize } from './fontSize'; // Import file vừa tạo
-import EmojiPicker from 'emoji-picker-react';
+// import EmojiPicker from 'emoji-picker-react';
+import EmojiPickerLite from '../emojiPicker';
 import { FaBold, FaItalic, FaUnderline, FaSmile, FaTable, FaAlignLeft, FaAlignCenter, FaAlignRight, FaAlignJustify, FaListUl, FaListOl, FaCode, FaQuoteLeft, FaLink, FaMicrophone } from 'react-icons/fa';
 import { SwatchesPicker } from 'react-color';
 import classes from './styles.module.scss';
@@ -63,7 +64,6 @@ const Video = Node.create({
 });
 
 const TiptapEditor = ({content, setData, data, onContentChange, onTextChange, useSmallText, isContribution}) => {
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [color, setColor] = useState('#000000');
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -77,8 +77,6 @@ const TiptapEditor = ({content, setData, data, onContentChange, onTextChange, us
 
   const sideRef = useRef();
   useClickOutside(sideRef, () => setShowSideModal(false));
-  const emoRef = useRef();
-  useClickOutside(emoRef, () => setShowEmojiPicker(false));
 
   const editor = useEditor({
     extensions: [
@@ -114,8 +112,7 @@ const TiptapEditor = ({content, setData, data, onContentChange, onTextChange, us
   });
 
   const addEmoji = (emojiObject) => {
-    editor.chain().focus().insertContent(emojiObject.emoji).run();
-    setShowEmojiPicker(false);
+    editor.chain().focus().insertContent(emojiObject).run();
   };
 
   const onFontFamilySelect = (value) => {
@@ -204,13 +201,15 @@ const TiptapEditor = ({content, setData, data, onContentChange, onTextChange, us
         />
         <AddImage setError={setError} error={error} editor={editor} />
         <AddVideo setError={setError} error={error} editor={editor} />
-        <div ref={emoRef}>
-          <Tippy content='Emoji picker'>
-            <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}><FaSmile /></button>
-          </Tippy>
-          {showEmojiPicker && 
-            <EmojiPicker onEmojiClick={addEmoji} className={classes.emojiBox} />
-          }
+        <div>
+          <Dropdown 
+            trigger={<FaSmile />}
+            className={classes.emojiPicker} 
+            dropdownContainerSelector='#editor'
+            tippy='Emoji Picker'
+          >
+            <EmojiPickerLite onSelect={addEmoji} className={classes.emojiBox} />
+          </Dropdown>
         </div>
         <Tippy content='Table'>
           <button onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3 }).run()}><FaTable /></button>

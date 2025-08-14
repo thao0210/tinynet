@@ -1,0 +1,33 @@
+.wrapper {
+}
+
+.toggleBtn {
+  font-size: 1.5rem;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.picker {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  background: #fff;
+  border-radius: 8px;
+  z-index: 999;
+}
+
+.emojiBtn {
+  font-size: 1.4rem;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.emojiBtn:hover {
+  transform: scale(2);
+}

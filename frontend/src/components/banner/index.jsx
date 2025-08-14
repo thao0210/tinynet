@@ -100,7 +100,7 @@ export const BannerIntro = () => {
                       <img src={`${baseUrl}/girl1.webp`} height={120} />
                   </div>
                   <div>
-                    <h4>Drawing or Writing?</h4>
+                    <h4>Writing, drawing or card?</h4>
                     <p>Bring your dream world to life with art.</p>
                   </div>
               </div>
@@ -145,17 +145,17 @@ export const BannerIntro2 = () => {
                   <li>
                       
                       <img src='/star.webp' height={50} />
-                      First 10 users
+                      <strong>First 10 users</strong>
                       <StarPoints points={'+10,000'} size={30} />
                   </li>
                   <li>
                       <img src='/star.webp' height={50} />
-                      Next 90 users
+                      <strong>Next 90 users</strong>
                       <StarPoints points={'+3,000'} size={30} />
                   </li>
                   <li>
                       <img src='/star.webp' height={50} />
-                      All other new users
+                      <strong>All other new users</strong>
                       <StarPoints points={'+500'} size={30} /> 
                   </li>
               </ul>

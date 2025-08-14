@@ -11,7 +11,7 @@ export const aboutData = {
           "Create cards with videos, sounds, images, and chat boxes.",
           "Use Speech to Text if typing isn't your thing.",
           "Insert images, videos, self-drawings, signatures, and custom QR codes.",
-          "Write in multiple languages (in progress).",
+          "Write in multiple languages.",
           "Read, watch, and listen (by Text To Speech technology), comment, vote... the posts here!"
         ]
       },

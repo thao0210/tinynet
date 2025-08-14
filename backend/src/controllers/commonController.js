@@ -1,21 +1,20 @@
 const { exportPdf } = require("../utils/pdfUtils");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
-const AWS = require("aws-sdk");
+// const AWS = require("aws-sdk");
 const fetch = require('node-fetch');
 const { deleteFromR2 } = require("../utils/deleteFromR2");
-const axios = require('axios');
 const sharp = require('sharp');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID, 
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION
-});
+// const s3 = new AWS.S3({
+//   accessKeyId: process.env.AWS_ACCESS_KEY_ID, 
+//   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//   region: process.env.AWS_REGION
+// });
 
 const getSignedUrl = async (req, res) => {
   const { filename, filetype, type = "others" } = req.body;
@@ -27,7 +26,7 @@ const getSignedUrl = async (req, res) => {
     Expires: 60,
   };
 
-  const uploadUrl = await s3.getSignedUrlPromise("putObject", params);
+  // const uploadUrl = await s3.getSignedUrlPromise("putObject", params);
 
   res.json({ uploadUrl, key: params.Key });
 };
@@ -44,13 +43,13 @@ const deleteS3File = async (req, res) => {
       Key: key,
     };
   
-    s3.deleteObject(params, (err, data) => {
-      if (err) {
-        console.error("Error deleting S3 object:", err);
-        return res.status(500).json({ error: "Error deleting file" });
-      }
-      res.status(200).json({ message: "File deleted successfully" });
-    });
+    // s3.deleteObject(params, (err, data) => {
+    //   if (err) {
+    //     console.error("Error deleting S3 object:", err);
+    //     return res.status(500).json({ error: "Error deleting file" });
+    //   }
+    //   res.status(200).json({ message: "File deleted successfully" });
+    // });
   }
 
 const generatePdf = async (req, res) => {

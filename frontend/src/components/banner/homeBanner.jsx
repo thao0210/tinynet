@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useStore } from '@/store/useStore';
 import { BannerIntro, BannerIntro2 } from '@/components/banner';
-import classNames from 'classnames';
 
 const HomeBanner = ({onClose}) => {
     const [activeIndex, setActiveIndex] = useState(0);

@@ -18,6 +18,7 @@ import { useState } from 'react';
 import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
+import DataDeletion from '@/views/aboutUs/dataDeletion';
 
 const ReportForm = ({showModal, setShowModal}) => {
     const [reason, setReason] = useState('');
@@ -99,6 +100,8 @@ export function AppRoutes() {
       <Route path='register' element={<Register />} />
       <Route path='post/:id' element={<ViewItem />} />
       <Route path='profile/:userId' element={<Profile />} />
+      <Route path='terms-and-privacy' element={<TermsPrivacy />} />
+      <Route path='data-deletion' element={<DataDeletion />} />
     </Routes>
   );
 }
