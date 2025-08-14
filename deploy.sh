@@ -8,7 +8,8 @@ REMOTE_APP_PATH="/var/www/tinynet/app"
 PM2_APP_NAME="tinynet-backend"
 ENV_LOCAL="./backend/.env"
 ENV_REMOTE="${REMOTE_APP_PATH}/backend/.env"
-FE_BUILD_LOCAL="./fe_build"
+FE_LOCAL_PATH="./frontend"
+FE_BUILD_LOCAL="${FE_LOCAL_PATH}/dist"
 FE_BUILD_REMOTE="/var/www/tinynet/fe_build"
 # ==================
 
@@ -26,7 +27,7 @@ ssh ${REMOTE_USER}@${REMOTE_HOST} "
     cd ${REMOTE_APP_PATH} && git pull origin main
 "
 
-echo "=== 3. Copy .env.production to VPS backend/.env ==="
+echo "=== 3. Copy .env to VPS backend/.env ==="
 scp ${ENV_LOCAL} ${REMOTE_USER}@${REMOTE_HOST}:${ENV_REMOTE}
 
 # Kiểm tra file .env trên VPS
@@ -51,7 +52,11 @@ ssh ${REMOTE_USER}@${REMOTE_HOST} "
     pm2 show ${PM2_APP_NAME}
 "
 
-echo "=== 6. Deploy frontend build to VPS ==="
+echo "=== 6. Build frontend locally ==="
+cd ${FE_LOCAL_PATH} && npm install && npm run build
+cd - > /dev/null
+
+echo "=== 7. Deploy frontend build to VPS ==="
 ssh ${REMOTE_USER}@${REMOTE_HOST} "
     rm -rf ${FE_BUILD_REMOTE} && mkdir -p ${FE_BUILD_REMOTE}
 "
