@@ -348,8 +348,8 @@ button + button {
 
             .jackpotInfo {
                 position: absolute;
-                top: 30%;
-                left: 30%;
+                top: calc(50% - 75px);
+                left: calc(50% - 75px);
                 background: #bf1f1f;
                 color: white;
                 border: 5px solid white;

@@ -1,17 +1,15 @@
 .head {
-    // background: white;
     padding: 5px 10px;
     display: flex;
     width: 100vw;
     justify-content: space-between;
     align-items: center;
     box-shadow: 2px 0 10px #00000020;
-    // border-bottom: 1px solid #eee;
-    // background: #eee;
     position: sticky;
     top: 0;
     left: 0;
     z-index: 1001;
+    gap: 10px;
     .logo {
       font-family: "Damion", Tahoma;
       font-size: 30px;
@@ -23,8 +21,8 @@
     }
 
     .search {
-      width: 40%;
-      min-width: 200px;
+      // width: 40%;
+      // min-width: 200px;
       position: relative;
       // border: 2px solid #da9d51;
       background: white;
@@ -103,9 +101,9 @@
     .thumbProfile {
         display: flex;
         align-items: center;
+        gap: 10px;
         .notifications {
           position: relative;
-          margin-right: 20px;
           .icon {
             display: flex;
             align-items: center;

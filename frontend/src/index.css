@@ -1,5 +1,11 @@
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+input, textarea, select {
+  background-color: white !important;
+  color: black !important;
 }
 
 :root {
