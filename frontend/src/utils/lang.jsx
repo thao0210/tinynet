@@ -5,18 +5,35 @@ export const capitalFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export const voiceLanguages = () => {
-  const languageNames = new Intl.DisplayNames(['en'], {
-    type: 'language'
-  });
-  const voices = window.speechSynthesis.getVoices();
-  const languages = [...new Set(voices.map(v => v.lang))];
-  const langs = languages.map(v => ({
-      label: languageNames.of(v),
+export const voiceLanguages = (callback) => {
+  const loadVoices = () => {
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) {
+      callback([]);
+      return;
+    }
+    const languageNames = new Intl.DisplayNames(["en"], { type: "language" });
+    const languages = [...new Set(voices.map(v => v.lang))];
+    const langs = languages.map(v => ({
+      label: languageNames.of(v) || v,
       value: v
     }));
-  return langs;
-}
+    callback(langs);
+  };
+
+  if (typeof window.speechSynthesis === "undefined") {
+    callback([]);
+    return;
+  }
+
+  // Khi danh sách voices đã có
+  if (window.speechSynthesis.getVoices().length) {
+    loadVoices();
+  }
+
+  // Khi voices load trễ
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+};
 
 export const allVoices = (selectedLang) => {
   const synth = window.speechSynthesis;

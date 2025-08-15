@@ -1,21 +1,23 @@
+// AddVoice.jsx
 import Dropdown from "../../dropdown";
-import classes from '../styles.module.scss';
+import classes from "../styles.module.scss";
 import { capitalFirstLetter, voiceLanguages } from "@/utils/lang";
 import Tippy from "@tippyjs/react";
 import { useEffect, useRef, useState } from "react";
-import { FaMicrophone } from 'react-icons/fa';
+import { FaMicrophone } from "react-icons/fa";
 import { MdFiberManualRecord } from "react-icons/md";
 import classNames from "classnames";
 
 const AddVoice = ({ editor, data }) => {
   const [showVoiceOptions, setShowVoiceOptions] = useState(false);
   const [lang, setLang] = useState("en-US");
-  const langs = voiceLanguages();
+  const [langs, setLangs] = useState([]);
   const [listening, setListening] = useState(false);
+  const [supported, setSupported] = useState(true);
+
   const recognitionRef = useRef(null);
   const finalTranscriptRef = useRef("");
 
-  // Kiểm tra API hỗ trợ
   const getSpeechRecognition = () => {
     return window.SpeechRecognition || window.webkitSpeechRecognition || null;
   };
@@ -23,23 +25,21 @@ const AddVoice = ({ editor, data }) => {
   const requestMicPermission = async () => {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
-      console.log("✅ Microphone permission granted");
       return true;
     } catch (err) {
-      console.error("❌ Microphone permission denied:", err);
+      console.error("Microphone permission denied:", err);
       return false;
     }
   };
 
   const onLanguageSelect = (value) => {
-    console.log("Language selected:", value);
     setLang(value);
   };
 
   const initRecognition = () => {
     const SpeechRecognition = getSpeechRecognition();
     if (!SpeechRecognition) {
-      alert("Speech Recognition API is not supported in this browser/PWA.");
+      setSupported(false);
       return null;
     }
 
@@ -49,27 +49,17 @@ const AddVoice = ({ editor, data }) => {
     recognition.continuous = true;
 
     recognition.onresult = (event) => {
-      let interimTranscript = "";
-
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         const result = event.results[i];
         if (result.isFinal) {
-          finalTranscriptRef.current +=
-            result[0].transcript.toString().toLowerCase();
-        } else {
-          interimTranscript += result[0].transcript;
+          finalTranscriptRef.current += result[0].transcript.toLowerCase();
         }
       }
-
-      editor.commands.insertContent(
-        capitalFirstLetter(finalTranscriptRef.current)
-      );
+      editor.commands.insertContent(capitalFirstLetter(finalTranscriptRef.current));
     };
 
     recognition.onend = () => {
-      console.log("Recognition ended");
       if (listening) {
-        // Auto restart nếu browser cho phép
         try {
           recognition.start();
         } catch (err) {
@@ -95,14 +85,13 @@ const AddVoice = ({ editor, data }) => {
     if (!recognitionRef.current) {
       initRecognition();
     }
-    if (!recognitionRef.current) return; // nếu vẫn không khởi tạo được
+    if (!recognitionRef.current) return;
 
     finalTranscriptRef.current = "";
     recognitionRef.current.lang = lang || navigator.language || "en-US";
 
     try {
       recognitionRef.current.start();
-      console.log("🎤 Listening started");
       setListening(true);
     } catch (err) {
       console.error("Start listening error:", err);
@@ -113,7 +102,6 @@ const AddVoice = ({ editor, data }) => {
     if (recognitionRef.current) {
       try {
         recognitionRef.current.stop();
-        console.log("🛑 Listening stopped");
       } catch (err) {
         console.error("Stop listening error:", err);
       }
@@ -122,8 +110,21 @@ const AddVoice = ({ editor, data }) => {
   };
 
   useEffect(() => {
-    const userLang = navigator.language || navigator.userLanguage || "en-US";
-    setLang(userLang);
+    const SpeechRecognition = getSpeechRecognition();
+    if (!SpeechRecognition) {
+      setSupported(false);
+      return;
+    }
+    setLang(navigator.language || navigator.userLanguage || "en-US");
+
+    voiceLanguages((loadedLangs) => {
+      if (!loadedLangs.length) {
+        setSupported(false);
+        setLangs([{ label: "Not supported (English)", value: "en-US" }]);
+      } else {
+        setLangs(loadedLangs);
+      }
+    });
   }, []);
 
   return (
@@ -143,18 +144,23 @@ const AddVoice = ({ editor, data }) => {
       <div className={classes.voice2Text} id="voice2Text">
         <label>Language</label>
         <Dropdown
-          curValue={lang || data?.language || "en-US"}
+          curValue={lang}
           list={langs}
           onSelect={onLanguageSelect}
           width={200}
           dropdownContainerSelector="#voice2Text"
+          disabled={!supported}
         />
         {lang && (
           <div>
             <label>Voice to text</label>
             <div>
               {!listening ? (
-                <button className="btn" onClick={startListening}>
+                <button
+                  className="btn"
+                  onClick={startListening}
+                  disabled={!supported}
+                >
                   <MdFiberManualRecord size={20} /> Start speaking
                 </button>
               ) : (
@@ -168,8 +174,14 @@ const AddVoice = ({ editor, data }) => {
             </div>
           </div>
         )}
+        {!supported && (
+          <p style={{ color: "red", marginTop: "5px" }}>
+            Speech recognition is not supported on this device/browser.
+          </p>
+        )}
       </div>
     </Dropdown>
   );
 };
+
 export default AddVoice;
