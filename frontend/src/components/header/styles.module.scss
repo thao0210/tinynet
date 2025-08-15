@@ -37,6 +37,7 @@
         border: none;
         outline: none;
         background: transparent;
+        border-radius: 30px;
         &::placeholder {
           color: #efc38c;
           color: #aaa;
@@ -84,7 +85,7 @@
     }
 
     .login {
-      flex-grow: 1;
+      // flex-grow: 1;
       > span {
         cursor: pointer;
         white-space: nowrap;
