@@ -1,4 +1,5 @@
 import { uploadFileToR2, convertToFile } from '@/utils/file';
+import { max } from 'date-fns';
 
 export const itemStrategies = async (type, data, user, imageUrl, updatedContent, usePoint) => {
     const general = {
@@ -84,6 +85,7 @@ export const itemStrategies = async (type, data, user, imageUrl, updatedContent,
                 voteType: data?.voteType || '',
                 voteMode: data?.voteMode || '',
                 voteReward: data?.voteReward || 0,
+                maxVoters: Number(data?.voteReward) > 0 ? Math.floor(user.userPoints / Number(data.voteReward)) : 0,
                 items: data?.items || null,
                 users: data?.users || null,
                 customOptions: data?.customOptions || null

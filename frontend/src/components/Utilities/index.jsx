@@ -4,7 +4,7 @@ import 'tippy.js/dist/tippy.css'; // css của tippy
 import classes from './styles.module.scss';
 import { numberWithCommas } from "@/utils/numbers";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const Tooltip = ({content}) => {
     return (
@@ -24,7 +24,6 @@ export const StarPoints = ({points, size, isCost, isActive, onClick}) => {
         </span>
     )
 }
-
 export const UsageControl = ({
   points,
   usePoint,
@@ -34,27 +33,29 @@ export const UsageControl = ({
 }) => {
   const [hasAddedPoints, setHasAddedPoints] = useState(false);
 
-  // Reset khi bị uncheck
+  // Chốt trạng thái "đã từng mua" ngay lúc vào edit
+  const initialCheckedRef = useRef(isChecked);
+  const isPreviouslyPurchased = isEdit && initialCheckedRef.current === true;
+
+  // Đồng bộ theo checkbox (bỏ qua hoàn toàn nếu đã từng mua trong edit)
   useEffect(() => {
-    if (!isEdit &&!isChecked && hasAddedPoints) {
-      setUsePoint(prev => prev - points);
+    if (isPreviouslyPurchased) return;
+
+    if (isChecked && !hasAddedPoints) {
+      setUsePoint((prev) => prev + points);
+      setHasAddedPoints(true);
+    } else if (!isChecked && hasAddedPoints) {
+      setUsePoint((prev) => prev - points);
       setHasAddedPoints(false);
     }
-  }, [isChecked]);
-
-  // Auto cộng điểm khi được check
-  useEffect(() => {
-    if (!isEdit && isChecked && !hasAddedPoints) {
-      setUsePoint(prev => prev + points);
-      setHasAddedPoints(true);
-    }
-  }, [isChecked]);
+  }, [isChecked, isPreviouslyPurchased, hasAddedPoints, points]);
 
   const onSpendPoint = (e) => {
     e.stopPropagation();
-    if (isEdit || !isChecked || hasAddedPoints) return;
+    // Không cho click cộng nếu đã từng mua trong edit, hoặc đã cộng rồi, hoặc chưa check
+    if (isPreviouslyPurchased || hasAddedPoints || !isChecked) return;
 
-    setUsePoint(prev => prev + points);
+    setUsePoint((prev) => prev + points);
     setHasAddedPoints(true);
   };
 
@@ -64,7 +65,8 @@ export const UsageControl = ({
       isCost
       points={points}
       size={20}
-      isActive={hasAddedPoints}
+      // Hiển thị active nếu: đã từng mua (edit) HOẶC vừa chọn mua trong phiên này
+      isActive={isPreviouslyPurchased || hasAddedPoints}
     />
   );
 };

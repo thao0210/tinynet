@@ -14,12 +14,20 @@ const ItemVote = ({item, isVoted, isTimeout, votes, setVotes, voteMode, disabled
             setVotes([...votes, {
                 id: item._id, name: item.title}]);
     }
+
+    const isVoteDisabled =
+        disabled ||
+        isVoted ||
+        (
+            item.maxVoters === 0 &&
+            item.voteReward > 0
+        );
     return (
         <>
         {
             isTimeout ?
             <div className={classes.timeoutVotes}>{item.noOfVotes} <span>votes</span></div> : 
-            <button className={classNames('btn', classes.voteBtn, {[classes.unVote]: votes.some(el => el.id === item._id)})} disabled={disabled || isVoted} onClick={voteItem}>
+            <button className={classNames('btn', classes.voteBtn, {[classes.unVote]: votes.some(el => el.id === item._id)})} disabled={isVoteDisabled} onClick={voteItem}>
                 {
                     votes.some(el => el.id === item._id) ? 
                     <BiSolidDownvote size={25} />:

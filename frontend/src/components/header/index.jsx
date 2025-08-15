@@ -72,9 +72,7 @@ const Head = ({isDark, ...rest}) => {
         
     return (
         <div className={classNames(classes.head, 'head')}>
-            <div className={classes.logo}>
-                <img src={'/logo.svg'} alt='Logo' height={35} />
-            </div>
+            <img className={classes.logo} src={'/logo.svg'} alt='Logo' height={35} />
             <SearchBar {...rest}/>
             <div className={classNames(classes.login, 'login')}>
                 {

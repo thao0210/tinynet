@@ -58,10 +58,8 @@ export default function AppModalContent({ showModal, nextModal, setShowModal }) 
   if (showModal === 'register') return <Register />;
   if (showModal === 'forgotPass') return <ForgotPass />;
   if (showModal.includes('newItem')) return <NewItem />;
-  // if (showModal.includes('viewItem')) return <ViewItem />;
   if (showModal.includes('itemPassword')) return <InputPassword />;
   if (showModal.includes('itemOtp')) return <InputOTP />;
-  // if (showModal.includes('profile')) return <Profile />;
   if (showModal === 'champions') return <Champions />;
   if (showModal === 'games') return <Games />;
   if (showModal === 'aboutUs') return <AboutUs />;

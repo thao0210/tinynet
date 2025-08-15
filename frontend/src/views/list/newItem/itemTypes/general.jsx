@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import classes from '../styles.module.scss';
 import SearchUsers from '@/components/searchUsers';
 import Dropdown from '@/components/dropdown';
-import { voiceLanguages } from '@/utils/lang';
 import { useStore } from '@/store/useStore';
 import { DRAWING_CATS, PRIVACY_DATA, WRITTEN_CATS, PROMOTION_DATA } from '@/sharedConstants/data';
 import {Slug, Vote} from './generalComponents';
@@ -12,9 +11,7 @@ import Tooltip from '@/components/Utilities';
 import { format } from "date-fns";
 
 const GeneralInfos = ({data, setData, type, curItemId, usePoint, setUsePoint, languages}) => {
-    const langs = voiceLanguages();
     const {user} = useStore();
-    // const langsNames = langs.map(item => item.name);
     const onPasswordChange = (e) => {
         setData({...data, password: e.target.value});
     }

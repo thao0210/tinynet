@@ -1,5 +1,5 @@
 .head {
-    padding: 5px 10px;
+    padding: 10px;
     display: flex;
     width: 100vw;
     justify-content: space-between;
@@ -10,16 +10,10 @@
     left: 0;
     z-index: 1001;
     gap: 10px;
-    .logo {
-      font-family: "Damion", Tahoma;
-      font-size: 30px;
-      margin-bottom: 10px;
-      img {
-        vertical-align: middle;
-      }
-      // color: white;
-    }
 
+    .logo {
+      cursor: pointer;
+    }
     .search {
       // width: 40%;
       // min-width: 200px;
@@ -90,11 +84,10 @@
     }
 
     .login {
-      // color: white;
-      // padding-right: 20px;
+      flex-grow: 1;
       > span {
-        padding: 0 10px;
         cursor: pointer;
+        white-space: nowrap;
       }
     }
 

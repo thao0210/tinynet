@@ -2,47 +2,74 @@ const {Item} = require('../../models/Item');
 const User = require('../../models/User');
 const {createNotification} = require('../notificationController');
 const {findItemByIdOrSlug} = require('../../utils/itemUtils');
+const PointsHistory = require('../../models/PointsHistory');
 
 const voteItem = async (req, res) => {
   const { itemId } = req.params; // vote _id
-  const { userId, votedItemId } = req.body; // có thể là 1 ID hoặc 1 mảng ID
+  const { userId, votedItemId } = req.body;
 
-  
   const voteParent = await findItemByIdOrSlug(itemId);
   if (!voteParent) return res.status(404).send("Vote item not found");
 
+  // Chặn khi hết hạn vote
   const now = new Date();
   if (now > new Date(voteParent.deadline)) {
     return res.status(403).send("Voting has ended");
+  }
+
+  // Chặn khi maxVoters đã hết
+  if (voteParent.maxVoters !== 0 && voteParent.maxVoters <= 0) {
+    return res.status(403).send("No more votes allowed");
   }
 
   const votedIds = Array.isArray(votedItemId) ? votedItemId : [votedItemId];
   let pointsEarned = 0;
 
   for (const id of votedIds) {
-    const itemView = voteParent.itemsView.find(i => i.item.toString() === id);
-    if (!itemView) continue; // Bỏ qua nếu không tìm thấy
+    const itemView = voteParent.itemsView.find(
+      (i) => i.item.toString() === id
+    );
+    if (!itemView) continue; // Không tìm thấy item để vote
 
-    if (itemView.votedUsers.some(u => u.toString() === userId)) {
-      continue; // Bỏ qua nếu đã vote
+    // Nếu user đã vote item này thì bỏ qua
+    if (itemView.votedUsers.some((u) => u.toString() === userId)) {
+      continue;
     }
 
+    // Thêm user vào danh sách voted
     itemView.votedUsers.push(userId);
     itemView.noOfVotes += 1;
+
+    // Tính điểm thưởng
     pointsEarned += voteParent.voteReward || 1;
+
+    // Giảm maxVoters nếu có giới hạn
+    if (voteParent.maxVoters > 0) {
+      voteParent.maxVoters -= 1;
+    }
   }
 
+  // Lưu lại thay đổi voteParent
   await voteParent.save();
 
+  // Nếu có điểm thưởng
   if (pointsEarned > 0) {
+    // Cộng cho người vote
     await User.findByIdAndUpdate(userId, {
-      $inc: { points: pointsEarned }
+      $inc: { points: pointsEarned },
     });
+    await PointsHistory.create({ userId: userId, points: pointsEarned, description: 'Voted on a post' });
+    // Trừ của tác giả
+    if (voteParent.author) {
+      await User.findByIdAndUpdate(voteParent.author, {
+        $inc: { points: -pointsEarned },
+      });
+      await PointsHistory.create({ userId: voteParent.author, points: -pointsEarned, description: 'Someone voted on your post (points deducted)' });
+    }
   }
 
-  res.send({ success: true, points: pointsEarned });
+  res.send({ success: true, points: pointsEarned, maxVoters: voteParent.maxVoters });
 };
-
 
 // GET /api/vote/result/:itemId
 const getVoteResult = async (req, res) => {

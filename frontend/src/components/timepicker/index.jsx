@@ -1,5 +1,5 @@
 // components/DateTimePicker.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/material_orange.css";
 import classes from "./styles.module.scss";
@@ -21,7 +21,7 @@ export default function DateTimePicker({
   field = null
 }) {
   const now = new Date();
-
+  const [internalValue, setInternalValue] = useState(value ? new Date(value) : '');
   const handleChange = (selectedDates) => {
     const newDate = selectedDates[0] || null;
     if (field && typeof onChange === "function") {
@@ -34,11 +34,15 @@ export default function DateTimePicker({
     }
   };
 
+  useEffect(() => {
+    setInternalValue(value ? new Date(value) : '');
+  }, [value]);
+
   return (
     <div className={classes.datePicker}>
       {label && <label>{label}</label>}
       <Flatpickr
-        value={value || ""}
+        value={internalValue}
         onChange={handleChange}
         options={{
           enableTime: includeTime,

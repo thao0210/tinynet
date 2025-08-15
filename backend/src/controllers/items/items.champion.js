@@ -275,7 +275,7 @@ const getTopPostsByComments = async (startDate, endDate) => {
   return results;
 };
   const nextReset = async (req, res) => {
-    const weekNumber = getWeekNumberSince("2025-04-01");
+    const weekNumber = getWeekNumberSince("2025-08-16");
     const nextReset = getNextResetTimeISO(); // ISO string
     res.json({week: weekNumber, nextReset});
   };

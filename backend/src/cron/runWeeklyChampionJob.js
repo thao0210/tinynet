@@ -23,7 +23,7 @@ const runWeeklyChampionJob = async () => {
   try {
     const start = getStartOfWeekInUTC7();
     const end = getEndOfWeekInUTC7();
-    const weekNumber = getWeekNumberSince("2025-04-01");
+    const weekNumber = getWeekNumberSince("2025-08-16");
 
     const topFields = [
         { key: "userPoints", type: "user", label: "Top Points Users" },

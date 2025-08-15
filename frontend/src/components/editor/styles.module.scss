@@ -9,6 +9,7 @@
         flex-wrap: wrap;
         align-items: center;
         background: #ddd;
+        color: black!important;
         padding: 5px;
         position: relative;
         border-radius: 0 0 50px 50px;
@@ -220,9 +221,10 @@
             padding: 2px 8px;
             cursor: pointer;
             text-transform: capitalize;
+            color: black!important;
             &.active {
                 background-color: #fe6e16;
-                color: white;
+                color: white!important;
             }
             &:first-child {
                 margin-left: 0;

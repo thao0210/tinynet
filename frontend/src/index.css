@@ -265,7 +265,12 @@ span.freeCredit::before {
   font-weight: bold;
   font-size: small;
   margin-top: 5px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
+
 
 .react-draggable-dragging, .react-draggable-dragging > div {
   cursor: move!important;

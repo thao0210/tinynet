@@ -185,15 +185,19 @@
     left: 5px;
     display: flex;
     align-items: center;
+    font-size: small;
+    color: #666;
+    max-width: calc(100vw - 55px);
     img {
       margin-right: 10px;
     }
-    font-size: small;
-    color: #666;
     > div {
       background-color: white;
       padding-left: 5px;
       padding-bottom: 5px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
       span {
         margin: 0 5px;
         cursor: pointer;
@@ -213,15 +217,10 @@
     background-color: #DDD;
     cursor: pointer;
     padding: 2px;
-    & + img {
-      margin-top: 5px;
-    }
   }
   .newItem {
-    margin-bottom: 10px;
     > div {
-      position: relative;
-      
+      position: relative;      
       > span {
         display: inline-block;
         width: 35px;
@@ -273,7 +272,10 @@
     box-shadow: -1px -1px 3px #00000020;
     padding: 10px;
     width: 52px;
-    height: 145px;
+    // height: 145px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 ul.typeslist {
     padding: 0;

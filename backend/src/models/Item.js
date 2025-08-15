@@ -166,6 +166,7 @@ const ItemSchema = new mongoose.Schema({
     timezone: String,
     deadline: String,
     voteReward: {type: Number, default: 0},
+    maxVoters: {type: Number, default: 0},
     winnerReward: {type: Number, default: 0},
     description: String
   });

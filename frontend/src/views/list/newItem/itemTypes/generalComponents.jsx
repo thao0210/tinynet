@@ -79,14 +79,37 @@ export const Vote = ({data, setData, user}) => {
     const [deadline, setDeadline] = useState(null);
     
     const handleWinnerRewardInput = (e) => {
-        setData({...data, voteReward: e.target.value});
-    }
+      let val = e.target.value;
+        // Cho phép xóa hết (val === "")
+      if (val === "") {
+        setData({ ...data, voteReward: '' });
+        return;
+      }
 
+      // Chỉ cho số nguyên dương
+      if (!/^\d+$/.test(val)) return;
+
+      // Ép về number để kiểm tra giới hạn
+      let numVal = parseInt(val, 10);
+
+      // Giới hạn max theo userPoints (ít nhất là 1 point / voter)
+      if (numVal > user.userPoints) {
+        numVal = user.userPoints;
+        val = String(user.userPoints);
+      }
+
+        setData({...data, voteReward: val});
+    }
+    const computedMaxVoters =
+    data.voteReward > 0
+      ? Math.floor(user.userPoints / data.voteReward)
+      : 0;
     useEffect(()=>{
         if (deadline) {
-            setData({...data, deadline: deadline, timezone: user.timezone});
+            setData({...data, deadline: deadline.toISOString(), timezone: user.timezone});
         }
     }, [deadline]);
+    
     return (
         <>
             <div>
@@ -107,20 +130,31 @@ export const Vote = ({data, setData, user}) => {
                     includeTime={true}
                     isFuture={true}
                 />
-                {/* {
-                    user && user.timezone &&
-                    <span>Your timezone: <strong>{user.timezone}</strong></span>
-                } */}
             </div>
             {
                 data && data.voteType !== 'custom' &&
                 <div>
                     <label>Reward for each voter <Tooltip content='Your stars will use for this' /></label>
                     <div className={classes.flex}>
-                        <input className={classNames(classes.text, classes.short)} type='number' min={0} value={data.voteReward || 0} onChange={handleWinnerRewardInput} />
+                        <input 
+                          className={classNames(classes.text, classes.short)} 
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          value={data.voteReward ?? ""}
+                          onChange={handleWinnerRewardInput} />
                         <img src={star} height={20} />
                     </div>
                 </div>
+            }
+            {
+              data && data.voteReward > 0 &&
+              <div className={classes.note}>
+                <p className="text-red">⚠️ You will lose {data.voteReward} <img src={star} height={20} /> for each voter.</p>
+                <p className="text-red">⚠️ Make sure you have enough <img src={star} height={20} /> in your account.</p>
+                <label>Max voters:</label>
+                <strong>{computedMaxVoters}</strong>
+              </div>
             }
         </>
     )

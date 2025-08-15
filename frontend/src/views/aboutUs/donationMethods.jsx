@@ -32,7 +32,7 @@ Any contribution helps us keep building and improving.
                 <ul>
                     {
                         data.map((item, index) => (
-                            <li>
+                            <li key={`donation-${index}`}>
                                 <a href={item.url}>{item.url}</a><br />
                                 <img src={item.qr} width={250} />
                             </li>
