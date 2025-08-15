@@ -50,7 +50,8 @@ const FileUploader = ({ type = 'image', onFileSelect, resetKey, disabled, hidePr
   const renderPreview = () => {
     if (!previewUrl) return <p className={styles.previewText}>
       Click or drop {type} file here to upload <br /> 
-      <small>(Max size: 10MB)<br />Large files or slow internet connection may cause upload issues.</small>
+      <small>(Max size: 10MB)</small><br />
+      <small>Large files or slow internet connection may cause upload issues.</small>
       </p>;
 
     if (type === 'image' && !hidePreview) {

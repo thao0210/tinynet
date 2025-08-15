@@ -396,7 +396,7 @@ export const LanguageModal = ({setShowLanguage, setNewLang, newLang, setData}) =
             <h2>Primary language for this post</h2>
             <p className='note'>This helps us show your post to the right audience.</p>
             <Dropdown
-                curValue={newLang || navigator.language || navigator.userLanguage || "en-US"}
+                curValue={newLang || navigator.language || "en-US"}
                 list={LANGUAGES}
                 onSelect={(selected) => setNewLang(selected.value)}
                 label={"Language"}

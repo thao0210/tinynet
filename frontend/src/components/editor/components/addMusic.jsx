@@ -61,6 +61,7 @@ const AddMusic = ({ setData }) => {
       dropdownContainerSelector='#editor'
       tippy={'Add Music'}
       stopPropagation
+      width={300}
     >
       <div id="story-music" className={classes.music}>
         <Checkbox 

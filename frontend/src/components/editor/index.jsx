@@ -250,7 +250,7 @@ const TiptapEditor = ({content, setData, data, onContentChange, onTextChange, us
         <Tippy content='Qr code'>
           <button onClick={() => setShowModal('qr')}><BsQrCode size={16} /></button>
         </Tippy>
-        <AddVoice editor={editor} />
+        <AddVoice editor={editor} data={data} />
         {
           !isContribution &&
           <>
