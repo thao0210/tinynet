@@ -117,6 +117,11 @@ const Brush = ({prs}) => {
             {
                 (showSubMenus === 'path' || isColoring) &&
                 <div className={classes.subMenus}>
+                    <span className={classes.close} onClick={(e) => {
+                        e.stopPropagation();
+                        setShowSubMenus(false)
+                        }}>&times;
+                    </span>
                     <div>
                         <label>Color</label>
                         <input type="color" value={props.stroke} onChange={(e) => updateSelectedPath("stroke", e.target.value)}/>
@@ -225,6 +230,11 @@ export const Text = ({prs}) => {
             {
                 showSubMenus === 'text' && selected &&
                 <div className={classes.subMenus} id="drawing-subMenus">
+                    <span className={classes.close} onClick={(e) => {
+                        e.stopPropagation();
+                        setShowSubMenus(false)
+                        }}>&times;
+                    </span>
                     <div>
                         <label>Text Color</label>
                         <input type="color" value={props.color} onChange={(e) => setProps({...props, color: e.target.value})}/>
@@ -348,6 +358,11 @@ export const Shapes = ({prs}) => {
             {
                 showSubMenus === 'shape' &&
                 <div className={classes.subMenus}>
+                    <span className={classes.close} onClick={(e) => {
+                        e.stopPropagation();
+                        setShowSubMenus(false)
+                        }}>&times;
+                    </span>
                     <div>
                         <label>Color</label>
                         <input type="color" value={props.color} onChange={(e) => setProps({...props, color: e.target.value})}/>
@@ -444,6 +459,11 @@ export const BgImage = ({showSubMenus, setShowSubMenus, canvas, fabric, saveBgDa
             {
             showSubMenus === 'image' &&
             <div className={classes.subMenus}>
+                <span className={classes.close} onClick={(e) => {
+                        e.stopPropagation();
+                        setShowSubMenus(false)
+                        }}>&times;
+                    </span>
                 {
                 !data.hasBg &&
                 <div className={classes.upload}>
@@ -566,6 +586,11 @@ export const Download = ({showSubMenus, setShowSubMenus, canvas}) => {
             {
                 showSubMenus === 'download' &&
                 <div className={classes.subMenus}>
+                    <span className={classes.close} onClick={(e) => {
+                        e.stopPropagation();
+                        setShowSubMenus(false)
+                        }}>&times;
+                    </span>
                     <div>
                     <ul>
                         <li onClick={() => downloadImage("png")}>PNG</li>

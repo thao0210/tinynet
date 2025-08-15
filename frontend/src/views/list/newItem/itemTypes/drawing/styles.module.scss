@@ -145,6 +145,20 @@ input.text {
               border-radius: 10px;
               padding: 10px;
               box-shadow: 1px 2px 5px #00000060;
+              .close {
+                position: absolute;
+                right: -5px;
+                top: -5px;
+                cursor: pointer;
+                font-size: 20px;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                background: #666;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
               > div {
                 margin-bottom: 10px;
                 text-align: center;
