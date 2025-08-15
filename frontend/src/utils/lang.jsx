@@ -8,10 +8,7 @@ export const capitalFirstLetter = (string) => {
 export const voiceLanguages = (callback) => {
   const loadVoices = () => {
     const voices = window.speechSynthesis.getVoices();
-    if (!voices.length) {
-      callback([]);
-      return;
-    }
+    if (!voices.length) return; // đợi load xong
     const languageNames = new Intl.DisplayNames(["en"], { type: "language" });
     const languages = [...new Set(voices.map(v => v.lang))];
     const langs = languages.map(v => ({
@@ -26,14 +23,20 @@ export const voiceLanguages = (callback) => {
     return;
   }
 
-  // Khi danh sách voices đã có
-  if (window.speechSynthesis.getVoices().length) {
-    loadVoices();
-  }
-
-  // Khi voices load trễ
+  // Lắng nghe sự kiện load voices
   window.speechSynthesis.onvoiceschanged = loadVoices;
+
+  // Gọi thử một lần, phòng khi voices đã sẵn sàng
+  loadVoices();
+
+  // Timeout fallback nếu onvoiceschanged không chạy
+  setTimeout(() => {
+    if (!window.speechSynthesis.getVoices().length) {
+      callback([]);
+    }
+  }, 1500);
 };
+
 
 export const allVoices = (selectedLang) => {
   const synth = window.speechSynthesis;

@@ -112,20 +112,24 @@ const AddVoice = ({ editor, data }) => {
   useEffect(() => {
     const SpeechRecognition = getSpeechRecognition();
     if (!SpeechRecognition) {
-      setSupported(false);
-      return;
-    }
-    setLang(navigator.language || navigator.userLanguage || "en-US");
-
-    voiceLanguages((loadedLangs) => {
-      if (!loadedLangs.length) {
         setSupported(false);
         setLangs([{ label: "Not supported (English)", value: "en-US" }]);
-      } else {
+        return;
+    }
+
+    setLang(navigator.language || "en-US");
+
+    voiceLanguages((loadedLangs) => {
+        if (!loadedLangs.length) {
+        // Chỉ set unsupported khi đã timeout mà vẫn không load được
+        setSupported(false);
+        setLangs([{ label: "Not supported (English)", value: "en-US" }]);
+        } else {
+        setSupported(true);
         setLangs(loadedLangs);
-      }
+        }
     });
-  }, []);
+    }, []);
 
   return (
     <Dropdown
@@ -140,6 +144,7 @@ const AddVoice = ({ editor, data }) => {
       showDropdown={showVoiceOptions}
       setShowDropdown={setShowVoiceOptions}
       dropdownContainerSelector="#editor"
+      width="230px"
     >
       <div className={classes.voice2Text} id="voice2Text">
         <label>Language</label>
