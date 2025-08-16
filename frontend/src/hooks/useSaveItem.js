@@ -67,15 +67,15 @@ export const useSaveItem = ({
         }
       }
 
-      // === 🎨 Drawing ===
-      if (data.type === 'drawing') {
+      // === 🎨 Draco ===
+      if (data.type === 'draco') {
         if (data.imageUrl && curItemId) {
           imageUrl = data.imageUrl;
         }
         if (data.base64) {
           const timestamp = Date.now();
           const file = convertToFile(data.base64, `${data.type}_${timestamp}.jpg`);
-          const { url } = await uploadFileToR2(file, `drawings/${data.type}_${timestamp}.jpg`);
+          const { url } = await uploadFileToR2(file, `dracos/${data.type}_${timestamp}.jpg`);
           if (url) imageUrl = url;
         }
       }

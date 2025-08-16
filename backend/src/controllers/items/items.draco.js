@@ -9,16 +9,16 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Kiểm tra và tạo thư mục lưu images
-const uploadDrawingDir = path.join(__dirname, "../../uploads/drawings/");
-if (!fs.existsSync(uploadDrawingDir)) {
-  fs.mkdirSync(uploadDrawingDir, { recursive: true });
+const uploadDracoDir = path.join(__dirname, "../../uploads/dracos/");
+if (!fs.existsSync(uploadDracoDir)) {
+  fs.mkdirSync(uploadDracoDir, { recursive: true });
 }
 
 // Xử lý upload và resize ảnh
-const uploadDrawing = async (req, res) => {
+const uploadDraco = async (req, res) => {
   try {
-    const type = req.query.type || "drawing";
-    if (type !== 'drawing') {
+    const type = req.query.type || "draco";
+    if (type !== 'draco') {
       return res.status(400).json({ error: "Invalid type" });
     }
 
@@ -29,7 +29,7 @@ const uploadDrawing = async (req, res) => {
 
     // Lưu file mới
     const fileName = `${type}-${Date.now()}.webp`;
-    const filePath = path.join(uploadDrawingDir, fileName);
+    const filePath = path.join(uploadDracoDir, fileName);
 
     // Đọc kích thước ảnh gốc
     const image = sharp(req.file.buffer);
@@ -56,4 +56,4 @@ const uploadDrawing = async (req, res) => {
   }
 };
 
-module.exports = {upload, uploadDrawing};
+module.exports = {upload, uploadDraco};

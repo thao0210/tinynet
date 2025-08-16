@@ -16,11 +16,11 @@ const prepareItemData = (type, body) => {
           translations: body.translations,
           allowContribution: body.allowContribution
         };
-      case "drawing":
+      case "draco":
         return {
           imageUrl: body.imageUrl,
           savedPaths: body.savedPaths,
-          drawingCategory: body.drawingCategory,
+          dracoCategory: body.dracoCategory,
           canEdit: body.canEdit,
           hasBg: body.hasBg
         };

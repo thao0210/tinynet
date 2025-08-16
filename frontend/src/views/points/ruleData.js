@@ -16,11 +16,11 @@ const data = [
         value: 200
     },
     {
-        name: 'New Story with long text or New Drawing',
+        name: 'New Story with long text or New Drawing/Coloring',
         value: 50
     },
     {
-        name: 'Delete a story with long text or delete a drawing',
+        name: 'Delete a story with long text or delete a drawing/coloring',
         value: -50
     },
     {

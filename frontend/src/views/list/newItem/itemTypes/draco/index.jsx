@@ -61,13 +61,13 @@ async function trimCanvas(canvas) {
 }
 
 
-const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage, setColoringImage, curItemId, saveBgData, setSaveBgData}) => {
+const Draco = ({data, setData, onNext, curItemId, saveBgData, setSaveBgData}) => {
   const canvasRef = useRef(null);
   const [canvas, setCanvas] = useState(null);
-  const [isPanning, setIsPanning] = useState(false);
-  // const [hasBgImage, setHasBgImage] = useState(false);
   const [gridObject, setGridObject] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [coloringImage, setColoringImage] = useState(null);
+  const [showSubModal, setShowSubModal] = useState(() => (curItemId || data.savedPaths || data.coloringImage) ? null : 'draco');
 
   useEffect(() => {
     if (!canvasRef.current || canvas) return;
@@ -106,7 +106,6 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
   
       newCanvas.on("mouse:down", function (opt) {
         if (opt.e.code === "Space") {
-          setIsPanning(true);
           newCanvas.isDragging = true;
           newCanvas.selection = false;
           newCanvas.lastPosX = opt.e.clientX;
@@ -151,7 +150,6 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
         newCanvas.setViewportTransform(newCanvas.viewportTransform);
         newCanvas.isDragging = false;
         newCanvas.selection = true;
-        setIsPanning(false);
       });
 
       newCanvas.on("mouse:out", () => {
@@ -188,51 +186,61 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
   useEffect(() => {
     if (!canvas) return;
     setLoading(true);
-  
-    if (data?.savedPaths) {
-      const saved = data.savedPaths;
+    
+    const restorePaths = (done) => {
+      if (data?.savedPaths) {
+        
+        const saved = data.savedPaths;
 
-      const loadCanvasFromJSON = (json) => {
-        requestAnimationFrame(() => {
-          canvas.loadFromJSON(json, () => {
-            canvas.viewportTransform[4] += 0.1;
-            canvas.setViewportTransform(canvas.viewportTransform);
-            canvas.calcOffset();
+        const loadCanvasFromJSON = (json) => {
+          requestAnimationFrame(() => {
+            canvas.loadFromJSON(json, () => {
+              canvas.viewportTransform[4] += 0.1;
+              canvas.setViewportTransform(canvas.viewportTransform);
+              canvas.calcOffset();
 
-            const dummy = new fabric.Rect({
-              left: -9999, top: -9999, width: 10, height: 10,
-              fill: 'transparent', selectable: false
-            });
-            canvas.add(dummy);
-            canvas.renderAll();
-
-            setTimeout(() => {
-              canvas.remove(dummy);
+              const dummy = new fabric.Rect({
+                left: -9999, top: -9999, width: 10, height: 10,
+                fill: 'transparent', selectable: false
+              });
+              canvas.add(dummy);
               canvas.renderAll();
-              canvas.requestRenderAll();
+
+              setTimeout(() => {
+                canvas.remove(dummy);
+                canvas.renderAll();
+                canvas.requestRenderAll();
+                setLoading(false);
+              }, 50);
+            });
+          });
+        };
+
+        if (typeof saved === 'string') {
+          // Là URL → fetch
+          fetch(saved)
+            .then((res) => res.json())
+            .then((json) => loadCanvasFromJSON(json))
+            .catch((err) => {
+              console.error('Error loading canvas JSON from URL:', err);
               setLoading(false);
-            }, 50);
-          });
-        });
-      };
+            });
+        } else {
+          // Là JSON object → dùng trực tiếp
+          loadCanvasFromJSON(saved);
+        }
 
-      if (typeof saved === 'string') {
-        // Là URL → fetch
-        fetch(saved)
-          .then((res) => res.json())
-          .then((json) => loadCanvasFromJSON(json))
-          .catch((err) => {
-            console.error('Error loading canvas JSON from URL:', err);
-            setLoading(false);
-          });
       } else {
-        // Là JSON object → dùng trực tiếp
-        loadCanvasFromJSON(saved);
+          done && done();
       }
+    };
 
-    } else {
+    restorePaths(() => {
+      if (data?.coloringImage) {
+        choosingImage(data.coloringImage);
+      }
       setLoading(false);
-    }
+    });
 
   }, [canvas]);
 
@@ -254,14 +262,12 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
     if (!canvas) return;
     
     if (save) {
-      if (data && data.hasBg && !saveBgData) {
+      if (data && data.hasBg && !saveBgData && !data.coloringImage) {
         canvas.set("backgroundImage", null);
       }
       gridObject && canvas.remove(gridObject);
       // const json = JSON.stringify(canvas.toJSON());
       const json = canvas.toJSON();
-      // const scaleFactor = 0.7; // Scale nhỏ xuống 70%
-      // canvas.setZoom(scaleFactor);
 
       canvas.renderAll()
       // 🔥 Lấy thẻ <canvas> thực tế từ Fabric.js
@@ -271,22 +277,24 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
         console.error("onSave: Failed to get raw HTMLCanvasElement from Fabric.js");
         return;
       }
+      let dataURL;
+      if (data.coloringImage) {
+        dataURL = rawCanvas.toDataURL("image/png", 0.85);
+      } else {
+        const trimmedCanvas = await trimCanvas(rawCanvas);
 
-      // Gọi hàm trimCanvas với thẻ <canvas> thật
-      const trimmedCanvas = await trimCanvas(rawCanvas);
+        if (!trimmedCanvas) {
+          console.error("Trimming failed or empty canvas");
+          return;
+        }
 
-      if (!trimmedCanvas) {
-        console.error("Trimming failed or empty canvas");
-        return;
+        if (!(trimmedCanvas instanceof HTMLCanvasElement)) {
+          console.error("onSave: Trimmed canvas is not a valid HTMLCanvasElement");
+          return;
+        }
+        dataURL = trimmedCanvas.toDataURL("image/png", 0.85);
       }
-
-      if (!(trimmedCanvas instanceof HTMLCanvasElement)) {
-        console.error("onSave: Trimmed canvas is not a valid HTMLCanvasElement");
-        return;
-      }
-
-      const dataURL = trimmedCanvas.toDataURL("image/png", 0.85);
-
+      
        // 🔥 Kiểm tra trimmedCanvas có phải HTMLCanvasElement không
   
       setData({...data, savedPaths: json, base64: dataURL});
@@ -294,7 +302,8 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
   }
 
   const choosingImage = (image) => {
-    setColoringImage(image); // ví dụ: "/coloring/coloring1.avif"
+    setColoringImage(image);
+    setData({...data, coloringImage: image});
 
     fabric.Image.fromURL(image).then((img) => {
         const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
@@ -310,7 +319,7 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
       canvas.renderAll.bind(canvas);
       canvas.requestRenderAll();
       // canvas.renderAll();
-    });
+    }, { crossOrigin: "anonymous" });
   }
 
   return (
@@ -328,7 +337,7 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
                   // setHasBgImage={setHasBgImage}
                   gridObject={gridObject}
                   setGridObject={setGridObject}
-                  isColoring={isColoring}
+                  isColoring={coloringImage}
                   saveBgData={saveBgData}
                   setSaveBgData={setSaveBgData}
                 />
@@ -341,8 +350,8 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
             <div id="brush-preview"></div>
         </div>
         {
-          isColoring && !coloringImage && !curItemId &&
-          <Modal width={800} setShowModal={setShowModal}>
+          !coloringImage && !curItemId && showSubModal === 'coloring' &&
+          <Modal width={800} setShowModal={setShowSubModal}>
             <div className={classes.coloringList}>
               <h2>Select an image to color</h2>
               <div>
@@ -359,9 +368,27 @@ const Drawing = ({data, setData, isColoring, onNext, setShowModal, coloringImage
             </div>
           </Modal>
         }
+        {
+          showSubModal==='draco' &&
+          <Modal width={400} setShowModal={setShowSubModal}>
+            <div className={classes.coloringList}>
+              <h2>Select your choice</h2>
+              <div className={classes.selectDraco}>
+                <div onClick={() => setShowSubModal(null)}>
+                  <img src='/image1.jpg' alt='drawing' height={50} /> <br/>
+                  Draw a new picture
+                </div>
+                <div onClick={() => setShowSubModal('coloring')}>
+                   <img src='/image2.jpg' alt='drawing' height={50} /><br/>
+                  Color a picture
+                </div>
+              </div>
+            </div>
+          </Modal>
+        }
       </div>
       </div>
   );
 }
 
-export default Drawing;
+export default Draco;

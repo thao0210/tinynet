@@ -1,4 +1,4 @@
-const {Item, Collection, Story, Drawing, Card, Share, Vote} = require('../../models/Item');
+const {Item, Collection, Story, Draco, Card, Share, Vote} = require('../../models/Item');
 const User = require('../../models/User');
 const Comment = require('../../models/Comment');
 const {updateUserRank} = require('../../utils/updateUserRank');
@@ -24,8 +24,8 @@ const postNewItem = async (req, res) => {
         case "story":
           Model = Story;
           break;
-        case "drawing":
-          Model = Drawing;
+        case "draco":
+          Model = Draco;
           break;
         case "card":
           Model = Card;
@@ -73,7 +73,7 @@ const postNewItem = async (req, res) => {
       
       // Cộng điểm cho chủ bài viết
       let points = 20;
-        if ((type === 'story' && req.body.text.length > 150) || type === 'drawing'){
+        if ((type === 'story' && req.body.text.length > 150) || type === 'draco' || type === 'card') {
           points = 50;
         }
         await updateUserPoints(userId, points);
@@ -254,19 +254,31 @@ const postNewItem = async (req, res) => {
     // Convert to lean-like structure
     const sanitizedItems = items.map(item => {
       if (item.password || item.sendOtp) {
-        return {
-          ...item,
+        const sanitized = {
+        ...item,
+        content: undefined,
+        text: undefined,
+        textNoAccent: undefined,
+        password: undefined,
+        imageUrl: undefined,
+        thumbnailImage: undefined,
+        items: undefined,
+        preview: undefined,
+        url: undefined,
+        hasPass: !!item.password
+      };
+
+      // nếu type là story và có translations
+      if (item.type === "story" && Array.isArray(item.translations)) {
+        sanitized.translations = item.translations.map(t => ({
+          ...t,
           content: undefined,
           text: undefined,
           textNoAccent: undefined,
-          password: undefined,
-          imageUrl: undefined,
-          thumbnailImage: undefined,
-          items: undefined,
-          preview: undefined,
-          url: undefined,
-          hasPass: !!item.password
-        };
+        }));
+      }
+
+      return sanitized;
       }
 
       if (item.type === 'card') {
@@ -397,8 +409,8 @@ const editItem = async (req, res) => {
       }
     }
 
-    // Với drawingg: xoá imageUrl hoặc savedPaths cũ nếu khác
-    if ( oldItem.type === 'drawing') {
+    // Với draco: xoá imageUrl hoặc savedPaths cũ nếu khác
+    if ( oldItem.type === 'dracor') {
       if (oldItem.imageUrl && updatedData.imageUrl && oldItem.imageUrl !== updatedData.imageUrl) {
         await deleteFromR2ByUrl(oldItem.imageUrl);
       }
@@ -484,8 +496,8 @@ const editItem = async (req, res) => {
         }
       }
 
-      // Xoá file trên R2 nếu là drawing
-      if ((item.type === 'drawing') && item.imageUrl) {
+      // Xoá file trên R2 nếu là draco
+      if ((item.type === 'draco') && item.imageUrl) {
         const key = item.imageUrl.replace(`${process.env.R2_UPLOAD_URL}/`, '');
         try {
           await deleteFromR2(key);
@@ -564,7 +576,7 @@ const editItem = async (req, res) => {
       await User.findByIdAndUpdate(item.author, { $inc: { noOfPosts: -1 } });
       // Trừ điểm cho chủ bài viết
       let points = -20;
-      if ((item.type === 'story' && item.text.length > 150) || item.type === 'drawing'){
+      if ((item.type === 'story' && item.text.length > 150) || item.type === 'draco'){
         points = -50;
       }
       await updateUserPoints(item.author, points);

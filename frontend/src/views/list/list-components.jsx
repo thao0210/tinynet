@@ -24,7 +24,7 @@ import {ITEM_TYPE, SORT_BY} from '@/sharedConstants/data';
 
 export const ItemType = ({item}) => {
     return (
-        <div className={(item.hasPass || item.sendOtp) ? classNames(classes.locked, 'locked') : (['drawing', 'card'].includes(item.type)) ? classes.image : ''}>
+        <div className={(item.hasPass || item.sendOtp) ? classNames(classes.locked, 'locked') : (['draco', 'card'].includes(item.type)) ? classes.image : ''}>
             {item.type === 'story' && item.text && item.text.length > 100 ? 
                 getActiveContent(navigator.language, item)?.text.substring(0, 100) + '...' : getActiveContent(navigator.language, item)?.text}
             {item.type === 'collection' && item.items && item.items.length > 0 &&
@@ -42,7 +42,7 @@ export const ItemType = ({item}) => {
                     }
                 </div>
             }
-            { item.type === 'drawing' && item.imageUrl &&
+            { item.type === 'draco' && item.imageUrl &&
                 <img src={item.imageUrl} alt={item.type} />
             }
             {

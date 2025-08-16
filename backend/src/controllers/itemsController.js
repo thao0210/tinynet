@@ -3,7 +3,7 @@ const itemSearch = require('./items/items.search');
 const itemAuth = require('./items/items.auth');
 const itemStats = require('./items/items.stats');
 const itemChampions = require('./items/items.champion');
-const itemDrawing = require('./items/items.drawing');
+const itemDraco = require('./items/items.draco');
 const itemVote = require('./items/items.vote');
 
 const axios = require("axios");
@@ -32,7 +32,7 @@ module.exports = {
   ...itemStats, 
   ...itemAuth,
   ...itemChampions,
-  ...itemDrawing,
+  ...itemDraco,
   ...itemVote,
   getUrlMetadata
 };

@@ -61,8 +61,8 @@ export const getSaveError = (type, data, curItemId) => {
     return 'A valid URL preview is required.';
   }
 
-  if (type === 'drawing' && (!curItemId && !data.base64)) {
-    return 'A drawing image is required.';
+  if (type === 'draco' && (!curItemId && !data.base64)) {
+    return 'A drawing/coloring image is required.';
   }
 
   if (
@@ -96,9 +96,9 @@ const nextValidationRules = {
     !data.url || !data.url.includes('http')
       ? 'A valid URL is required.'
       : null,
-  drawing: (data) =>
+  draco: (data) =>
     !data.base64 || data.base64.trim().length === 0
-      ? 'Drawing image is required.'
+      ? 'Drawing/coloring image is required.'
       : null,
   vote: (data) =>
     !data.items || data.items.length < 2

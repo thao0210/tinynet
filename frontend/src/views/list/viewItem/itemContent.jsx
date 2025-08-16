@@ -148,9 +148,9 @@ const ItemContent = ({item, activeLang, setShowComments, showComments, navigate,
                                 )
                             }
                             {
-                                item.type === 'drawing' && item.imageUrl &&
+                                item.type === 'draco' && item.imageUrl &&
                                 <div>
-                                    <img src={item.imageUrl} alt="drawing" style={{maxWidth: 800}} />
+                                    <img src={item.imageUrl} alt="draco" style={{maxWidth: 800}} />
                                 </div>
                             }
                         </div>

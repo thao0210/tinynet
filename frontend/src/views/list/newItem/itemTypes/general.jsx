@@ -25,7 +25,7 @@ const GeneralInfos = ({data, setData, type, curItemId, usePoint, setUsePoint, la
     }
 
     const onDrawingCatSelect = (value) => {
-        setData({...data, drawingCategory: value});
+        setData({...data, dracoCategory: value});
     }
 
     useEffect(()=>{
@@ -84,11 +84,11 @@ const GeneralInfos = ({data, setData, type, curItemId, usePoint, setUsePoint, la
             </div>
         }
         {
-            type === 'drawing' &&
+            type === 'draco' &&
             <div>
                 <label>Art Styles</label>
                 <Dropdown
-                    curValue={data.drawingCategory || 'Portrait'}
+                    curValue={data.dracoCategory || 'Portrait'}
                     list={DRAWING_CATS}
                     onSelect={onDrawingCatSelect}
                     label={'Art Styles'}
@@ -117,7 +117,7 @@ const GeneralInfos = ({data, setData, type, curItemId, usePoint, setUsePoint, la
             />
         </div>
         {
-            type === 'drawing' && !curItemId &&
+            type === 'draco' && !curItemId &&
             <div>
                 <Checkbox
                     label={`Save ${type} paths to edit`} 

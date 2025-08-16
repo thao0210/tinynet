@@ -30,7 +30,7 @@ const urls = {
     SEARCH_ITEMS: `${host}/search-items`,
     SEARCH_USERS: `${host}/search-users`,
     SEARCH_MY_ITEMS: `${host}/search-my-items`,
-    UPLOAD_DRAWING: `${host}/upload-drawing`,
+    UPLOAD_DRAWING: `${host}/upload-draco`,
     ITEM_SEND_OTP: `${host}/send-otp`,
     VOTE_ITEM: `${host}/vote`,
     HIDE_ITEM: `${host}/items/hide`,

@@ -72,7 +72,7 @@ const TiptapEditor = ({content, setData, data, onContentChange, onTextChange, us
   const [loadListTheme, setLoadListTheme] = useState(false);
   const [curValues, setCurValues] = useState({
     fontName: 'Roboto',
-    fontSize: '16px'
+    fontSize: '14px'
   })
 
   const sideRef = useRef();

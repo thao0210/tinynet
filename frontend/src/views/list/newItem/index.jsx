@@ -7,7 +7,7 @@ import api from '@/services/api';
 import GeneralInfos from './itemTypes/general';
 import ShareUrl from './itemTypes/shareUrl';
 import Collection from './itemTypes/collection';
-import Drawing from './itemTypes/drawing/index';
+import Draco from './itemTypes/draco/index';
 import Vote from './itemTypes/vote';
 import {StarPoints} from '@/components/Utilities';
 import { LoadingDots } from '@/components/loader';
@@ -23,7 +23,6 @@ const NewItem = () => {
     const {showModal, curItemId, setShowModal, setLoadList, setCurItemId, user, setLoadViewContent} = useStore();
     const [isNext, setIsNext] = useState(false);
     const [metaData, setMetaData] = useState(null);
-    const [coloringImage, setColoringImage] = useState('');
     const [saveBgData, setSaveBgData] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [usePoint, setUsePoint] = useState(null);
@@ -136,7 +135,6 @@ const NewItem = () => {
         setIsNext(true);
     }
 
-    console.log('data', data);
     return (
         <div className={classes.new}>
             {
@@ -163,8 +161,8 @@ const NewItem = () => {
                         <Collection data={data} setData={setData} curItemId={curItemId} />
                     }
                     {
-                        type === 'drawing' &&
-                        <Drawing data={data} setData={setData} isColoring={type === 'coloring'} onNext={onNext} setShowModal={setShowModal} coloringImage={coloringImage} setColoringImage={setColoringImage} curItemId={curItemId} saveBgData={saveBgData} setSaveBgData={setSaveBgData} />
+                        type === 'draco' &&
+                        <Draco data={data} setData={setData} onNext={onNext} curItemId={curItemId} saveBgData={saveBgData} setSaveBgData={setSaveBgData} />
                     }
                     {
                         type === 'vote' &&

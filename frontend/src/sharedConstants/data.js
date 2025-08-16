@@ -78,7 +78,7 @@ export const TOP_ENTRIES = [
   { id: 'noOfComments', label: 'Top Commented Users', unit: 'comments', type: 'user' }
 ];
 
-export const ITEM_TYPE = ['shareUrl', 'drawing', 'card', 'story', 'collection', 'vote'];
+export const ITEM_TYPE = ['shareUrl', 'draco', 'card', 'story', 'collection', 'vote'];
 export const SORT_BY = [
     {
         label: 'Latest',

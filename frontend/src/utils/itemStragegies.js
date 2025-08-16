@@ -24,7 +24,7 @@ export const itemStrategies = async (type, data, user, imageUrl, updatedContent,
 
     const convertToR2Url = async (json, type) => {
         const file = convertToFile(json, `savedPath_${Date.now()}.json`);
-        const {url} = await uploadFileToR2(file, `drawings/savedPath_${Date.now()}.json`);
+        const {url} = await uploadFileToR2(file, `dracos/savedPath_${Date.now()}.json`);
         if (url) return url;
         return '';
     }
@@ -45,14 +45,14 @@ export const itemStrategies = async (type, data, user, imageUrl, updatedContent,
                 backgroundMusic: data?.backgroundMusic || '',
                 allowContribution: data?.allowContribution || false
             }
-        case "drawing":
-            const drawingPathsUrl = (data?.canEdit && data?.savedPaths)
+        case "draco":
+            const dracoPathsUrl = (data?.canEdit && data?.savedPaths)
               ? await convertToR2Url(data.savedPaths, type)
               : '';
             return {
                 ...general,
-                savedPaths: drawingPathsUrl || null, // JSON của Fabric.js
-                drawingCategory: data?.drawingCategory || 'Portrait',
+                savedPaths: dracoPathsUrl || null, // JSON của Fabric.js
+                dracoCategory: data?.dracoCategory || 'Portrait',
                 imageUrl: imageUrl,
                 canEdit: data?.canEdit,
                 hasBg: data?.hasBg

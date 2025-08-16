@@ -93,8 +93,8 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
                                         }
                                     </ul>
                                 }
-                                {item.type === 'drawing' && item.imageUrl &&
-                                    <img src={item.imageUrl} alt='drawing' />
+                                {item.type === 'draco' && item.imageUrl &&
+                                    <img src={item.imageUrl} alt='draco' />
                                 }
                                 {
                                     item.type === 'shareUrl' && item.preview && item.url &&

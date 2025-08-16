@@ -12,7 +12,7 @@ const ItemSchema = new mongoose.Schema({
         'collection',
         'story',
         'card',
-        'drawing',
+        'draco',
         'coloring',
         'music',
         'shareUrl',
@@ -99,15 +99,15 @@ const ItemSchema = new mongoose.Schema({
   });
   const Story = Item.discriminator("story", StorySchema);
 
-  // Drawing Schema
-  const DrawingSchema = new mongoose.Schema({
+  // Draco Schema
+  const DraCoSchema = new mongoose.Schema({
     imageUrl: { type: String, required: true },
-    drawingCategory: String,
+    dracoCategory: String,
     savedPaths: { type: String },
     canEdit: {type: Boolean, default: false},
     hasBg: {type: Boolean, default: false}
   });
-  const Drawing = Item.discriminator("drawing", DrawingSchema);
+  const Draco = Item.discriminator("draco", DraCoSchema);
 
   // Card Schema
   const CardSchema = new mongoose.Schema({
@@ -173,4 +173,4 @@ const ItemSchema = new mongoose.Schema({
   const Vote = Item.discriminator("vote", VoteSchema);
 
   // Export models
-  module.exports = { Item, Story, Drawing, Share, Collection, Vote, Card };
+  module.exports = { Item, Story, Draco, Share, Collection, Vote, Card };

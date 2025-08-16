@@ -5,7 +5,7 @@ const uploadR2 = multer();
 const checkItemAccess = require('../middleware/checkItemMiddleware');
 const authMiddleware = require('../middleware/authMiddleware');
 const optionalAuthMiddleware = require('../middleware/optionalAuthMiddleware');
-const { postNewItem, getItemsList, getItem, editItem, toggleLikeItem, deleteItem, itemLikedBy, itemCommentsBy, increaseViews, checkPassword, sendOtp, verifyOtp, searchItems, searchAC, getTopUsers, getTopPosts, getTopCommentsByLikesHandle, nextReset, getMyUnseenWeeklyAward, markAwardAsSeen, getUrlMetadata, upload, uploadDrawing, voteItem, getVoteResult, checkSlug } = require('../controllers/itemsController.js');
+const { postNewItem, getItemsList, getItem, editItem, toggleLikeItem, deleteItem, itemLikedBy, itemCommentsBy, increaseViews, checkPassword, sendOtp, verifyOtp, searchItems, searchAC, getTopUsers, getTopPosts, getTopCommentsByLikesHandle, nextReset, getMyUnseenWeeklyAward, markAwardAsSeen, getUrlMetadata, upload, uploadDraco, voteItem, getVoteResult, checkSlug } = require('../controllers/itemsController.js');
 const {generatePdf, getSignedUrl, deleteS3File, r2Upload, r2Delete} = require('../controllers/commonController');
 
 
@@ -37,7 +37,7 @@ router.get('/champions/my-results', authMiddleware, getMyUnseenWeeklyAward);
 router.post('/champions/mark-award-seen', authMiddleware, markAwardAsSeen);
 router.get('/top-comments', getTopCommentsByLikesHandle);
 router.post('/get-metadata', getUrlMetadata);
-router.post("/upload-drawing", authMiddleware, upload.single("file"), uploadDrawing);
+router.post("/upload-draco", authMiddleware, upload.single("file"), uploadDraco);
 
 router.post('/vote/:itemId', voteItem);
 router.get('/vote/:itemId/results', getVoteResult);
