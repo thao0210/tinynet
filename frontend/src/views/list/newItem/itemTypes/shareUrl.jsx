@@ -33,7 +33,9 @@ const ShareUrl = ({data, setData, metaData, setMetaData}) => {
                 <input className={classes.text} type='text' value={data.url} onChange={handleUrlInput} />
                 {metaData && (
                     <div className="metadata-preview">
-                    <img src={metaData.image} alt="Preview" />
+                      {
+                        metaData.image && <img src={metaData.image} alt="Preview" />
+                      }
                     <h3>{metaData.title}</h3>
                     <p>{metaData.description}</p>
                     </div>

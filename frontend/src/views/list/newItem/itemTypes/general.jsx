@@ -131,7 +131,7 @@ const GeneralInfos = ({data, setData, type, curItemId, usePoint, setUsePoint, la
                 />
             </div>
         }
-        {
+        {/* {
             type === 'collection' &&
             <div>
             <Checkbox
@@ -142,7 +142,7 @@ const GeneralInfos = ({data, setData, type, curItemId, usePoint, setUsePoint, la
                 setIsChecked={setData} 
             />
             </div>
-        }
+        } */}
         <div>
             <Checkbox
                 label={'Allow Comments'} 

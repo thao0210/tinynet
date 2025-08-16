@@ -13,9 +13,10 @@ import {StarPoints} from '@/components/Utilities';
 import { LoadingDots } from '@/components/loader';
 import { LanguageModal, Title } from './itemTypes/generalComponents';
 import Card from './itemTypes/card';
-import { isSaveDisabled } from '@/utils/validators';
 import { useSaveItem } from '@/hooks/useSaveItem';
 import DOMPurify from 'dompurify';
+import Tippy from '@tippyjs/react';
+import { getNextError, getSaveError, isNextDisabled, isSaveDisabled } from '../../../utils/validators';
 
 const NewItem = () => {
     const [type, setType] = useState(null);
@@ -135,12 +136,13 @@ const NewItem = () => {
         setIsNext(true);
     }
 
+    console.log('data', data);
     return (
         <div className={classes.new}>
             {
                 !isNext &&
                 <div className={classes.form}>
-                    {
+                    {   
                         type === 'story' && 
                         <Post type={type} data={data} setData={setData} languages={languages} 
                         onContentChange={handleEditorContentChange}
@@ -177,28 +179,50 @@ const NewItem = () => {
                     <GeneralInfos data={data} setData={setData} type={type} curItemId={curItemId} usePoint={usePoint} setUsePoint={setUsePoint} languages={languages} />
                 </>
             }
-            
             <div className={classes.buttons}>
-                {
-                    !isNext && <button className="btn" onClick={onNext}>Next</button>
-                }
-                {
-                    isNext && <>
-                        <button className='btn sub' onClick={() => setIsNext(false)}>Back</button>
-                        <div className='btnRelative'>
-                            <button onClick={saveItem} disabled={isSaveDisabled(type, data, curItemId) || isSaving} className={isSaving ? 'btn btn-loading' : 'btn'}>
-                                {isSaving ? 'Saving' : 'Save'}
-                                {isSaving && <LoadingDots />}
+                {!isNext && (
+                    <Tippy
+                        content={getNextError(type, data) || ''}
+                        placement="top"
+                        disabled={!isNextDisabled(type, data)}
+                    >
+                    <strong>
+                        <button className="btn" disabled={isNextDisabled(type, data)} onClick={onNext}>
+                        Next
+                        </button>
+                    </strong>
+                    </Tippy>
+                )}
+
+                {isNext && (
+                    <>
+                    <button className="btn sub" onClick={() => setIsNext(false)}>
+                        Back
+                    </button>
+                    <div className="btnRelative">
+                        <Tippy
+                            content={getSaveError(type, data, curItemId) || ''}
+                            placement="top"
+                            disabled={!isSaveDisabled(type, data, curItemId)}
+                        >
+                        <strong>
+                            <button
+                            onClick={saveItem}
+                            disabled={isNextDisabled(type, data) || isSaveDisabled(type, data, curItemId) || isSaving}
+                            className={isSaving ? 'btn btn-loading' : 'btn'}
+                            >
+                            {isSaving ? 'Saving' : 'Save'}
+                            {isSaving && <LoadingDots />}
                             </button>
-                            <>
-                                {
-                                    usePoint > 0 && <StarPoints points={-usePoint} size={20} />
-                                }
-                            </>
-                        </div>
+                        </strong>
+                        </Tippy>
+
+                        {usePoint > 0 && <StarPoints points={-usePoint} size={20} />}
+                    </div>
                     </>
-                }
+                )}
             </div>
+
             {
                 showLanguage &&
                 <LanguageModal

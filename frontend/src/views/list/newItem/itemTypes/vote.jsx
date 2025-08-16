@@ -77,7 +77,7 @@ const Vote = ({data, setData, curItemId}) => {
             {
                 data.voteType === 'posts' &&
                 <div>
-                    <label>Select posts to vote</label>
+                    <label>Select posts to vote (at least 2 posts)</label>
                     <div className={classNames(classes.items, curTheme)}>
                         {
                             items && items.length > 0 && 

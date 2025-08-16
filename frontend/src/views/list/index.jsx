@@ -190,7 +190,9 @@ const Home = () => {
         if (viewedIntroduction) {
             setShowIntro(false);
         } else {
+            if (window.innerWidth >= 600) { // chỉ show intro trên desktop
             setShowIntro(true);
+            }
         }
     }, []);
 

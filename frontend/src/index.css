@@ -336,7 +336,7 @@ ul, li {
 }
 
 .metadata-preview img{
-  max-width: 600px;
+  max-width: 100%;
   max-height: 400px;
 }
 /* Đảm bảo ảnh hiển thị đúng */
