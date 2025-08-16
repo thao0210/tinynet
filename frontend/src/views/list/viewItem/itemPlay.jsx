@@ -80,58 +80,61 @@ const ItemPlay = ({text, lang, voiceName, isUser}) => {
                     </Tippy>
                 </>
             }
-            <Dropdown
-              trigger={<Tippy content='Config the voices'>
-                  <span>
-                    <FaCog />
-                  </span>
-                </Tippy>}
-              dropdownContainerSelector='#story-content'
-              stopPropagation
-              height={500}
-            >
-              {({ onClose }) => (
-              <div id="voices-config">
-                <VoiceOption 
-                  selectedSource={selectedSource} 
-                  setSelectedSource={setSelectedSource} 
-                  selectedVoice={selectedVoice}
-                  voices={voices}
-                  onVoiceCatSelect={onVoiceCatSelect}
-                />
-                {/* {
-                  isUser &&
-                  <>
-                    <UploadOption
-                      selectedSource={selectedSource}
-                      setSelectedSource={setSelectedSource}
-                      uploadedFile={uploadedFile}
-                      handleFileChange={handleFileChange}
-                    />
-                    <RecorderOption
-                      selectedSource={selectedSource}
-                      setSelectedSource={setSelectedSource}
-                      recordings={recordings}
-                      onRecordingFinish={onRecordingFinish}
-                      handleDeleteRecording={handleDeleteRecording}
-                    />
-                    <div className="buttons">    
-                      <button className="btn" onClick={() => {
-                        handleSelectSource();
-                        onClose();
-                        }}>
-                        Select this {uploadedFile ? "file" : recordings.length > 0 ? "recording" : "voice"}
-                      </button>
-                      <button className="btn sub">
-                        Add to Post
-                      </button>
-                    </div>
-                  </>
-                } */}
-                
-              </div>
-            )}
-            </Dropdown>
+            {
+              voices?.length > 0 &&
+              <Dropdown
+                trigger={<Tippy content='Config the voices'>
+                    <span>
+                      <FaCog />
+                    </span>
+                  </Tippy>}
+                dropdownContainerSelector='#story-content'
+                stopPropagation
+                height={500}
+              >
+                {({ onClose }) => (
+                <div id="voices-config">
+                  <VoiceOption 
+                    selectedSource={selectedSource} 
+                    setSelectedSource={setSelectedSource} 
+                    selectedVoice={selectedVoice}
+                    voices={voices}
+                    onVoiceCatSelect={onVoiceCatSelect}
+                  />
+                  {/* {
+                    isUser &&
+                    <>
+                      <UploadOption
+                        selectedSource={selectedSource}
+                        setSelectedSource={setSelectedSource}
+                        uploadedFile={uploadedFile}
+                        handleFileChange={handleFileChange}
+                      />
+                      <RecorderOption
+                        selectedSource={selectedSource}
+                        setSelectedSource={setSelectedSource}
+                        recordings={recordings}
+                        onRecordingFinish={onRecordingFinish}
+                        handleDeleteRecording={handleDeleteRecording}
+                      />
+                      <div className="buttons">    
+                        <button className="btn" onClick={() => {
+                          handleSelectSource();
+                          onClose();
+                          }}>
+                          Select this {uploadedFile ? "file" : recordings.length > 0 ? "recording" : "voice"}
+                        </button>
+                        <button className="btn sub">
+                          Add to Post
+                        </button>
+                      </div>
+                    </>
+                  } */}
+                  
+                </div>
+              )}
+              </Dropdown>
+            }
         </>
     )
 }

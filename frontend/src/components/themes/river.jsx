@@ -10,7 +10,10 @@ const River = memo(() => {
         const fishClass = isReverse ? styles.fishReverse : styles.fish;
         const top = 10 + Math.random() * 60;
         const delay = Math.random() * 10;
-        const duration = 20 + Math.random() * 20;
+        const isMobile = window.innerWidth < 768;
+        const duration = isMobile
+            ? 6 + Math.random() * 15 // mobile: 10-20s
+            : 20 + Math.random() * 30;
         const fishType = fishSources[Math.floor(Math.random() * fishSources.length)];
         return (
           <img

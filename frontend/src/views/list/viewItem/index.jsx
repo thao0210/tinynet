@@ -16,11 +16,12 @@ import { HiSpeakerWave, HiSpeakerXMark } from 'react-icons/hi2';
 import Tippy from '@tippyjs/react';
 import AddContribution from "./components/addContribution";
 import Modal from '@/components/modal';
+import Loader from '@/components/loader';
 
 const ViewItem = ({itemId}) => {
     const [item, setItem] = useState(null);
     const [iId, setIID] = useState('');
-    const {setLoading, showModal, user, loadViewContent, setLoadViewContent} = useStore();
+    const {setLoading, loading, showModal, user, loadViewContent, setLoadViewContent} = useStore();
     const [showComments, setShowComments] = useState(false);
     const [metaData, setMetaData] = useState(null);
     const [colItems, setColItems] = useState(null);
@@ -120,7 +121,11 @@ const ViewItem = ({itemId}) => {
         <div className={classNames(classes.viewItem, 'viewItem', themeClasses.theme, themeClasses[item?.theme], {[themeClasses.dark]: isDark, [themeClasses.light]: !isDark && item?.themeType === 'colors'})} style={{background: ['colors', 'gradient'].includes(item?.themeType) && item?.theme ? item?.theme : ''}}>
             <ItemThemes item={item} />
             {
-                item &&
+                loading &&
+                <Loader />
+            }
+            {
+                !loading && item &&
                 <>
                     <ItemHeader
                         item={item}
@@ -151,7 +156,7 @@ const ViewItem = ({itemId}) => {
                 </>
             }
             {
-                !item && 
+                !loading && !item && 
                 <div className="forbidden">Content is not available!</div>
             }
             {
@@ -167,14 +172,14 @@ const ViewItem = ({itemId}) => {
                 />
             }
             {
-                item?.backgroundMusic &&
+                !loading && item?.backgroundMusic &&
                 <Tippy content={isMuted ? 'Unmute music' : 'Mute music'}>
                     <span className={classes.bgMusic} onClick={onToggleMute}>
                         {isMuted ? <HiSpeakerXMark size={21} /> : <HiSpeakerWave size={21} />}
                     </span>
                 </Tippy>
             }
-            {item?.backgroundMusic && (
+            {!loading && item?.backgroundMusic && (
                 <audio
                     ref={audioRef}
                     src={item.backgroundMusic}
@@ -183,7 +188,7 @@ const ViewItem = ({itemId}) => {
                 />
             )}
             {
-                showContributionModal &&
+                !loading && showContributionModal &&
                 <Modal setShowModal={setShowContributionModal} isFull>
                     <AddContribution 
                         activeLang={activeLang} 
