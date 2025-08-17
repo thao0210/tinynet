@@ -101,6 +101,9 @@
       img {
         max-width: 100%;
         max-height: 150px;
+        border-radius: 10px;
+        box-shadow: 0px 1px 1px #00000060;
+        border: solid 4px #FFF;
       }
 
       ul.collectionItems > li{

@@ -263,10 +263,6 @@ input.text {
           width: 150px;
           height: 150px;
           border-radius: 10px;
-          // background-color: #f6f6f6;
-          // display: flex;
-          // align-items: center;
-          // justify-content: center;
           cursor: pointer;
           padding: 20px;
           text-align: center;
@@ -287,6 +283,8 @@ input.text {
       cursor: pointer;
       border: white solid 5px;
       border-radius: 10px;
+      max-width: 150px;
+      max-height: 120px;
       &:hover {
         border-color: orange;
       }

@@ -6,8 +6,12 @@ import classNames from 'classnames';
 import Modal from '@/components/modal';
 
 const baseUrl = import.meta.env.VITE_R2_BASE_URL;
+// const coloringImages = Array.from({ length: 18 }, (_, i) =>
+//   `${baseUrl}/coloring/coloring${i + 1}.avif`
+// );
+
 const coloringImages = Array.from({ length: 18 }, (_, i) =>
-  `${baseUrl}/coloring/coloring${i + 1}.avif`
+  `/colorings/coloring${i + 1}.avif`
 );
 
 async function trimCanvas(canvas) {
@@ -42,7 +46,6 @@ async function trimCanvas(canvas) {
 
   const newW = maxX - minX + 1;
   const newH = maxY - minY + 1;
-  console.log(`trimCanvas: Cropping to (${minX}, ${minY}) - (${maxX}, ${maxY})`);
 
   const trimmedCanvas = document.createElement("canvas");
   trimmedCanvas.width = newW;
@@ -277,10 +280,7 @@ const Draco = ({data, setData, onNext, curItemId, saveBgData, setSaveBgData}) =>
         console.error("onSave: Failed to get raw HTMLCanvasElement from Fabric.js");
         return;
       }
-      let dataURL;
-      if (data.coloringImage) {
-        dataURL = rawCanvas.toDataURL("image/png", 0.85);
-      } else {
+        let dataURL;
         const trimmedCanvas = await trimCanvas(rawCanvas);
 
         if (!trimmedCanvas) {
@@ -293,7 +293,6 @@ const Draco = ({data, setData, onNext, curItemId, saveBgData, setSaveBgData}) =>
           return;
         }
         dataURL = trimmedCanvas.toDataURL("image/png", 0.85);
-      }
       
        // 🔥 Kiểm tra trimmedCanvas có phải HTMLCanvasElement không
   

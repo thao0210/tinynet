@@ -61,9 +61,21 @@ span.disabled {
   background: rgba(0, 0, 0, 0.7);
 }
 
-.dark .head .searchBar, .dark .head .searchBar .quickResult {
+.dark .head .searchBar, .dark .head .searchBar .quickResult{
   background: #222;
   color: white;
+}
+.dark a {
+  color: #FFFFFF80;
+  &:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+  } 
+}
+.dark .metadata-preview {
+  background: #222;
+  color: white;
+  border: #FFFFFF20 solid 1px;
 }
 .dark .head .searchBar input,.dark .searchTitle {
   color: white;
