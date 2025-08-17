@@ -98,7 +98,7 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
                                 }
                                 {
                                     item.type === 'shareUrl' && item.preview && item.url &&
-                                    <a href={item.url} target='_blank'>Share Link</a>
+                                    <a href={item.url} target='_blank'>View</a>
                                 }
                             </div>
                             <div className={themeClasses.itemInfos}>

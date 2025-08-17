@@ -115,7 +115,7 @@ const Brush = ({prs}) => {
                 </span>
             </Tippy>
             {
-                (showSubMenus === 'path' || isColoring) &&
+                (showSubMenus === 'path') &&
                 <div className={classes.subMenus}>
                     <span className={classes.close} onClick={(e) => {
                         e.stopPropagation();

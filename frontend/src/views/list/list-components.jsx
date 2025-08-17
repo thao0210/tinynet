@@ -47,7 +47,7 @@ export const ItemType = ({item}) => {
             }
             {
                 item.type === 'shareUrl' && item.preview && item.url &&
-                <a href={item.url} target='_blank'>Share Link</a>
+                <a href={item.url} target='_blank'>View</a>
             }
             {
                 item.type === 'card' && item.thumbnailImage &&
