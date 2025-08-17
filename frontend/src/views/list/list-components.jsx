@@ -25,7 +25,7 @@ import {ITEM_TYPE, SORT_BY} from '@/sharedConstants/data';
 export const ItemType = ({item}) => {
     const metaData = item?.preview ? JSON.parse(item.preview) : null;;
     return (
-        <div className={(item.hasPass || item.sendOtp) ? classNames(classes.locked, 'locked') : (['draco', 'card'].includes(item.type)) ? classes.image : ''}>
+        <div className={(item.hasPass || item.sendOtp) ? classNames(classes.locked, 'locked') : (['draco', 'card', 'shareUrl'].includes(item.type)) ? classes.image : ''}>
             {item.type === 'story' && item.text && item.text.length > 100 ? 
                 getActiveContent(navigator.language, item)?.text.substring(0, 100) + '...' : getActiveContent(navigator.language, item)?.text}
             {item.type === 'collection' && item.items && item.items.length > 0 &&
