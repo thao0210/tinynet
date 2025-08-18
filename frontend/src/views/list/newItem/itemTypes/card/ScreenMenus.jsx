@@ -35,6 +35,7 @@ const BG_TYPE = [{
     }];
 const ScreenMenus = forwardRef(({ screens, setScreens, setActiveIndex, activeScreenIndex, setShowScreenOptions }, ref) => {
     const addTextbox = () => {
+        const genId = () => Math.random().toString(36).substring(2, 9);
         const updatedScreens = [...screens];
         const screen = updatedScreens[activeScreenIndex];
 
@@ -45,6 +46,7 @@ const ScreenMenus = forwardRef(({ screens, setScreens, setActiveIndex, activeScr
         const y = contentBox ? ((contentBox.height - boxHeight) / 2) - 80 : 100;
 
         screen.textboxes.push({
+            id: genId(),
             x,
             y,
             width: boxWidth,

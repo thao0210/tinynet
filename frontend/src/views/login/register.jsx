@@ -38,8 +38,8 @@ const Register = () => {
     const [verified, setVerified] = useState(false);
     const [showOtpBox, setShowOtpBox] = useState(false);
     const [canResend, setCanResend] = useState(false);
-    const userLang = navigator.language || navigator.userLanguage;
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const userLang = navigator.language || navigator.userLanguage || 'en-US';
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 
 
     const [account, setAccount] = useState({

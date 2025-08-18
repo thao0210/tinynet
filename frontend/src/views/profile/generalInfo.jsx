@@ -7,6 +7,9 @@ import { useState } from "react";
 import { MdEdit } from 'react-icons/md';
 import DateTimePicker from '@/components/timepicker';
 import { format } from 'date-fns';
+import Dropdown from "@/components/dropdown";
+import LANGUAGES from "@/sharedConstants/languages";
+import { getFlag } from "@/utils/lang";
 
 const GeneralInformation = ({userInfo, setUserInfo, isMyProfile}) => {
     const {user, setUser, setLoadList} = useStore();
@@ -16,8 +19,8 @@ const GeneralInformation = ({userInfo, setUserInfo, isMyProfile}) => {
         return text ? text : 'N/A';
     }
     const fieldOnChange = (e, type, value) => {
-        if (type === 'dob' && value) {
-            setUser(prev => ({...prev, dob: value}))
+        if ((type === 'dob' || type ==='lang') && value) {
+            setUser(prev => ({...prev, [type]: value}))
         } else {
             setUser(prev => ({...prev, [type]: e.target.value}));
         }
@@ -70,6 +73,10 @@ const GeneralInformation = ({userInfo, setUserInfo, isMyProfile}) => {
                                 <label>Occupation</label>
                                 <strong>{info(userInfo.occupation)}</strong>
                             </li>
+                            <li>
+                                <label>Primary language</label>
+                                <strong>{getFlag(userInfo.lang || navigator.language || 'en-US')}</strong>
+                            </li>
                         </>
                     }
                     
@@ -110,11 +117,23 @@ const GeneralInformation = ({userInfo, setUserInfo, isMyProfile}) => {
                 <div>
                     <DateTimePicker
                         value={user?.dob||''}
-                        onChange={setUser}
+                        onChange={() => fieldOnChange(null, 'dob', format(new Date(), 'yyyy-MM-dd'))}
                         label="Date of Birth"
                         field='dob'
                     />
                 </div>
+                <div>
+                    <label>Primary language</label>
+                    <Dropdown
+                        curValue={user?.lang}
+                        list={LANGUAGES}
+                        onSelect={(selected) => fieldOnChange(null, 'lang', selected.value)}
+                        label={"Language"}
+                        width={'400px'}
+                        returnObj={true}
+                        dropdownContainerSelector='#profile'
+                    />
+                </div>  
                 <div className="buttons">
                     <button className='btn sm' onClick={onChange} disabled={false}>Save</button>
                     <button className="btn sub" onClick={() => setEditProfile(false)}>Cancel</button>

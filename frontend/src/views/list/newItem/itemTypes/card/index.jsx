@@ -6,6 +6,8 @@ import ScreenOption from './screenOption';
 import CardPreview from './cardPreview';
 import ScreenMenus from './ScreenMenus';
 import SoundModal from './soundModal';
+import {useStore} from '@/store/useStore';
+import { Languages } from '../generalComponents';
 
 const ScreenThumb = ({screen, screens, setScreens, setActiveScreenIndex, activeScreenIndex, idx}) => {
   const deleteScreen = (index) => {
@@ -42,6 +44,7 @@ const ScreenThumb = ({screen, screens, setScreens, setActiveScreenIndex, activeS
     </div>
   )
 }
+
 const Card = ({ data, setData }) => {
   const [showScreenOptions, setShowScreenOptions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
@@ -57,8 +60,14 @@ const Card = ({ data, setData }) => {
   const [showSound, setShowSound] = useState(false);
   const [naturalSounds, setNaturalSounds] = useState([]);
   const [uploadedMusicFile, setUploadedMusicFile] = useState(null);
-  const [cardTextContent, setCardTextContent] = useState('');
-
+  // lang -> id -> text
+  const [cardTextContent, setCardTextContent] = useState({});
+  const {user} = useStore();
+  const [activeLang, setActiveLang] = useState(data?.language || user.lang || navigator.language || 'en-US');
+  const [newLang, setNewLang] = useState(user.lang || navigator.language || 'en-US');
+  const [languages, setLanguages] = useState([activeLang]);
+  const [searchContent, setSearchContent] = useState('');
+  
   const addNewScreen = () => {
     setScreens(prev => ([
       ...prev,
@@ -79,15 +88,31 @@ const Card = ({ data, setData }) => {
     setActiveScreenIndex(screens.length);
   };
 
-  const updateTextbox = (index, newData) => {
+  const updateTextbox = (id, newData, lang) => {
     const updatedScreens = [...screens];
     const screen = updatedScreens[activeScreenIndex];
-    screen.textboxes[index] = { ...screen.textboxes[index], ...newData };
+    const idx = screen.textboxes.findIndex(b => b.id === id);
+    if (idx === -1) return;
+    const box = screen.textboxes[idx];
+    if (!box) return;
+
+    if (newData.text !== undefined) {
+      setCardTextContent(prev => {
+        const base = { ...(prev || {}) };
+        return {
+          ...base,
+          [lang]: {
+            ...(base[lang] || {}),
+            [id]: newData.text
+          }
+        };
+      });
+      setSearchContent(prev => `${prev} ${newData.text}`);
+    }
+
+    const { text, ...styleData } = newData;
+    screen.textboxes[idx] = { ...box, ...styleData };
     setScreens(updatedScreens);
-    const updatedText = screen.textboxes
-      .map((box) => box.text?.trim() || '')
-      .join(' ');
-    setCardTextContent(updatedText);
   };
 
   const deleteTextbox = (index) => {
@@ -104,34 +129,82 @@ const Card = ({ data, setData }) => {
     setShowCardReview(false);
   };
 
+  const handleLanguageChange = (lang, isNew) => {
+    if (isNew && !languages.includes(lang)) {
+      setLanguages(prev => [...prev, lang]);
+      setCardTextContent(prev => ({
+        ...prev,
+        [lang]: {}
+      }));
+    }
+    setActiveLang(lang);
+  };
+
+  // Remove language
+  const removeLang = (lang) => {
+    setLanguages(prev => prev.filter(l => l !== lang));
+    setCardTextContent(prev => {
+      const { [lang]: _, ...rest } = prev;
+      return rest;
+    });
+    if (activeLang === lang) {
+      setActiveLang(languages[0] || 'en-US');
+    }
+  };
+
   // Cập nhật cardDetails
   useEffect(() => {
-    setData(prev => ({
-      ...prev,
-      cardDetails: {
-        screens,
-        music,
-        recorder,
-        naturalSounds
-      },
-      cardTextContent
-    }));
-  }, [screens, music, recorder, naturalSounds, cardTextContent]);
+    setData(prev => {
+      const newData = {
+        ...prev,
+        cardDetails: { screens, music, recorder, naturalSounds },
+        cardTextContent,
+        searchContent,
+      };
+
+      // Nếu giống hệt thì không set để tránh cha tạo object mới vô ích
+      if (JSON.stringify(prev) === JSON.stringify(newData)) {
+        return prev;
+      }
+      return newData;
+    });
+  }, [screens, music, recorder, naturalSounds, cardTextContent, searchContent]);
 
   const hasInitRef = useRef(false);
 
   useEffect(() => {
-    if (hasInitRef.current) return;
-    hasInitRef.current = true;
+  // chỉ init 1 lần khi mount
+    if (!hasInitRef.current) {
+      hasInitRef.current = true;
 
-    if (data?.cardDetails?.screens?.length) {
-      const details = data.cardDetails;
-      setScreens(details.screens);
-      setMusic(details.music || { url: '', file: null });
-      setRecorder(details.recorder || null);
-      setNaturalSounds(details.naturalSounds || []);
-    } else {
-      addNewScreen();
+      if (data?.cardDetails?.screens?.length) {
+        const details = data.cardDetails;
+        setScreens(details.screens);
+        setMusic(details.music || { url: '', file: null });
+        setRecorder(details.recorder || null);
+        setNaturalSounds(details.naturalSounds || []);
+      } else {
+        addNewScreen();
+      }
+    }
+
+    if (data?.searchContent) {
+      setSearchContent(data.searchContent);
+    }
+
+    // sync textContent từ cha, nhưng chỉ khi cha thực sự có dữ liệu mới
+    if (data?.cardTextContent) {
+      setCardTextContent(prev => {
+        if (JSON.stringify(prev) === JSON.stringify(data.cardTextContent)) {
+          return prev; // tránh set thừa gây loop
+        }
+        return data.cardTextContent;
+      });
+
+      const langs = new Set(Object.keys(data.cardTextContent));
+      if (langs.size > 0) {
+        setLanguages(Array.from(langs));
+      }
     }
   }, []);
 
@@ -189,6 +262,8 @@ const Card = ({ data, setData }) => {
         ref={contentRef}
         deleteTextbox={deleteTextbox}
         showCardReview={showCardReview}
+        cardTextContent={cardTextContent}
+        currentLang={activeLang}
       />
 
       {showScreenOptions && (
@@ -205,6 +280,7 @@ const Card = ({ data, setData }) => {
           data={data.cardDetails} 
           onClose={handleClose}
           uploadedMusicFile={uploadedMusicFile}
+          cardTextContent={cardTextContent}
          />
       )}
 
@@ -221,6 +297,15 @@ const Card = ({ data, setData }) => {
           setUploadedFile={setUploadedMusicFile}
         />
       }
+      <Languages
+        activeLang={activeLang}
+        setActiveLang={setActiveLang}
+        languages={languages}
+        newLang={newLang}
+        setNewLang={setNewLang}
+        onLanguageChange={handleLanguageChange}
+        removeLang={removeLang}
+      />
     </div>
   );
 };

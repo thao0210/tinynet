@@ -78,7 +78,7 @@ const Profile = () => {
     }, [user, showModal]);
 
     return (
-        <div className={classes.profile}>
+        <div className={classes.profile} id='profile'>
             {routeUserId && (
                 <Tippy content="Back to list">
                     <span className={classes.viewList} onClick={() => navigate('/list')}>

@@ -281,22 +281,25 @@ const Draco = ({data, setData, onNext, curItemId, saveBgData, setSaveBgData}) =>
         return;
       }
         let dataURL;
-        const trimmedCanvas = await trimCanvas(rawCanvas);
+        if ((curItemId && data.canEdit) || !curItemId) {
+          const trimmedCanvas = await trimCanvas(rawCanvas);
 
-        if (!trimmedCanvas) {
-          console.error("Trimming failed or empty canvas");
+          if (!trimmedCanvas) {
+            console.error("Trimming failed or empty canvas");
+            return;
+          }
+
+          if (!(trimmedCanvas instanceof HTMLCanvasElement)) {
+            console.error("onSave: Trimmed canvas is not a valid HTMLCanvasElement");
+            return;
+          }
+          dataURL = trimmedCanvas.toDataURL("image/png", 0.85);
+          setData({...data, savedPaths: json, base64: dataURL});
+        } else {
+          // Nếu không có canvas, không cần lưu gì cả
+          console.warn("onSave: No canvas to save");
           return;
         }
-
-        if (!(trimmedCanvas instanceof HTMLCanvasElement)) {
-          console.error("onSave: Trimmed canvas is not a valid HTMLCanvasElement");
-          return;
-        }
-        dataURL = trimmedCanvas.toDataURL("image/png", 0.85);
-      
-       // 🔥 Kiểm tra trimmedCanvas có phải HTMLCanvasElement không
-  
-      setData({...data, savedPaths: json, base64: dataURL});
     }
   }
 

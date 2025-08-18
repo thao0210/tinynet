@@ -364,12 +364,18 @@
     z-index: 1000;
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
+    gap: 10px;
     > div {
-      border-radius: 20px;
-      background: #FFFC;
+      border-radius: 10px;
+      
       padding: 5px;
       box-shadow: 1px 0 3px #00000090;
+      position: static!important;
+      &:first-child {
+        background: #FFF9;
+      }
     }
   }
   .infos {

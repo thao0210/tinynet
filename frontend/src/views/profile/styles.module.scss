@@ -149,6 +149,7 @@
           > svg {
             right: 10px;
             bottom:unset;
+            top: 3px;
           }
           ul.myProfile li {
             display: inline-block;
@@ -200,10 +201,10 @@
             }
             input {
               width: 100%;
-              height: 40px;
+              height: 35px;
               border-radius: 4px;
-              border: solid 1px;
-              padding: 0 10px;
+              // border: solid 1px;
+              // padding: 0 10px;
             }
             
             &.payment {

@@ -7,6 +7,8 @@ import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { FaPause, FaPlay } from 'react-icons/fa';
 import Tippy from '@tippyjs/react';
 import UserAvatar from '@/components/userAvatar';
+import { Languages } from '../generalComponents';
+import { useEffect, useState } from 'react';
 
 const CardPreviewScreens = ({
   screen,
@@ -19,7 +21,11 @@ const CardPreviewScreens = ({
   videoRef,
   item,
   hasMusic,
-  commentOnClick
+  commentOnClick,
+  cardTextContent,
+  activeLang,
+  setActiveLang,
+  languages
 }) => {
   const transition = transitionPresets[screen.transition] || transitionPresets.fade;
 
@@ -62,6 +68,8 @@ const CardPreviewScreens = ({
           delay={Number(box.delay) || 0}
           loopKey={loopKey}
           isPause={isPause}
+          cardTextContent={cardTextContent}
+          currentLang={activeLang}
         />
       ))}
 
@@ -102,8 +110,22 @@ const CardPreviewScreens = ({
                 profileId={item.author?._id}
                 isAnonymous={item.isAnonymous}
             />
+            {
+              languages.length > 1 &&
+              <Languages
+                  isView={true}
+                  activeLang={activeLang}
+                  setActiveLang={setActiveLang}
+                  languages={languages}
+                  onLanguageChange={(lang) => {
+                      setActiveLang(lang);
+                  }}
+                  isCenter
+              />
+            }
         </div>
       }
+      
     </div>
   );
 };

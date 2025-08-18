@@ -15,7 +15,7 @@ const { deleteFromR2 } = require("../../utils/deleteFromR2");
 
 const postNewItem = async (req, res) => {
     try {
-      const { type, privacy, sharedWith, password, passwordHint, sendOtp, title, showOnlyInCollection = false, items = [], backgroundMusic, showTitle, isAnonymous, slug, isFriendlyUrl, restrictedAccess } = req.body;
+      const { type, privacy, sharedWith, password, passwordHint, sendOtp, title, showOnlyInCollection = false, items = [], backgroundMusic, showTitle, isAnonymous, slug, isFriendlyUrl, restrictedAccess, usePoint } = req.body;
 
       const userId = req.user.id;
 
@@ -93,7 +93,21 @@ const postNewItem = async (req, res) => {
         });
       }
 
-      res.status(201).json({savedItem , pointsChange: points});
+      // ✅ Trừ điểm nếu có usePoint
+    if (usePoint > 0) {
+      try {
+        await updateUserPoints(userId, -usePoint);
+        await PointsHistory.create({
+          userId: userId,
+          points: -usePoint,
+          description: `Used ${usePoint} points on special features`,
+        });
+      } catch (err) {
+        console.warn('Failed to deduct points:', err.message);
+      }
+    }
+
+      res.status(201).json({savedItem , pointsChange: usePoint> 0 ? points - usePoint : points});
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: 'Error creating item', error: err });

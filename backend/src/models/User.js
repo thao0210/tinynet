@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
     fullName: String,
     fullNameNoAccent: String,
     dob: Date,
-    occupation: String,   
+    occupation: String,
     avatar: String,
     timezone: String,
     lang: String,

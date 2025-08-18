@@ -3,7 +3,7 @@ import { forwardRef, useRef, useEffect, useState } from "react";
 import ScreenTextBox from './TextBox';
 import { useVideoSpeedEffect } from '@/hooks/useVideoSpeedEffect';
 
-const ScreenContent = forwardRef(({ screen, updateTextbox, activeIndex, setActiveIndex, deleteTextbox, showCardReview}, ref) => {
+const ScreenContent = forwardRef(({ screen, updateTextbox, activeIndex, setActiveIndex, deleteTextbox, showCardReview, cardTextContent, currentLang}, ref) => {
     const boxRefs = useRef([]);
     const getSpeedAt = useVideoSpeedEffect(screen?.background?.speedEffect || 'speed: 1x', screen?.time);
     const vRef = useRef(null);
@@ -82,6 +82,8 @@ const ScreenContent = forwardRef(({ screen, updateTextbox, activeIndex, setActiv
                     setActiveIndex={setActiveIndex}
                     deleteTextbox={deleteTextbox}
                     screen={screen}
+                    cardTextContent={cardTextContent}
+                    currentLang={currentLang}
                  />
             ))}
         </div>

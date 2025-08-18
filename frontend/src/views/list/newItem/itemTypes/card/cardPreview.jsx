@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useAudioMixer } from '@/hooks/useAudioMixer';
 import CardPreviewScreens from './cardPreviewScreens';
 import { useVideoSpeedEffect } from '@/hooks/useVideoSpeedEffect';
+import {useStore} from '@/store/useStore';
 
-const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick }) => {
+const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick, cardTextContent}) => {
   const [screenIndex, setScreenIndex] = useState(0);
   const [loopKey, setLoopKey] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
@@ -12,6 +13,15 @@ const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick })
   const loopTimerRef = useRef(null);
   const screen = data.screens[screenIndex];
   const getSpeedAt = useVideoSpeedEffect(screen.background?.speedEffect || 'speed: 1x', screen.time);
+  const {user} = useStore();
+  const [activeLang, setActiveLang] = useState(user.lang || navigator.language || 'en-US');
+  const [languages, setLanguages] = useState([]);
+
+  useEffect(() => {
+    if (cardTextContent) {
+      setLanguages(Object.keys(cardTextContent));
+    }
+  }, [cardTextContent]);
 
   const { stop } = useAudioMixer({
     musicUrl: data.music?.url,
@@ -131,6 +141,7 @@ const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick })
 
   if (!data?.screens?.length) return <div>No preview available</div>;
 
+  console.log('active lang', activeLang);
   return (
     <CardPreviewScreens
       screen={data.screens[screenIndex]}
@@ -144,6 +155,10 @@ const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick })
       item={item}
       hasMusic={data.music?.url || data.naturalSounds.length > 0}
       commentOnClick={commentOnClick}
+      cardTextContent={cardTextContent}
+      languages={languages}
+      activeLang={activeLang}
+      setActiveLang={setActiveLang}
     />
   );
 };

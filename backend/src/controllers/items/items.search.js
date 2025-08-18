@@ -60,6 +60,7 @@ const searchItems = async (req, res) => {
       const keywordOrConditions = [
         { titleNoAccent: { $regex: normalizedKeyword, $options: 'i' } },
         { textNoAccent: { $regex: normalizedKeyword, $options: 'i' } },
+        { searchContent: { $regex: normalizedKeyword, $options: 'i' }},
         { translations: { $elemMatch: { title: { $regex: keyword, $options: 'i' } } } },
         { translations: { $elemMatch: { text: { $regex: keyword, $options: 'i' } } } },
         { translations: { $elemMatch: { titleNoAccent: { $regex: normalizedKeyword, $options: 'i' } } } },
@@ -114,6 +115,8 @@ const searchItems = async (req, res) => {
           delete obj.text;
           delete obj.textNoAccent;
           delete obj.password;
+          delete obj.translations;
+          delete obj.searchContent;
         }
         return obj;
       });
@@ -162,6 +165,7 @@ const searchItems = async (req, res) => {
                 { text: new RegExp(query, 'i') },
                 { titleNoAccent: new RegExp(removeAccents(query), 'i') },
                 { textNoAccent: new RegExp(removeAccents(query), 'i') },
+                { searchContent: new RegExp(removeAccents(query), 'i')},
                 { translations: { $elemMatch: { title: new RegExp(query, 'i') } } },
                 { translations: { $elemMatch: { text: new RegExp(query, 'i') } } },
                 { translations: { $elemMatch: { titleNoAccent: new RegExp(removeAccents(query), 'i') } } },
@@ -176,6 +180,7 @@ const searchItems = async (req, res) => {
           text: 1,
           titleNoAccent: 1,
           textNoAccent: 1,
+          searchContent: 1,
           translations: 1
         }
       ).limit(5);

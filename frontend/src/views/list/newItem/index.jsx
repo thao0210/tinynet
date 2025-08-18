@@ -180,12 +180,12 @@ const NewItem = () => {
             <div className={classes.buttons}>
                 {!isNext && (
                     <Tippy
-                        content={getNextError(type, data) || ''}
+                        content={getNextError(type, data, curItemId) || ''}
                         placement="top"
-                        disabled={!isNextDisabled(type, data)}
+                        disabled={!isNextDisabled(type, data, curItemId)}
                     >
                     <strong>
-                        <button className="btn" disabled={isNextDisabled(type, data)} onClick={onNext}>
+                        <button className="btn" disabled={isNextDisabled(type, data, curItemId)} onClick={onNext}>
                         Next
                         </button>
                     </strong>
@@ -206,7 +206,7 @@ const NewItem = () => {
                         <strong>
                             <button
                             onClick={saveItem}
-                            disabled={isNextDisabled(type, data) || isSaveDisabled(type, data, curItemId) || isSaving}
+                            disabled={isNextDisabled(type, data, curItemId) || isSaveDisabled(type, data, curItemId) || isSaving}
                             className={isSaving ? 'btn btn-loading' : 'btn'}
                             >
                             {isSaving ? 'Saving' : 'Save'}

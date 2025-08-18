@@ -16,9 +16,10 @@ import EmojiPickerLite from "@/components/emojiPicker";
 
 const TEXT_EFFECTS = ['none', 'typing', 'zoom', 'dancing', 'bounce', 'wave', 'shock', 'explode', 'spider'];
 
-const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteTextbox, setActiveIndex, screen}) => {
+const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteTextbox, setActiveIndex, screen, cardTextContent, currentLang}) => {
+    const text = cardTextContent?.[currentLang]?.[box.id] || "";
     const addEmoji = (emojiObject) => {
-        updateTextbox(index, { text: box.text + emojiObject });
+        updateTextbox(box.id, { text: box.text + emojiObject }, currentLang);
     }
     const renderEditableBox = () => (
         <div
@@ -35,12 +36,12 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
             }
             }}
             onBlur={(e) => {
-                updateTextbox(index, { text: e.target.innerText });
+                updateTextbox(box.id, { text: e.target.innerText }, currentLang);
             }}
             onInput={(e) => {
                 requestAnimationFrame(() => {
                     const newHeight = e.target.scrollHeight;
-                    updateTextbox(index, { height: newHeight });
+                    updateTextbox(box.id, { height: newHeight }, currentLang);
                 });
             }}
             onKeyDown={(e) => {
@@ -63,7 +64,7 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
 
                 // Gọi lại update height (optional nếu cần realtime)
                 const newHeight = e.currentTarget.scrollHeight;
-                updateTextbox(index, { height: newHeight });
+                updateTextbox(box.id, { height: newHeight }, currentLang);
             }
             }}
             className={classes.textboxContent}
@@ -80,7 +81,7 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                 : box.textShadow || 'none',
             }}
         >
-            {box.text}
+            {text}
         </div>
         );
 
@@ -91,24 +92,24 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
             onDragStop={(e, d) => {
                 const offsetX = d.x - window.innerWidth / 2;
                 const offsetY = d.y - window.innerHeight / 2;
-                updateTextbox(index, { 
+                updateTextbox(box.id, { 
                     x: d.x, 
                     y: d.y, 
                     offsetX, 
                     offsetY 
-                });
+                }, currentLang);
             }}
             onResizeStop={(e, direction, ref, delta, position) => {
                 const offsetX = position.x - window.innerWidth / 2;
                 const offsetY = position.y - window.innerHeight / 2;
-                updateTextbox(index, {
+                updateTextbox(box.id, {
                     width: parseInt(ref.style.width),
                     height: parseInt(ref.style.height),
                     x: position.x,
                     y: position.y,
                     offsetX,
                     offsetY,
-                });
+                }, currentLang);
             }}
             onClick={() => setActiveIndex(index)}
             bounds="parent"
@@ -144,7 +145,7 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                         <Dropdown
                             curValue={box.fontFamily}
                             list={Fonts}
-                            onSelect={(font) => updateTextbox(index, { fontFamily: font })}
+                            onSelect={(font) => updateTextbox(box.id, { fontFamily: font }, currentLang)}
                             showFont
                             dropdownContainerSelector='#item-card'
                             tippy='Font Name'
@@ -155,7 +156,7 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                     <Dropdown
                         curValue={box.fontSize}
                         list={FontSizes}
-                        onSelect={(fontSize) => updateTextbox(index, { fontSize: fontSize })}
+                        onSelect={(fontSize) => updateTextbox(box.id, { fontSize: fontSize }, currentLang)}
                         width={60}
                         dropdownContainerSelector='#item-card'
                         tippy='Font Size'
@@ -170,7 +171,7 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                             { value: 'center', label: <FaAlignCenter size={15} /> },
                             { value: 'right', label: <FaAlignRight size={15} /> },
                         ]}
-                        onSelect={(textAlign) => updateTextbox(index, { textAlign: textAlign })}
+                        onSelect={(textAlign) => updateTextbox(box.id, { textAlign: textAlign }, currentLang)}
                         width={43}
                         dropdownContainerSelector='#item-card'
                         tippy='Alignment'
@@ -179,7 +180,7 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                     </div>
                     <div>
                         <Tippy content='Text color'>
-                        <input type="color" value={box.color} onChange={e => updateTextbox(index, { color: e.target.value })} />
+                        <input type="color" value={box.color} onChange={e => updateTextbox(box.id, { color: e.target.value }, currentLang)} />
                         </Tippy>
                     </div>
                     <Dropdown
@@ -187,7 +188,7 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                         dropdownContainerSelector='#item-card'
                         tippy='Text shadow'
                         list={TEXT_SHADOWS}
-                        onSelect={(textShadow) => updateTextbox(index, { textShadow: textShadow })}
+                        onSelect={(textShadow) => updateTextbox(box.id, { textShadow: textShadow }, currentLang)}
                         keepTrigger
                         isSmallText
                     />
@@ -206,12 +207,12 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                         tippy='Delay'
                     >
                     <label>Delay ({box.delay}s)</label>
-                    <input type="range" value={box.delay || 0} max={screen?.time - 1} min={0} onChange={(e) => updateTextbox(index, {delay: e.target.value})} />
+                    <input type="range" value={box.delay || 0} max={screen?.time - 1} min={0} onChange={(e) => updateTextbox(box.id, {delay: e.target.value}, currentLang)} />
                     </Dropdown>
                     <Dropdown
                         curValue={box.effect}
                         list={TEXT_EFFECTS}
-                        onSelect={(effect) => updateTextbox(index, { effect: effect })}
+                        onSelect={(effect) => updateTextbox(box.id, { effect: effect }, currentLang)}
                         dropdownContainerSelector='#item-card'
                         tippy='Text Effect'
                         isSmallText
@@ -225,12 +226,12 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                         <FrameOptionsForm 
                            frameOptions={box.frame}
                             onChange={(change) =>
-                                updateTextbox(index, {
+                                updateTextbox(box.id, {
                                     frame: {
                                         ...box.frame,
                                         ...change
                                     }
-                                })
+                                }, currentLang)
                             }
                         />
                     </Dropdown>

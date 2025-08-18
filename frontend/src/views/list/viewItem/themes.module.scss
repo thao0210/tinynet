@@ -50,17 +50,15 @@
 }
 
 .content {
-    width: 80%;
-    min-width: 300px;
     padding: 40px 20px 20px;
     text-align: left;
     max-height: 100vh;
     overflow-y: auto;
     border-radius: 25px;
-    height: calc(100vh - 20px);
     overflow-y: auto;
     scroll-behavior: smooth;
     z-index: 1;
+    height: calc(100vh - 20px);
     .audio {
         display: flex;
         align-items: center;
@@ -75,14 +73,16 @@
             height: 30px;
             border-radius: 10px;
             background: #FFFC;
+            color: black;
             box-shadow: 0 1px 2px #00000060;
             cursor: pointer;
         }
     }
     .itemContent {
-        margin-top: 10px;
+        width: 80%;
+        min-width: 300px;
         line-height: 1.6;
-
+        margin: 10px auto;
         h1 {
             text-align: center;
             display: flex;
@@ -397,8 +397,9 @@
 
 @media (max-width: 768px) {
   .content {
-    width: 100%;
+   
     .itemContent {
+         width: 100%;
         .voteMode {
             div > span + div{
                 font-size: 16px;

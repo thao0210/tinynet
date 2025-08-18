@@ -4,9 +4,9 @@ import { BounceLetters, DancingLetters, ExplodeText, ShockText, SpiderDropText, 
 import SpeechBubble from '@/components/speechBubble';
 import { generateCartoonShadow, generateRainboxShadow } from "@/utils/color";
 
-const TextBoxPreview = ({ box, delay = 0, loopKey, isPause }) => {
+const TextBoxPreview = ({ box, delay = 0, loopKey, isPause , cardTextContent, currentLang}) => {
   const [visible, setVisible] = useState(false);
-
+  const text = cardTextContent?.[currentLang]?.[box.id] || "";
   useEffect(() => {
     setVisible(false);
     const timer = setTimeout(() => setVisible(true), delay * 1000);
@@ -51,7 +51,7 @@ const TextBoxPreview = ({ box, delay = 0, loopKey, isPause }) => {
     }
   };
 
-  const lines = box.text.split('\n').filter(line => line.trim() !== '');
+  const lines = text.split('\n').filter(line => line.trim() !== '');
   const charDelay = 0.08; // thời gian mỗi ký tự (giây)
   const pauseBetweenLines = 0.5; // nghỉ giữa các dòng (giây)
 

@@ -170,7 +170,8 @@ export const Languages = ({
   setCopyContent,
   onLanguageChange,
   removeLang,
-  isView = false
+  isView = false,
+  isCenter
 }) => {
   const [showAddBox, setShowAddBox] = useState(false);
   const refBox = useRef();
@@ -183,13 +184,14 @@ export const Languages = ({
 
   const handleAdd = () => {
     if (!newLang || languages.includes(newLang)) return;
+    console.log('add');
     onLanguageChange?.(newLang, true);
     setNewLang(null);
     setShowAddBox(false);
   };
 
   return (
-    <div className={classes.languages}>
+    <div className={`${classes.languages} ${isCenter? classes.center : ''}`}>
       <div className={classes.tabRow}>
         {languages.map((lang) => (
           <div
@@ -235,11 +237,15 @@ export const Languages = ({
             dropdownContainerSelector='#translationBox'
           />
           </div>
-          <Checkbox
-            label={"Copy current content"}
-            isChecked={copyContent}
-            setIsChecked={setCopyContent}
-          />
+          {
+            setCopyContent &&
+            <Checkbox
+              label={"Copy current content"}
+              isChecked={copyContent}
+              setIsChecked={setCopyContent}
+            />
+          }
+          
           <button className={`btn ${classes.saveButton}`} onClick={handleAdd}>
             Add
           </button>

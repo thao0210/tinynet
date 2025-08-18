@@ -156,7 +156,7 @@ const ItemContent = ({item, activeLang, setShowComments, showComments, navigate,
                         </div>
                     </div>
                 ) : (
-                    <CardPreview data={item.cardDetails} onClose={() => navigate('/list')} item={item} commentOnClick={commentOnClick} />
+                    <CardPreview data={item.cardDetails} onClose={() => navigate('/list')} item={item} commentOnClick={commentOnClick} cardTextContent={item.cardTextContent}/>
                 )
             }
         </>

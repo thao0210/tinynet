@@ -113,7 +113,8 @@ const ItemSchema = new mongoose.Schema({
   const CardSchema = new mongoose.Schema({
     cardDetails: { type: mongoose.Schema.Types.Mixed, required: true },
     thumbnailImage: String,
-    cardTextContent: { type: String, default: '' }
+    cardTextContent: { type: mongoose.Schema.Types.Mixed, default: null },
+    searchContent: String
   });
   const Card = Item.discriminator("card", CardSchema);
 

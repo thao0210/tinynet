@@ -76,6 +76,31 @@ export const getSaveError = (type, data, curItemId) => {
 export const isSaveDisabled = (type, data, curItemId) =>
   !!getSaveError(type, data, curItemId);
 
+// utils/validateTranslation.js
+const validateTranslation = (obj) => {
+  if (!obj || typeof obj !== 'object') return false;
+
+  const languages = Object.keys(obj);
+  if (languages.length === 0) return false;
+
+  // Gom tất cả id từ mọi ngôn ngữ
+  const allIds = new Set();
+  for (const lang of languages) {
+    Object.keys(obj[lang] || {}).forEach(id => allIds.add(id));
+  }
+
+  // Kiểm tra từng language có đủ id không
+  for (const lang of languages) {
+    for (const id of allIds) {
+      if (!obj[lang] || !(id in obj[lang]) || !obj[lang][id]?.trim()) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 const nextValidationRules = {
   story: (data) => {
     if (!data.text || data.text.trim().length < 30) {
@@ -87,7 +112,8 @@ const nextValidationRules = {
     return null;
   },
   card: (data) =>
-    !data.cardDetails ? 'Card details are required.' : null,
+    !(data.cardTextContent && validateTranslation(data.cardTextContent)) ?
+    'Text is required for card.' : null,
   collection: (data) =>
     !data.items || data.items.length === 0
       ? 'At least one item is required in the collection.'
@@ -96,10 +122,10 @@ const nextValidationRules = {
     !data.url || !data.url.includes('http')
       ? 'A valid URL is required.'
       : null,
-  draco: (data) =>
-    !data.base64 || data.base64.trim().length === 0
-      ? 'Drawing/coloring image is required.'
-      : null,
+  draco: (data, curItemId) => 
+    !curItemId && (!data.base64 || data.base64.trim().length === 0)
+    ? 'Drawing/coloring image is required.'
+    : null,
   vote: (data) =>
     !data.items || data.items.length < 2
       ? 'At least two vote items are required.'
@@ -107,8 +133,8 @@ const nextValidationRules = {
 };
 
 // Check if Next is disabled and return error message
-export const getNextError = (type, data) => {
+export const getNextError = (type, data, curItemId) => {
   const validator = nextValidationRules[type];
-  return validator ? validator(data) : null;
+  return validator ? validator(data, curItemId) : null;
 };
-export const isNextDisabled = (type, data) => !!getNextError(type, data);
+export const isNextDisabled = (type, data, curItemId) => !!getNextError(type, data, curItemId);

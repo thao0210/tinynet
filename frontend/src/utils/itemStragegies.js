@@ -60,9 +60,10 @@ export const itemStrategies = async (type, data, user, imageUrl, updatedContent,
         case "card":
             return {
                 ...general,
-                cardDetails: data?.cardDetails || '',
+                cardDetails: data?.cardDetails || null,
                 thumbnailImage: data?.thumbnailImage || null,
-                cardTextContent: data?.cardTextContent || ''
+                cardTextContent: data?.cardTextContent || null,
+                searchContent: data?.searchContent
             }
         case "collection":
             return {
