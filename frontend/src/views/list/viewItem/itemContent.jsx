@@ -15,6 +15,7 @@ import { FaEdit } from 'react-icons/fa';
 import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
+import Embed from '../../../components/embed';
 
 const ItemContent = ({item, activeLang, setShowComments, showComments, navigate, metaData, colItems, setShowContributionModal, contributionList, setCurContributionId, setLoadViewContent}) => {
     const [showResults, setShowResults] = useState(false);
@@ -36,6 +37,7 @@ const ItemContent = ({item, activeLang, setShowComments, showComments, navigate,
         }
         
     }
+
     return (
         <>
             {
@@ -140,11 +142,12 @@ const ItemContent = ({item, activeLang, setShowComments, showComments, navigate,
                             {
                                 item.type === 'shareUrl' && metaData &&
                                 (
-                                    <div className="metadata-preview" onClick={() => window.open(metaData.url, "_blank")}>
-                                        <img src={metaData.image} alt="Preview" />
-                                        <h3>{metaData.title}</h3>
-                                        <p>{metaData.description}</p>
-                                    </div>
+                                    // <div className="metadata-preview" onClick={() => window.open(metaData.url, "_blank")}>
+                                    //     <img src={metaData.image} alt="Preview" />
+                                    //     <h3>{metaData.title}</h3>
+                                    //     <p>{metaData.description}</p>
+                                    // </div>
+                                    <Embed url={metaData.url} />
                                 )
                             }
                             {

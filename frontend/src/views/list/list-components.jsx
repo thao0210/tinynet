@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@/store/useStore';
 import classes from './styles.module.scss';
 import ItemMenus from '@/components/itemMenu';
-import { FaHeart, FaEye } from "react-icons/fa";
+import { FaHeart, FaEye, FaPlayCircle } from "react-icons/fa";
 import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import { IoChatboxEllipses } from "react-icons/io5";
@@ -36,7 +36,7 @@ export const ItemType = ({item}) => {
                 </ul>
             }
             {
-                item.type === 'vote'  && item.items?.length > 0 &&
+                item.type === 'vote' && item.items?.length > 0 &&
                 <div className={classes.collectionItemsVote}>
                     {
                         item.items.map((it, index) => <BiSolidUpvote color='#d411d4' size={28} key={`vote${index}`} />)
@@ -48,16 +48,20 @@ export const ItemType = ({item}) => {
             }
             {
                 item.type === 'shareUrl' && item.preview && item.url &&
-                <>
+                <div>
                 {
                     metaData && metaData.image &&
-                    <img src={metaData.image} alt={item.type} />
+                    <>
+                    <img src={metaData.image} alt={item.type} /><br/>
+                    <h4>
+                        {
+                            metaData.source && <span>{metaData.source}</span>
+                        }
+                        {metaData.title}</h4>
+                    </>
                 }
-                <div>
-                <a href={item.url} target='_blank'>View shared url directly</a>
-                </div>
-                </>
-                
+                <a href={item.url} target='_blank' onClick={(e) => e.stopPropagation()}>View from {metaData.source} url</a>
+                </div>                
             }
             {
                 item.type === 'card' && item.thumbnailImage &&

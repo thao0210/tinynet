@@ -141,7 +141,6 @@ const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick, c
 
   if (!data?.screens?.length) return <div>No preview available</div>;
 
-  console.log('active lang', activeLang);
   return (
     <CardPreviewScreens
       screen={data.screens[screenIndex]}

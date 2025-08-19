@@ -74,10 +74,10 @@
         line-height: 40px;
         padding: 0;
         > div {
-          div {
-        font-size: 14px;
-        line-height: 18px;
-          }
+            div {
+              font-size: 14px;
+              line-height: 18px;
+            }
           span {
             display: none;
           }
@@ -89,6 +89,15 @@
       }
       h3 {
         margin-top: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        
+        > img {
+          border: none;
+          box-shadow: none;
+          border-radius: 0;
+        }
         > sup {
           background: black;
           color: white;
@@ -145,6 +154,17 @@
       }
       .image {
         text-align: center;
+        position: relative;
+        h4 span {
+          display: inline-block;
+          text-transform: capitalize;
+          font-size: 12px;
+          background: white;
+          border: #00000030 solid 1px;
+          color: black;
+          padding: 0 5px;
+          margin-right: 5px;
+        }
       }
       .infos {
         width: 50px;

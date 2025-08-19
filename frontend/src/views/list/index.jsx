@@ -56,7 +56,9 @@ const Item = ({item, setShowModal, className}) => {
             <div onClick={onItemClick}>
                 {
                     item.showTitle &&
-                    <h3>{item?.translations?.length > 0 ? getTitleByLang(item, navigator.language) : item.title} {item.type === 'collection' && item.items && item.items.length ? <sup>{item.items.length}</sup>: ''}
+                    <h3>
+                        <img src={`/${item.type}.svg`} height={16} />
+                        {item?.translations?.length > 0 ? getTitleByLang(item, navigator.language) : item.title} {item.type === 'collection' && item.items && item.items.length ? <sup>{item.items.length}</sup>: ''}
                     </h3>                                                                                                                                
                 }
                 <ItemType item={item} />

@@ -5,7 +5,6 @@ import urls from '@/sharedConstants/urls';
 export const useUpdateUserPoints = () => {
   const updateScore = async (points, description = '') => {
     try {
-     console.log('abc');
       const res = await api.post(urls.UPDATE_USERPOINTS, { points, description });
       return res.data;
     } catch (err) {

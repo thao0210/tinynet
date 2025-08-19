@@ -1,0 +1,24 @@
+.embedWrapper {
+  position: relative;
+  width: 100%;
+//   padding-bottom: 56.25%; // tỷ lệ 16:9
+  height: 100%!important;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  background: black;
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 14px;
+  padding: 8px;
+}

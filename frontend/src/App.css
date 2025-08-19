@@ -108,7 +108,7 @@ span.disabled {
   background: #f1f0ec;
 }
 
-.simple .story, .simple .collection, .simple .shareUrl, .simple .drawing, .simple .card, .simple .vote, .simple .locked{
+.simple .story, .simple .collection, .simple .shareUrl, .simple .draco, .simple .card, .simple .vote, .simple .locked{
   background: #f2f1ed;
   border-radius: 2px!important;
   /* border: #00000020 1px solid; */
@@ -120,7 +120,7 @@ span.disabled {
 .dark .viewItem, .dark .login > span{
 color: white;
 }
-.dark .story, .dark .collection, .dark .shareUrl, .dark .drawing, .dark .card, .dark .vote, .dark .locked{
+.dark .story, .dark .collection, .dark .shareUrl, .dark .draco, .dark .card, .dark .vote, .dark .locked{
   background: #222;
   color: white;
   border-radius: 10px!important;

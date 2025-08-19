@@ -119,7 +119,7 @@ const nextValidationRules = {
       ? 'At least one item is required in the collection.'
       : null,
   shareUrl: (data) =>
-    !data.url || !data.url.includes('http')
+    !data.url || !data.url.includes('http') || !data.preview
       ? 'A valid URL is required.'
       : null,
   draco: (data, curItemId) => 
