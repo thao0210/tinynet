@@ -372,16 +372,16 @@ const Draco = ({data, setData, onNext, curItemId, saveBgData, setSaveBgData}) =>
         }
         {
           showSubModal==='draco' &&
-          <Modal width={400} setShowModal={setShowSubModal}>
+          <Modal width={350} setShowModal={setShowSubModal}>
             <div className={classes.coloringList}>
               <h2>Select your choice</h2>
               <div className={classes.selectDraco}>
                 <div onClick={() => setShowSubModal(null)}>
-                  <img src='/image1.jpg' alt='drawing' height={50} /> <br/>
+                  <img src='/drawing.svg' alt='drawing' height={50} /> <br/>
                   Draw a new picture
                 </div>
                 <div onClick={() => setShowSubModal('coloring')}>
-                   <img src='/image2.jpg' alt='drawing' height={50} /><br/>
+                   <img src='/draco.svg' alt='drawing' height={50} /><br/>
                   Color a picture
                 </div>
               </div>
