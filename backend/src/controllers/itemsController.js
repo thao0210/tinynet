@@ -5,8 +5,8 @@ const itemStats = require('./items/items.stats');
 const itemChampions = require('./items/items.champion');
 const itemDraco = require('./items/items.draco');
 const itemVote = require('./items/items.vote');
+const fetchHtml = require("../utils/fetchHtml");
 
-const axios = require("axios");
 const metascraper = require("metascraper")([
   require('metascraper-image')(),
   require('metascraper-title')(),
@@ -17,39 +17,50 @@ const metascraper = require("metascraper")([
 const getUrlMetadata = async (req, res) => {
   try {
     const { url } = req.body;
-    const { data: html } = await axios.get(url);
+    if (!url) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing url" });
+    }
+
+    const html = await fetchHtml(url);
     const metadata = await metascraper({ html, url });
+
     const finalUrl = metadata.url || url;
     const hostname = new URL(finalUrl).hostname;
+
     let source = null;
     let isVideo = false;
+
     if (hostname.includes("youtube.com") || hostname.includes("youtu.be")) {
       source = "youtube";
       isVideo = true;
     } else if (hostname.includes("tiktok.com")) {
       source = "tiktok";
-      if (url.includes("/video/")) {
-        isVideo = true;
-      }
+      if (url.includes("/video/")) isVideo = true;
     } else if (hostname.includes("facebook.com")) {
       source = "facebook";
-      if (url.includes("/videos/") || url.includes("/reel/")) {
-        isVideo = true;
-      }
-    } else if (hostname.includes("instagram")) {
+      if (url.includes("/videos/") || url.includes("/reel/") || url.includes('/watch/')) isVideo = true;
+    } else if (hostname.includes("instagram.com")) {
       source = "instagram";
-      if (url.includes("/reel/") || url.includes("/p/")) {
-        isVideo = true;
-      }
+      if (url.includes("/reel/") || url.includes("/p/")) isVideo = true;
     }
 
-    res.json({ success: true, metadata: {
+    res.json({
+      success: true,
+      metadata: {
         ...metadata,
         isVideo,
         source,
-      }, });
+      },
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error fetching metadata", error });
+    console.error("getUrlMetadata error:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching metadata",
+      error: error.message,
+    });
   }
 };
 

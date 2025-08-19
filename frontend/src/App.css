@@ -300,6 +300,14 @@ color: white;
   width: 0;
 }
 
+.viewItem.embed{
+  background-color: black;
+}
+
+.embed #story-content{
+  color: white;
+}
+
 @keyframes typing {
   from { width: 0 }
   to { width: 100% }

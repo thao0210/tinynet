@@ -99,17 +99,19 @@ const CardPreviewScreens = ({
           </>
         )}
       </div>
-      {
-        item?.author &&
+      
         <div className={classes.author}>
-            <UserAvatar
-                avatar={item.author?.avatar || ''}
-                name={item.author?.fullName || item.author?.username}
-                username={null}
-                date={item.date}
-                profileId={item.author?._id}
-                isAnonymous={item.isAnonymous}
-            />
+            {
+              item?.author &&
+              <UserAvatar
+                  avatar={item.author?.avatar || ''}
+                  name={item.author?.fullName || item.author?.username}
+                  username={null}
+                  date={item.date}
+                  profileId={item.author?._id}
+                  isAnonymous={item.isAnonymous}
+              />
+            }
             {
               languages.length > 1 &&
               <Languages
@@ -124,8 +126,6 @@ const CardPreviewScreens = ({
               />
             }
         </div>
-      }
-      
     </div>
   );
 };

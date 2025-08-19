@@ -118,7 +118,7 @@ const ViewItem = ({itemId}) => {
     }, [item?.backgroundMusic, isMuted]);
 
     return (
-        <div className={classNames(classes.viewItem, 'viewItem', themeClasses.theme, themeClasses[item?.theme], {[themeClasses.dark]: isDark, [themeClasses.light]: !isDark && item?.themeType === 'colors'})} style={{background: ['colors', 'gradient'].includes(item?.themeType) && item?.theme ? item?.theme : ''}}>
+        <div className={classNames(classes.viewItem, 'viewItem', {['embed']: item?.type === 'shareUrl'}, themeClasses.theme, themeClasses[item?.theme], {[themeClasses.dark]: isDark, [themeClasses.light]: !isDark && item?.themeType === 'colors'})} style={{background: ['colors', 'gradient'].includes(item?.themeType) && item?.theme ? item?.theme : ''}}>
             <ItemThemes item={item} />
             {
                 loading &&
