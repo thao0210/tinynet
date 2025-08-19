@@ -6,6 +6,7 @@ const itemChampions = require('./items/items.champion');
 const itemDraco = require('./items/items.draco');
 const itemVote = require('./items/items.vote');
 const fetchHtml = require("../utils/fetchHtml");
+const { fetchYouTubeMeta } = require("../utils/fetchYoutubeMeta");
 
 const metascraper = require("metascraper")([
   require('metascraper-image')(),
@@ -14,34 +15,33 @@ const metascraper = require("metascraper")([
   require('metascraper-url')(),
 ]);
 
+
 const getUrlMetadata = async (req, res) => {
   try {
     const { url } = req.body;
-    if (!url) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing url" });
+    const hostname = new URL(url).hostname;
+
+    // ✅ Case YouTube
+    if (hostname.includes("youtube.com") || hostname.includes("youtu.be")) {
+      const ytMeta = await fetchYouTubeMeta(url);
+      return res.json({ success: true, metadata: ytMeta });
     }
 
+    // ✅ Các platform khác → dùng metascraper
     const html = await fetchHtml(url);
     const metadata = await metascraper({ html, url });
-
     const finalUrl = metadata.url || url;
-    const hostname = new URL(finalUrl).hostname;
+    const host = new URL(finalUrl).hostname;
 
     let source = null;
     let isVideo = false;
-
-    if (hostname.includes("youtube.com") || hostname.includes("youtu.be")) {
-      source = "youtube";
-      isVideo = true;
-    } else if (hostname.includes("tiktok.com")) {
+    if (host.includes("tiktok.com")) {
       source = "tiktok";
       if (url.includes("/video/")) isVideo = true;
-    } else if (hostname.includes("facebook.com")) {
+    } else if (host.includes("facebook.com")) {
       source = "facebook";
-      if (url.includes("/videos/") || url.includes("/reel/") || url.includes('/watch/')) isVideo = true;
-    } else if (hostname.includes("instagram.com")) {
+      if (url.includes("/videos/") || url.includes("/reel/")) isVideo = true;
+    } else if (host.includes("instagram.com")) {
       source = "instagram";
       if (url.includes("/reel/") || url.includes("/p/")) isVideo = true;
     }
@@ -50,17 +50,15 @@ const getUrlMetadata = async (req, res) => {
       success: true,
       metadata: {
         ...metadata,
-        isVideo,
         source,
+        isVideo,
       },
     });
   } catch (error) {
-    console.error("getUrlMetadata error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Error fetching metadata",
-      error: error.message,
-    });
+    console.error("getUrlMetadata error", error.message);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching metadata", error });
   }
 };
 
