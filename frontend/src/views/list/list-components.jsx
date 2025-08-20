@@ -44,7 +44,7 @@ export const ItemType = ({item}) => {
                 </div>
             }
             { item.type === 'draco' && item.imageUrl &&
-                <img src={item.imageUrl} alt={item.type} />
+                <img className={classes.image} src={item.imageUrl} alt={item.type} />
             }
             {
                 item.type === 'shareUrl' && item.preview && item.url &&
@@ -52,20 +52,21 @@ export const ItemType = ({item}) => {
                 {
                     metaData && metaData.image &&
                     <>
-                    <img src={metaData.image} alt={item.type} /><br/>
+                    <img className={classes.image} src={metaData.image} alt={item.type} /><br/>
+                    {
+                        ['facebook', 'youtube', 'instagram', 'tiktok'].includes(metaData.source)?
+                        <img className={classes[metaData.source]} src={`/${metaData.source}.svg`} height={20} />:
+                        <span className={classes.source}>{metaData.source}</span>
+                    }
                     <h4>
-                        {
-                            metaData.source && <span>{metaData.source}</span>
-                        }
                         {metaData.title}</h4>
                     </>
                 }
-                <a href={item.url} target='_blank' onClick={(e) => e.stopPropagation()}>View from {metaData.source} url</a>
                 </div>                
             }
             {
                 item.type === 'card' && item.thumbnailImage &&
-                <img src={item.thumbnailImage} alt={item.type} />
+                <img className={classes.image} src={item.thumbnailImage} alt={item.type} />
             }
             {
                 (item.hasPass || item.sendOtp) &&
