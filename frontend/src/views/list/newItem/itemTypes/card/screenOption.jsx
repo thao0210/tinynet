@@ -10,11 +10,12 @@ import { FaCameraRetro, FaImage, FaUpload, FaVideo } from "react-icons/fa";
 
 const ScreenOption = ({ screens, setScreens, setShowScreenOptions, activeScreenIndex }) => {
     const baseUrl = import.meta.env.VITE_R2_BASE_URL;
+    const videosUrl = import.meta.env.VITE_R2_VIDEOS_URL;
 
     const imageArray = Array.from({ length: 64 }, (_, i) => `${baseUrl}/card-bg/${i + 1}.webp`);
     const videoArray = Array.from({ length: 40 }, (_, i) => ({
-        videoUrl: `${baseUrl}/videos/v${i + 1}.mp4`,
-        thumbUrl: `${baseUrl}/videos/v${i + 1}.webp`,
+        videoUrl: `${videosUrl}/v${i + 1}.mp4`,
+        thumbUrl: `${videosUrl}/v${i + 1}.webp`,
         duration: null,
     }));
 
@@ -60,16 +61,29 @@ const ScreenOption = ({ screens, setScreens, setShowScreenOptions, activeScreenI
     };
 
     useEffect(() => {
-        videos.forEach((v, idx) => {
-            const video = document.createElement('video');
-            video.src = v.videoUrl;
-            video.addEventListener('loadedmetadata', () => {
-                const updated = [...videos];
-                updated[idx].duration = video.duration.toFixed(1);
-                setVideos([...updated]);
-            });
-        });
+        const loadMetadata = async () => {
+            const updated = [...videos];
+
+            await Promise.all(
+            updated.map((v, idx) => {
+                return new Promise((resolve) => {
+                const video = document.createElement('video');
+                video.src = v.videoUrl;
+                video.addEventListener('loadedmetadata', () => {
+                    updated[idx].duration = video.duration.toFixed(1);
+                    resolve();
+                });
+                video.addEventListener('error', () => resolve()); // tránh treo promise
+                });
+            })
+            );
+
+            setVideos(updated); // ✅ chỉ set 1 lần sau khi tất cả metadata đã có
+        };
+
+        loadMetadata();
     }, []);
+
 
     useEffect(() => {
         if (screens[activeScreenIndex]?.backgroundType === 'No image/video') {
