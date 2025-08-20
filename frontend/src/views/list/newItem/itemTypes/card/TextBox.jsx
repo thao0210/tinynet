@@ -19,7 +19,7 @@ const TEXT_EFFECTS = ['none', 'typing', 'zoom', 'dancing', 'bounce', 'wave', 'sh
 const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteTextbox, setActiveIndex, screen, cardTextContent, currentLang}) => {
     const text = cardTextContent?.[currentLang]?.[box.id] || "";
     const addEmoji = (emojiObject) => {
-        updateTextbox(box.id, { text: box.text + emojiObject }, currentLang);
+        updateTextbox(box.id, { text: text + emojiObject }, currentLang);
     }
     const renderEditableBox = () => (
         <div
