@@ -63,7 +63,7 @@ const Card = ({ data, setData }) => {
   // lang -> id -> text
   const [cardTextContent, setCardTextContent] = useState({});
   const {user} = useStore();
-  const [activeLang, setActiveLang] = useState(data?.language || user.lang || navigator.language || 'en-US');
+  const [activeLang, setActiveLang] = useState(data?.language || user?.lang || navigator?.language || 'en-US');
   const [newLang, setNewLang] = useState(user.lang || navigator.language || 'en-US');
   const [languages, setLanguages] = useState([activeLang]);
   const [searchContent, setSearchContent] = useState('');

@@ -14,7 +14,7 @@ const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick, c
   const screen = data.screens[screenIndex];
   const getSpeedAt = useVideoSpeedEffect(screen.background?.speedEffect || 'speed: 1x', screen.time);
   const {user} = useStore();
-  const [activeLang, setActiveLang] = useState(user.lang || navigator.language || 'en-US');
+  const [activeLang, setActiveLang] = useState(user?.lang || navigator?.language || 'en-US');
   const [languages, setLanguages] = useState([]);
 
   useEffect(() => {
