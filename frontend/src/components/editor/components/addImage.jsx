@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import Compressor from 'compressorjs';
 import { FaImage} from 'react-icons/fa';
-import { MdOutlineRadioButtonUnchecked, MdOutlineRadioButtonChecked, MdFiberManualRecord } from "react-icons/md";
+import { MdOutlineRadioButtonUnchecked, MdOutlineRadioButtonChecked } from "react-icons/md";
 import Tippy from "@tippyjs/react";
 import Dropdown from "@/components/dropdown";
 import classes from '../styles.module.scss';
@@ -47,7 +47,7 @@ const AddImage = ({error, setError, editor}) => {
         setImageOption('upload');
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = 'image/*';
+        input.accept = 'image/png, image/jpeg, image/webp';
         input.onchange = (event) => {
           const file = event.target.files[0];
           if (file) {
@@ -56,11 +56,12 @@ const AddImage = ({error, setError, editor}) => {
                 type: 'image',
                 attrs: {
                   src: base64Url,
-                  width: 500,
+                  width: 400,
                   align: 'left',
                   style: 'margin-left:20px; margin-right: 20px'
                 }
-              }).run();
+              }
+            ).run();
             });
             // setShowImageOptions(false);
           }

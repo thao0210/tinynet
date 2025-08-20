@@ -7,7 +7,7 @@ const CustomResizableImage = Node.create({
   group: 'block',
   draggable: true,
   selectable: true,
-  atom: true,
+  // atom: true,
 
   addAttributes() {
     return {

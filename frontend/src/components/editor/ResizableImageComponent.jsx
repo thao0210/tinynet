@@ -6,9 +6,9 @@ import { FaAlignLeft, FaAlignCenter, FaAlignRight, FaRegCircle } from "react-ico
 import { AiOutlineBorder } from "react-icons/ai";
 import { RiShadowLine } from "react-icons/ri";
 
-export default function ResizableImageComponent({ node, updateAttributes, selected }) {
+export default function ResizableImageComponent({ node, updateAttributes, selected, getPos, editor }) {
   const { src, alt, width, height, style = '' } = node.attrs
-
+  const [showTypeBelow, setShowTypeBelow] = useState(true);
   const allStyleObj = parseStyleString(style)
 
   // Tách style cho wrapper và img
@@ -72,23 +72,58 @@ export default function ResizableImageComponent({ node, updateAttributes, select
     updateAttributes({ style: stringifyStyle(styleObj) })
   }
 
+  const insertBelow = () => {
+    const pos = typeof getPos === 'function' ? getPos() : null
+    if (typeof pos === 'number') {
+      const after = pos + node.nodeSize
+      editor
+        .chain()
+        .insertContentAt(after, { type: 'paragraph' })
+        .setTextSelection(after + 1)
+        .focus()
+        .run()
+    }
+    setShowTypeBelow(false);
+  }
+
+  const setAlign = (type) => {
+    const styleObj = parseStyleString(style)
+
+    // reset align styles
+    delete styleObj.float
+    delete styleObj.display
+    delete styleObj.margin
+
+    if (type === 'left') {
+      styleObj.float = 'left'
+    }
+    if (type === 'right') {
+      styleObj.float = 'right'
+    }
+    if (type === 'center') {
+      styleObj.display = 'block'
+      styleObj.margin = '0 auto'
+    }
+
+    updateAttributes({ style: stringifyStyle(styleObj) })
+  }
+
+
   return (
     <NodeViewWrapper
       className="resizable-image-wrapper"
       style={{
         position: 'relative',
-        display: 'inline-block',
+        width: width || 'fit-content',
+        // display: 'inline-block',
         ...wrapperStyles,
       }}
     >
       {selected && (
         <div className="image-toolbar">
-          <button onClick={() => toggleStyle('float', 'left', true)}><FaAlignLeft /></button>
-          <button onClick={() => {
-            toggleStyle('display', 'block', true)
-            toggleStyle('margin', '0 auto')
-          }}><FaAlignCenter /></button>
-          <button onClick={() => toggleStyle('float', 'right', true)}><FaAlignRight /></button>
+          <button onClick={() => setAlign('left')}><FaAlignLeft /></button>
+          <button onClick={() => setAlign('center')}><FaAlignCenter /></button>
+          <button onClick={() => setAlign('right')}><FaAlignRight /></button>
           <button onClick={() => toggleMultipleStyles({
             border: '5px solid white',
             'border-radius': '20px',
@@ -138,6 +173,15 @@ export default function ResizableImageComponent({ node, updateAttributes, select
           }}
         />
       </Resizable>
+      {
+        showTypeBelow &&
+        <div
+          className="type-below"
+          onClick={insertBelow}
+          style={{ minHeight: 30, cursor: 'text' }}
+        />
+      }
+      
     </NodeViewWrapper>
   )
 }
