@@ -13,9 +13,10 @@ const ScreenOption = ({ screens, setScreens, setShowScreenOptions, activeScreenI
     const videosUrl = import.meta.env.VITE_R2_VIDEOS_URL;
 
     const imageArray = Array.from({ length: 64 }, (_, i) => `${baseUrl}/card-bg/${i + 1}.webp`);
+    const videoImagesArray = Array.from({ length: 40 }, (_, i) => `${baseUrl}/videos/v${i + 1}.webp`);
     const videoArray = Array.from({ length: 40 }, (_, i) => ({
         videoUrl: `${videosUrl}/v${i + 1}.mp4`,
-        thumbUrl: `${videosUrl}/v${i + 1}.webp`,
+        thumbUrl: videoImagesArray[i],
         duration: null,
     }));
 
