@@ -6,6 +6,14 @@ export const isLanguagesContentValid = (data) => {
   });
 };
 
+export const isCardTitleValid = (data) => {
+  const langs = Object.keys(data.cardTextContent || {});
+    return langs.every(lang => {
+      const title = data.cardMeta?.[lang]?.title;
+      return !!title && title.trim().length >= 4;
+    });
+}
+
 export const isAllLanguagesValid = (data) => {
   const allLangs = [data.language, ...(data.translations?.map(t => t.lang) || [])].filter(Boolean);
   return allLangs.every(lang => {
@@ -55,7 +63,11 @@ export const getSaveError = (type, data, curItemId) => {
 
   if (type === 'story' && !isAllLanguagesValid(data)) {
     return 'Title (at least 4 characters long) is required in every language.';
-}
+  }
+
+  if (type === 'card' && !isCardTitleValid(data)) {
+    return 'Title (at least 4 characters long) is required in every language.';
+  }
 
   if (type === 'shareUrl' && !data.preview) {
     return 'A valid URL preview is required.';

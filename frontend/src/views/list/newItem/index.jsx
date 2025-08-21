@@ -80,6 +80,9 @@ const NewItem = () => {
     };
 
     const [languages, setLanguages] = useState(() => {
+        if (data.type === "card") {
+            return Object.keys(data.cardTextContent || {});
+        }
         return [
             data.language,
             ...(data.translations?.map((t) => t.lang) || [])
@@ -87,12 +90,16 @@ const NewItem = () => {
     });
 
     useEffect(() => {
-        const allLangs = [
-            data.language,
-            ...(data.translations?.map(t => t.lang) || [])
-        ].filter(Boolean);
+        if (data.type === "card") {
+            setLanguages(Object.keys(data.cardTextContent || {}));
+        } else {
+            const allLangs = [
+                data.language,
+                ...(data.translations?.map(t => t.lang) || [])
+            ].filter(Boolean);
 
-        setLanguages([...new Set(allLangs)]);
+            setLanguages([...new Set(allLangs)]);
+        }
     }, [data]);
 
     useEffect(()=>{

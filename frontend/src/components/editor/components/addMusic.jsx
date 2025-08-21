@@ -61,8 +61,9 @@ const AddMusic = ({ setData }) => {
       dropdownContainerSelector='#editor'
       tippy={'Add Music'}
       stopPropagation
-      width={300}
+      width={320}
     >
+      {({ onClose }) => (
       <div id="story-music" className={classes.music}>
         <Checkbox 
           label="Random music from the system"
@@ -101,11 +102,15 @@ const AddMusic = ({ setData }) => {
       )}
 
       <div className={classes.actions}>
-        <button className={'btn'} onClick={handleConfirm}>
+        <button className={'btn'} onClick={() => {
+          handleConfirm();
+          onClose();
+          }}>
           Use this music
         </button>
       </div>
     </div>
+    )}
     </Dropdown>
   );
 };

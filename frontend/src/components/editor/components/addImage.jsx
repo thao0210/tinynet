@@ -96,6 +96,7 @@ const AddImage = ({error, setError, editor}) => {
             dropdownContainerSelector=".editor"
             stopPropagation
           >
+            {({ onClose }) => (
             <ul className={classes.imageOptions}>
               <li onClick={() => {
                 setImageOption('url')}}>
@@ -109,13 +110,16 @@ const AddImage = ({error, setError, editor}) => {
                 </div>
                 
               </li>
-              <li onClick={addImage}>
+              <li onClick={() => {
+                addImage();
+                onClose();
+                }}>
                 {
                   imageOption === 'upload' ? <MdOutlineRadioButtonChecked /> : <MdOutlineRadioButtonUnchecked />
                 }
                 <label>Upload image</label>
               </li>
-            </ul>
+            </ul>)}
           </Dropdown>
         </div>
     )

@@ -7,7 +7,7 @@ import {useStore} from '@/store/useStore';
 const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick, cardTextContent}) => {
   const [screenIndex, setScreenIndex] = useState(0);
   const [loopKey, setLoopKey] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isPause, setIsPause] = useState(false);
   const videoRef = useRef();
   const loopTimerRef = useRef(null);

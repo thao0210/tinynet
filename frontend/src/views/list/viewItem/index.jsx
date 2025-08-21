@@ -30,7 +30,7 @@ const ViewItem = ({itemId}) => {
     const navigate = useNavigate();
     const [activeLang, setActiveLang] = useState(item?.language || navigator.language || navigator.userLanguage || 'en-US');
     const [languages, setLanguages] = useState([]);
-    const [isMuted, setIsMuted] = useState(false);
+    const [isMuted, setIsMuted] = useState(true);
     const [showContributionModal, setShowContributionModal] = useState(false);
     const [curContributionId, setCurContributionId] = useState('');
     const [contributionList, setContributionList] = useState([]);

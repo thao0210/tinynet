@@ -314,27 +314,46 @@ export const TextToSpeech = ({languages, data, setData}) => {
   </div>
   )
 }
+
 export const Title = ({ languages, setData, data }) => {
-  const [activeTitleLang, setActiveTitleLang] = useState(data.language);
+  const initialLang =
+    data.type === "card" ? (languages?.[0] || data.language) : data.language;
 
+  const [activeTitleLang, setActiveTitleLang] = useState(initialLang);
+
+  // Chỉ reset khi type đổi hoặc active lang không còn hợp lệ
   useEffect(() => {
-    // Reset khi data.language thay đổi
-    setActiveTitleLang(data.language);
-  }, [data.language]);
+    if (!languages || languages.length === 0) return;
 
-  const onSingleLangTitleChange = (e) => {
-    setData({ ...data, title: e.target.value });
+    if (data.type === "card") {
+      if (!languages.includes(activeTitleLang)) {
+        setActiveTitleLang(languages[0]); // pick ngôn ngữ đầu khi danh sách đổi
+      }
+    } else {
+      // story: dùng danh sách languages nhận từ props cho nhất quán
+      if (!languages.includes(activeTitleLang)) {
+        setActiveTitleLang(data.language);
+      }
+    }
+  }, [data.type, data.language, languages, activeTitleLang]);
+
+  // ----- STORY -----
+  const onSingleLangTitleChangeStory = (e) => {
+    setData(prev => ({ ...prev, title: e.target.value }));
   };
 
-  const onMultiLangTitleChange = (newTitle, lang) => {
+  const onMultiLangTitleChangeStory = (newTitle, lang) => {
     setData(prev => {
       const updated = { ...prev };
       if (lang === updated.language) {
         updated.title = newTitle;
       } else {
-        const i = updated.translations?.findIndex(t => t.lang === lang);
-        if (i !== -1) {
-          updated.translations[i].title = newTitle;
+        const idx = updated.translations?.findIndex(t => t.lang === lang) ?? -1;
+        if (idx !== -1) {
+          // clone mảng để tránh mutate tại chỗ
+          const next = [...updated.translations];
+          next[idx] = { ...next[idx], title: newTitle };
+          updated.translations = next;
         } else {
           updated.translations = [
             ...(updated.translations || []),
@@ -346,18 +365,42 @@ export const Title = ({ languages, setData, data }) => {
     });
   };
 
+  // ----- CARD -----
+  const onTitleChangeCard = (newTitle, lang) => {
+    setData(prev => {
+      const updated = { ...prev };
+      updated.cardMeta = {
+        ...(updated.cardMeta || {}),
+        [lang]: {
+          ...(updated.cardMeta?.[lang] || {}),
+          title: newTitle
+        }
+      };
+      return updated;
+    });
+  };
+
+  // ----- HANDLE CHANGE -----
   const handleChange = (e) => {
     const value = e.target.value;
-    if (languages.length > 1) {
-      onMultiLangTitleChange(value, activeTitleLang);
+    if (data.type === "card") {
+      onTitleChangeCard(value, activeTitleLang);
     } else {
-      onSingleLangTitleChange(e);
+      if (languages.length > 1) {
+        onMultiLangTitleChangeStory(value, activeTitleLang);
+      } else {
+        onSingleLangTitleChangeStory(e);
+      }
     }
   };
 
-  const currentTitle = languages.length > 1
-    ? getTitleByLang(data, activeTitleLang)
-    : data?.title;
+  // ----- CURRENT TITLE -----
+  const currentTitle =
+    data.type === "card"
+      ? (data.cardMeta?.[activeTitleLang]?.title || "")
+      : (languages.length > 1
+          ? getTitleByLang(data, activeTitleLang)
+          : (data?.title || ""));
 
   return (
     <div className={classes.title}>
@@ -388,6 +431,7 @@ export const Title = ({ languages, setData, data }) => {
     </div>
   );
 };
+
 
 export const LanguageModal = ({setShowLanguage, setNewLang, newLang, setData}) => {
   const onLangUpdate = () => {
