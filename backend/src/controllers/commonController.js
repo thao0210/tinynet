@@ -134,10 +134,22 @@ const r2Upload = async (req, res) => {
     const tempOutput = path.join(os.tmpdir(), `output-${Date.now()}${ext}`);
 
     if (mimetype.startsWith('image/')) {
-      processedBuffer = await sharp(buffer)
-        .resize({ width: 1024, height: 1024, fit: 'inside' })
-        .webp({ quality: 80 })
-        .toBuffer();
+      try {
+        processedBuffer = await sharp(buffer)
+          .resize({ width: 1024, height: 1024, fit: 'inside' })
+          .webp({ quality: 80 })
+          .toBuffer();
+      } catch (err) {
+        console.error("Sharp error:", err.message);
+        return res.status(500).set({
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        }).json({
+          error: "Sharp processing failed",
+          message: err.message
+        });
+      }
     }
     else if (mimetype.startsWith('video/')) {
       fs.writeFileSync(tempInput, buffer);
