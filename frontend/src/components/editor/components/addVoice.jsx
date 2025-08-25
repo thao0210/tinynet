@@ -1,5 +1,5 @@
 // AddVoice.jsx
-import Dropdown from "../../dropdown";
+import Dropdown from "@/components/dropdown";
 import classes from "../styles.module.scss";
 import { capitalFirstLetter, voiceLanguages } from "@/utils/lang";
 import Tippy from "@tippyjs/react";

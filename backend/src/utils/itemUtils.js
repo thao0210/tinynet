@@ -29,7 +29,8 @@ const prepareItemData = (type, body) => {
           cardDetails: body.cardDetails,
           thumbnailImage: body.thumbnailImage,
           cardTextContent: body.cardTextContent,
-          searchContent: body.searchContent
+          searchContent: body.searchContent,
+          cardMeta: body.cardMeta,
         };
       case "shareUrl":
         return {

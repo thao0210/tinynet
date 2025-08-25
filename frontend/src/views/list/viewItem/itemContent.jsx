@@ -10,12 +10,12 @@ import star from "@/assets/star.svg";
 import { useStore } from '@/store/useStore';
 import { MdDeleteForever, MdOutlinePostAdd } from "react-icons/md";
 import Tippy from '@tippyjs/react';
-import UserAvatar from '../../../components/userAvatar';
+import UserAvatar from '@/components/userAvatar';
 import { FaEdit } from 'react-icons/fa';
 import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
-import Embed from '../../../components/embed';
+import Embed from '@/components/embed';
 
 const ItemContent = ({item, activeLang, setShowComments, showComments, navigate, metaData, colItems, setShowContributionModal, contributionList, setCurContributionId, setLoadViewContent}) => {
     const [showResults, setShowResults] = useState(false);
@@ -61,7 +61,8 @@ const ItemContent = ({item, activeLang, setShowComments, showComments, navigate,
                         <div className={themeClasses.itemContent}>
                             <h1>
                             {
-                                item.showTitle && item?.translations?.length > 0 ? getTitleByLang(item, activeLang) : item.showTitle ? item.title : ''
+                                item.showTitle && 
+                                item?.translations?.length > 0 ? getTitleByLang(item, activeLang) : item.showTitle ? item.title : ''
                             }
                             </h1>
                             {
@@ -142,11 +143,6 @@ const ItemContent = ({item, activeLang, setShowComments, showComments, navigate,
                             {
                                 item.type === 'shareUrl' && metaData &&
                                 (
-                                    // <div className="metadata-preview" onClick={() => window.open(metaData.url, "_blank")}>
-                                    //     <img src={metaData.image} alt="Preview" />
-                                    //     <h3>{metaData.title}</h3>
-                                    //     <p>{metaData.description}</p>
-                                    // </div>
                                     <Embed url={metaData.url} />
                                 )
                             }

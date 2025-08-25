@@ -16,7 +16,7 @@ import Card from './itemTypes/card';
 import { useSaveItem } from '@/hooks/useSaveItem';
 import DOMPurify from 'dompurify';
 import Tippy from '@tippyjs/react';
-import { getNextError, getSaveError, isNextDisabled, isSaveDisabled } from '../../../utils/validators';
+import { getNextError, getSaveError, isNextDisabled, isSaveDisabled } from '@/utils/validators';
 
 const NewItem = () => {
     const [type, setType] = useState(null);

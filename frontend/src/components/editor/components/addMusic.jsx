@@ -1,5 +1,5 @@
 import { FaMusic } from "react-icons/fa"
-import Dropdown from "../../dropdown"
+import Dropdown from "@/components/dropdown"
 import FileUploader from '@/components/fleUpload';
 import classes from '../styles.module.scss';
 import { useEffect, useRef, useState } from "react";

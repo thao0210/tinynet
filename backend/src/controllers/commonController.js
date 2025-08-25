@@ -192,7 +192,7 @@ const r2Upload = async (req, res) => {
 
     const publicURL = `${process.env.R2_UPLOAD_URL}/${key}`;
     const updatedDate = Date.now();
-    console.log('File uploaded successfully:', publicURL);
+    // console.log('File uploaded successfully:', publicURL);
 
      // Trả về URL và key
     return res.json({ success: true, url: publicURL, date: updatedDate });

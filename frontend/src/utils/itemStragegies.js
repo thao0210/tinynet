@@ -63,7 +63,8 @@ export const itemStrategies = async (type, data, user, imageUrl, updatedContent,
                 cardDetails: data?.cardDetails || null,
                 thumbnailImage: data?.thumbnailImage || null,
                 cardTextContent: data?.cardTextContent || null,
-                searchContent: data?.searchContent
+                searchContent: data?.searchContent,
+                cardMeta: data?.cardMeta,
             }
         case "collection":
             return {

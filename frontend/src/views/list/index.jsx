@@ -57,7 +57,15 @@ const Item = ({item, setShowModal, className}) => {
                 {
                     item.showTitle &&
                     <h3>
-                        {item?.translations?.length > 0 ? getTitleByLang(item, navigator.language) : item.title} {item.type === 'collection' && item.items && item.items.length ? <sup>{item.items.length}</sup>: ''}
+                        {
+                            item.type === "card"
+                            ? (item.cardMeta?.[navigator.language]?.title || "card")
+                            : (item?.translations?.length > 0
+                                ? getTitleByLang(item, navigator.language)
+                                : (item?.title || ""))
+                        }
+                        {item.type === 'collection' && item.items && item.items.length ? <sup>{item.items.length}</sup>: ''}
+                        {/* {item?.translations?.length > 0 ? getTitleByLang(item, navigator.language) : item.title} {item.type === 'collection' && item.items && item.items.length ? <sup>{item.items.length}</sup>: ''} */}
                     </h3>                                                                                                                                
                 }
                 <ItemType item={item} />

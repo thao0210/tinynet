@@ -11,7 +11,7 @@ const TextBoxPreview = ({ box, delay = 0, loopKey, isPause , cardTextContent, cu
     setVisible(false);
     const timer = setTimeout(() => setVisible(true), delay * 1000);
     return () => clearTimeout(timer);
-  }, [delay, loopKey]);
+  }, [delay, loopKey, currentLang]);
 
   if (!visible) return null;
 
