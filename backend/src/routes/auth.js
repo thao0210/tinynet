@@ -16,7 +16,7 @@ router.get("/facebook", getFacebook);
 router.get('/google', getGoogle);
 router.get("/facebook/callback", getFacebookCallback);
 // router.get('/google/callback', getGoogleCallback);
-router.get('/google/callback', passport.authenticate("google", { failureRedirect: "/login" }),
+router.get('/google/callback', passport.authenticate("google", { failureRedirect: "/login", session: false }),
   (req, res) => {
     if (!req.user) {
       console.error("Google callback: req.user undefined");
