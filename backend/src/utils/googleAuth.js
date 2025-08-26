@@ -22,6 +22,10 @@ passport.use(
             fullName: profile.displayName,
             avatar: profile.photos?.[0]?.value || null,
             isVerified: true,
+            timezone: "Asia/Saigon",
+            lang: "en-US",
+            role: "user",
+            userPoints: 0,
           });
           await user.save();
         }
@@ -41,7 +45,11 @@ passport.use(
           fullName: user.fullName,
           avatar: user.avatar,
           accessToken: myAccessToken,
-          refreshToken: myRefreshToken
+          refreshToken: myRefreshToken,
+          timezone: "Asia/Saigon",
+          lang: "en-US",
+          role: "user",
+          userPoints: 0,
         };
 
         return done(null, safeUser);   // ✅ chỉ truyền 2 tham số

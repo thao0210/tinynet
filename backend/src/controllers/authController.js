@@ -277,7 +277,6 @@ const getGoogleCallback = () => [
 
     res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict" });
-
     res.redirect(process.env.VITE_FE_URL); // Điều hướng về trang chính
   }
 ]
