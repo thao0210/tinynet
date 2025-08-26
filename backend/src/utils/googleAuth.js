@@ -11,6 +11,7 @@ passport.use(
       callbackURL: process.env.GOOGLE_CALLBACK_URL, // URL callback sau khi đăng nhập thành công
     },
     async (accessToken, refreshToken, profile, done) => {
+      console.log("Google callback triggered");
       try {
         let user = await User.findOne({ email: profile.emails[0].value });
 
@@ -35,6 +36,7 @@ passport.use(
 
         return done(null, { user, accessToken, refreshToken });
       } catch (err) {
+        console.error("Error in Google strategy:", err);
         return done(err, null);
       }
     }

@@ -271,7 +271,7 @@ const getGoogle = passport.authenticate("google", { scope: ["profile", "email"] 
 const getFacebook = passport.authenticate("facebook", { scope: ["email"] });
 
 const getGoogleCallback = () => [
-  passport.authenticate("google", { failureRedirect: "/" }),
+  passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
     const { user, accessToken, refreshToken } = req.user;
 
@@ -282,7 +282,7 @@ const getGoogleCallback = () => [
   }
 ]
 
-const getFacebookCallback = () => {
+const getFacebookCallback = () => [
   passport.authenticate("facebook", { failureRedirect: "/" }),
   (req, res) => {
     const { user, accessToken, refreshToken } = req.user;
@@ -292,5 +292,5 @@ const getFacebookCallback = () => {
 
     res.redirect(process.env.VITE_FE_URL);
   }
-}
+]
 module.exports = {checkAuth, refreshToken, postUserRegister, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword}

@@ -54,9 +54,9 @@ export const ItemType = ({item}) => {
                     <>
                     <img className={classes.image} src={metaData.image} alt={item.type} /><br/>
                     {
-                        ['facebook', 'youtube', 'instagram', 'tiktok'].includes(metaData.source)?
+                        ['facebook', 'youtube', 'instagram', 'tiktok'].includes(metaData.source) && metaData.title && metaData.title!== 'Error'?
                         <img className={classes[metaData.source]} src={`/${metaData.source}.svg`} height={20} />:
-                        <span className={classes.source}>{metaData.source}</span>
+                        <span className={classes.source}>{`Source: ${metaData.source}`}</span>
                     }
                     <h4>
                         {metaData.title && metaData.title!== 'Error' ? metaData.title : ''}</h4>

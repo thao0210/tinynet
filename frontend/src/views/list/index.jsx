@@ -65,7 +65,6 @@ const Item = ({item, setShowModal, className}) => {
                                 : (item?.title || ""))
                         }
                         {item.type === 'collection' && item.items && item.items.length ? <sup>{item.items.length}</sup>: ''}
-                        {/* {item?.translations?.length > 0 ? getTitleByLang(item, navigator.language) : item.title} {item.type === 'collection' && item.items && item.items.length ? <sup>{item.items.length}</sup>: ''} */}
                     </h3>                                                                                                                                
                 }
                 <ItemType item={item} />
@@ -254,16 +253,15 @@ const Home = () => {
                 }
                 {hasMore && <div ref={ref} style={{ height: 20 }} />}
             </div>
-            {
-                list && list.length > 0 &&
-                <Filters 
-                    setFilters={setFilters} 
-                    setShowFilters={setShowFilters} 
-                    showFilters={showFilters} 
-                    filters={filters}
-                    setIsDarkTheme={setIsDarkTheme}
-                />
-            }
+            
+            <Filters 
+                setFilters={setFilters} 
+                setShowFilters={setShowFilters} 
+                showFilters={showFilters} 
+                filters={filters}
+                setIsDarkTheme={setIsDarkTheme}
+            />
+            
             
             <div className={classes.bMenusLeft} ref={infoRef}>
                 <Tippy content='Website Information'>
