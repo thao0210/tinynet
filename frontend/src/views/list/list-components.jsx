@@ -59,7 +59,7 @@ export const ItemType = ({item}) => {
                         <span className={classes.source}>{metaData.source}</span>
                     }
                     <h4>
-                        {metaData.title}</h4>
+                        {metaData.title && metaData.title!== 'Error' ? metaData.title : ''}</h4>
                     </>
                 }
                 </div>                

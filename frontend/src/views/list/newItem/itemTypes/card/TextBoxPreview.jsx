@@ -23,6 +23,7 @@ const TextBoxPreview = ({ box, delay = 0, loopKey, isPause , cardTextContent, cu
     height: box.height,
     fontSize: box.fontSize,
     fontFamily: box.fontFamily,
+    fontWeight: box.fontWeight,
     textAlign: box.textAlign,
     color: box.color,
     padding: '0px 10px',

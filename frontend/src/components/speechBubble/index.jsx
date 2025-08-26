@@ -39,10 +39,14 @@ const SpeechBubble = ({
       <svg
         className={styles.svgBackground}
         style={{ opacity, borderRadius: 20 }}
-        viewBox={shape === 'starburst' ? '29 201 242 157' : '0 0 240 100'}
+        viewBox={shape === 'starburst' ? '29 201 242 157' : '-3 -5 240 106'}
         preserveAspectRatio="none"
       >
-        <path d={pathD} fill={fill} stroke={strokeColor} strokeWidth={3} style={{boxShadow: '2px 3px 5px #000'}} />
+        {
+          shape === 'square' ?
+          (<rect x="0" y="0" width="234" height="94" rx="25" fill={fill} stroke={strokeColor} strokeWidth={2}/>) :
+          (<path d={pathD} fill={fill} stroke={strokeColor} strokeWidth={2} style={{boxShadow: '2px 3px 5px #000'}} />)
+        }
       </svg>
 
       <div className={styles.content}>{children}</div>

@@ -3,7 +3,7 @@ import Tippy from "@tippyjs/react";
 import { Fonts, FontSizes } from "@/sharedConstants/data";
 import Dropdown from '@/components/dropdown';
 import classes from './styles.module.scss';
-import { FaAlignCenter, FaAlignLeft, FaAlignRight, FaSmile } from "react-icons/fa";
+import { FaAlignCenter, FaAlignLeft, FaAlignRight, FaBold, FaSmile } from "react-icons/fa";
 import { CgSandClock } from "react-icons/cg";
 import { RiShadowLine } from "react-icons/ri";
 import { MdFilterFrames } from "react-icons/md";
@@ -71,6 +71,7 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
             style={{
             fontSize: box.fontSize,
             fontFamily: box.fontFamily,
+            fontWeight: box.fontWeight,
             textAlign: box.textAlign,
             color: box.color,
             textShadow:
@@ -162,6 +163,14 @@ const ScreenTextBox = ({box, activeIndex, index, boxRefs, updateTextbox, deleteT
                         tippy='Font Size'
                         isSmallText
                     />
+                    </div>
+                    <div>
+                        <Tippy content={box.fontWeight === 'bold' ? 'unBold' : 'Bold'}>
+                            <span onClick={() => updateTextbox(box.id, { fontWeight: box.fontWeight === 'bold' ? 'normal' : 'bold'}, currentLang)}>
+                                <FaBold />
+                            </span>
+                        </Tippy>
+                        
                     </div>
                     <div>
                     <Dropdown

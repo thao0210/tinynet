@@ -35,7 +35,7 @@ const ShareUrl = ({data, setData, metaData, setMetaData}) => {
         <div className={classes.share}>
             <div>
                 <label>Url</label>
-                <input className={classes.text} type='text' value={data.url} onChange={handleUrlInput} />
+                <input className={classes.text} type='text' value={data.url || ""} onChange={handleUrlInput} />
                 {
                   loading && <Loader />
                 }

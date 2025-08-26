@@ -7,6 +7,7 @@ const itemDraco = require('./items/items.draco');
 const itemVote = require('./items/items.vote');
 const fetchHtml = require("../utils/fetchHtml");
 const { fetchYouTubeMeta } = require("../utils/fetchYoutubeMeta");
+const uploadImageFromUrlToR2 = require("../utils/uploadImageFromUrl");
 
 const metascraper = require("metascraper")([
   require('metascraper-image')(),
@@ -45,6 +46,15 @@ const getUrlMetadata = async (req, res) => {
       source = "instagram";
       if (url.includes("/reel/") || url.includes("/p/")) isVideo = true;
     }
+
+    // if (metadata.image) {
+    //   try {
+    //     const r2ImageUrl = await uploadImageFromUrlToR2(metadata.image);
+    //     metadata.image = r2ImageUrl;
+    //   } catch (err) {
+    //     console.error("Upload image to R2 failed:", err.message);
+    //   }
+    // }
 
     res.json({
       success: true,
