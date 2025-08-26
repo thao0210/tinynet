@@ -23,6 +23,7 @@ const path = require("path");
 const app = express();
 
 require('./cron')();
+app.use(cookieParser());
 
 app.use(
   session({
@@ -36,7 +37,6 @@ app.use(
 // Khởi tạo passport
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cookieParser());
 
 // Middleware
 app.use(cors({
