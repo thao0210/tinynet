@@ -108,7 +108,7 @@ const Login = ({nextModal}) => {
             <div>
                 <div className={styles.or}>or</div>
                 <div className={styles.others}>
-                    <span onClick={googleLogin} className='disabled'><img src='/google.svg' height={25} /> Google</span>
+                    <span onClick={googleLogin}><img src='/google.svg' height={25} /> Google</span>
                     <span onClick={facebookLogin} className='disabled'><img src='/facebook.svg' height={25} /> Facebook</span>
                 </div>
             </div>

@@ -267,8 +267,10 @@ const verifyOtp = async (req, res) => {
   }
 }
 
+const getGoogle = passport.authenticate("google", { scope: ["profile", "email"] });
+const getFacebook = passport.authenticate("facebook", { scope: ["email"] });
 
-const getGoogleCallback = () => {
+const getGoogleCallback = () => [
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
     const { user, accessToken, refreshToken } = req.user;
@@ -278,10 +280,7 @@ const getGoogleCallback = () => {
 
     res.redirect(process.env.VITE_FE_URL); // Điều hướng về trang chính
   }
-}
-
-const getGoogle = passport.authenticate("google", { scope: ["profile", "email"] });
-const getFacebook = passport.authenticate("facebook", { scope: ["email"] });
+]
 
 const getFacebookCallback = () => {
   passport.authenticate("facebook", { failureRedirect: "/" }),
