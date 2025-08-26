@@ -12,16 +12,19 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       console.log("Google callback triggered");
+      console.log("Profile data:", profile);
+      console.log("Access token:", accessToken);
+      console.log("Refresh token:", refreshToken);
       try {
         let user = await User.findOne({ email: profile.emails[0].value });
 
         if (!user) {
           user = new User({
-            email: profile.emails[0].value,
-            username: profile.emails[0].value.split("@")[0], // Tạo username từ email,
+            email: profile.emails?.[0]?.value || `google-${profile.id}@example.com`,
+            username: profile.emails?.[0]?.value.split("@")[0] || `google_${profile.id}`,
             fullName: profile.displayName,
-            avatar: profile.photos[0].value,
-            isVerified: true, // Vì đăng nhập qua Google
+            avatar: profile.photos?.[0]?.value || null,
+            isVerified: true,
           });
           await user.save();
         }

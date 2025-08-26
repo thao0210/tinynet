@@ -18,6 +18,10 @@ router.get("/facebook/callback", getFacebookCallback);
 // router.get('/google/callback', getGoogleCallback);
 router.get('/google/callback', passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
+    if (!req.user) {
+      console.error("Google callback: req.user undefined");
+      return res.status(401).send("User not found");
+    }
     const { user, accessToken, refreshToken } = req.user;
 
     res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
