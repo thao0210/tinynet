@@ -8,14 +8,15 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL, // URL callback sau khi đăng nhập thành công
-      passReqToCallback: true, 
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      passReqToCallback: true,
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (req, accessToken, refreshToken, profile, done) => {
       console.log("Google callback triggered");
       console.log("Profile data:", profile);
       console.log("Access token:", accessToken);
       console.log("Refresh token:", refreshToken);
+
       try {
         let user = await User.findOne({ email: profile.emails[0].value });
 
@@ -30,15 +31,14 @@ passport.use(
           await user.save();
         }
 
-        // Tạo accessToken và refreshToken
-        const accessToken = jwt.sign({ id: user._id }, "ACCESS_SECRET", { expiresIn: "1h" });
-        const refreshToken = jwt.sign({ id: user._id }, "REFRESH_SECRET", { expiresIn: "15d" });
+        // JWT
+        const myAccessToken = jwt.sign({ id: user._id }, "ACCESS_SECRET", { expiresIn: "1h" });
+        const myRefreshToken = jwt.sign({ id: user._id }, "REFRESH_SECRET", { expiresIn: "15d" });
 
-        // Lưu refreshToken vào DB (hoặc Redis)
-        user.refreshToken = refreshToken;
+        user.refreshToken = myRefreshToken;
         await user.save();
 
-        return done(null, { user, accessToken, refreshToken });
+        return done(null, { user, accessToken: myAccessToken, refreshToken: myRefreshToken });
       } catch (err) {
         console.error("Error in Google strategy:", err);
         return done(err, null);
