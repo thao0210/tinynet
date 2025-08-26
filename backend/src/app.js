@@ -1,6 +1,10 @@
 const express = require('express');
 const cookieParser = require("cookie-parser");
 const cors = require('cors');
+const passport = require("passport");
+const session = require("express-session");
+require("./utils/googleAuth");
+require("./utils/facebookAuth");
 const authRoutes = require('./routes/auth');
 const blockRoutes = require('./routes/block');
 const profileRoutes = require('./routes/profile');
@@ -20,7 +24,20 @@ const app = express();
 
 require('./cron')();
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === "production" },
+  })
+);
+
+// Khởi tạo passport
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(cookieParser());
+
 // Middleware
 app.use(cors({
     origin: ["http://localhost:5173", "http://localhost:5174", "https://tinynet.net", "https://thaonguyen.net", "https://upload.tinynet.net", "https://www.tinynet.net", "https://www.thaonguyen.net"],

@@ -267,7 +267,7 @@ const verifyOtp = async (req, res) => {
   }
 }
 
-const getGoogle = passport.authenticate("google", { scope: ["profile", "email"], session: false });
+const getGoogle = passport.authenticate("google", { scope: ["profile", "email"] });
 const getFacebook = passport.authenticate("facebook", { scope: ["email"] });
 
 const getGoogleCallback = () => [

@@ -12,8 +12,6 @@ require('dotenv').config({ path: envFile });
 const app = require("./src/app");
 const mongoose = require("mongoose");
 const { PORT, MONGO_URI } = require('./src/config');
-require("./src/utils/facebookAuth");
-require("./src/utils/googleAuth");
 
 // Kết nối MongoDB
 mongoose.connect(MONGO_URI)
