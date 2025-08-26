@@ -12,11 +12,6 @@ passport.use(
       passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
-      console.log("Google callback triggered");
-      console.log("Profile data:", profile);
-      console.log("Access token:", accessToken);
-      console.log("Refresh token:", refreshToken);
-
       try {
         let user = await User.findOne({ email: profile.emails[0].value });
 
@@ -31,20 +26,31 @@ passport.use(
           await user.save();
         }
 
-        // JWT
+        // Sinh JWT để frontend dùng
         const myAccessToken = jwt.sign({ id: user._id }, "ACCESS_SECRET", { expiresIn: "1h" });
         const myRefreshToken = jwt.sign({ id: user._id }, "REFRESH_SECRET", { expiresIn: "15d" });
 
         user.refreshToken = myRefreshToken;
         await user.save();
 
-        console.log("Type of done:", typeof done);
-        return done(null, { user, accessToken: myAccessToken, refreshToken: myRefreshToken });
+        // Gắn token vào user object (passport sẽ lưu)
+        const safeUser = {
+          id: user._id,
+          email: user.email,
+          username: user.username,
+          fullName: user.fullName,
+          avatar: user.avatar,
+          accessToken: myAccessToken,
+          refreshToken: myRefreshToken
+        };
+
+        return done(null, safeUser);   // ✅ chỉ truyền 2 tham số
       } catch (err) {
         console.error("Error in Google strategy:", err);
         return done(err, null);
       }
     }
+
   )
 );
 
