@@ -38,6 +38,7 @@ passport.use(
         user.refreshToken = myRefreshToken;
         await user.save();
 
+        console.log("Type of done:", typeof done);
         return done(null, { user, accessToken: myAccessToken, refreshToken: myRefreshToken });
       } catch (err) {
         console.error("Error in Google strategy:", err);

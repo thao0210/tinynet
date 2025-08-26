@@ -3,8 +3,7 @@ const cookieParser = require("cookie-parser");
 const cors = require('cors');
 const passport = require("passport");
 const session = require("express-session");
-require("./utils/googleAuth");
-require("./utils/facebookAuth");
+
 const authRoutes = require('./routes/auth');
 const blockRoutes = require('./routes/block');
 const profileRoutes = require('./routes/profile');
@@ -37,6 +36,9 @@ app.use(
 // Khởi tạo passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+require("./utils/googleAuth");
+require("./utils/facebookAuth");
 
 // Middleware
 app.use(cors({
