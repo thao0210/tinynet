@@ -71,23 +71,43 @@ const PointsHistory = require('../models/PointsHistory');
   
   const updatePassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
-  
-    if (!oldPassword || !newPassword) {
-      return res.status(400).json({ error: "Old password and new password are required" });
+
+    if (!newPassword) {
+      return res.status(400).json({ error: "New password is required" });
     }
-  
+
     try {
+      // Nếu user chưa có password (login bằng GG/FB lần đầu)
+      if (!req.user.password) {
+        req.user.password = await bcrypt.hash(newPassword, 10);
+        await req.user.save();
+
+        return res.status(200).json({ 
+          message: "Password created successfully (first time set)" 
+        });
+      }
+
+      // Nếu user đã có password rồi -> bắt buộc kiểm tra oldPassword
+      if (!oldPassword) {
+        return res.status(400).json({ error: "Old password is required" });
+      }
+
       const isMatch = await bcrypt.compare(oldPassword, req.user.password);
-      if (!isMatch) return res.status(400).json({ error: "Old password is incorrect" });
-  
+      if (!isMatch) {
+        return res.status(400).json({ error: "Old password is incorrect" });
+      }
+
       req.user.password = await bcrypt.hash(newPassword, 10);
       await req.user.save();
-  
+
       res.status(200).json({ message: "Password updated successfully" });
+
     } catch (error) {
+      console.error("Error updating password:", error);
       res.status(500).json({ error: "Error updating password" });
     }
-  }
+  };
+
 
   const supportMethods = async (req, res) => {
     try {

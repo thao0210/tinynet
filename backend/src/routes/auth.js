@@ -1,5 +1,6 @@
 const express = require('express');
-const {checkAuth, refreshToken, postUserLogin, logout, postUserRegister, postUserForgotPass, sendVerificationEmail, verifyOtp, getFacebook, getGoogle, getGoogleCallback, getFacebookCallback, resetPassword} = require('../controllers/authController');
+const auth = require('../middleware/authMiddleware');
+const {checkAuth, refreshToken, postUserLogin, logout, postUserRegister, postUserForgotPass, sendVerificationEmail, verifyOtp, getFacebook, getGoogle, getGoogleCallback, getFacebookCallback, resetPassword, getUsers} = require('../controllers/authController');
 const router = express.Router();
 const passport = require("passport");
 
@@ -12,6 +13,7 @@ router.post("/forgot-password", postUserForgotPass);
 router.post('/reset-password', resetPassword);
 router.post('/send-verification-email', sendVerificationEmail);
 router.post('/verify-otp', verifyOtp);
+router.get('/get-users', auth, getUsers);
 router.get("/facebook", getFacebook);
 router.get('/google', getGoogle);
 router.get("/facebook/callback", getFacebookCallback);
@@ -22,12 +24,12 @@ router.get('/google/callback', passport.authenticate("google", { failureRedirect
       console.error("Google callback: req.user undefined");
       return res.status(401).send("User not found");
     }
-    const { accessToken, refreshToken, pointsChange, authProvider } = req.user;
+    const { accessToken, refreshToken, pointsChange, authProvider, hasPass } = req.user;
 
     res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict" });
 
-    res.redirect(`${process.env.VITE_FE_URL}/auth-success?provider=${authProvider}&pointsChange=${pointsChange}`);
+    res.redirect(`${process.env.VITE_FE_URL}/auth-success?provider=${authProvider}&pointsChange=${pointsChange}&hasPass=${hasPass}`);
   });
 
 module.exports = router;

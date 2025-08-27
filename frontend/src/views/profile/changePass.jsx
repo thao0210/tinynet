@@ -3,8 +3,10 @@ import classes from './styles.module.scss';
 import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
+import { useStore } from '@/store/useStore';
 
 const ChangePassword = () => {
+    const {user} = useStore();
     const [password, setPassword] = useState({
         currentPassword: '',
         newPassword: '',
@@ -12,7 +14,7 @@ const ChangePassword = () => {
     });
 
     const isDisabled = () => {
-        if (password.currentPassword && password.newPassword && password.newPasswordConfirm) return false;
+        if (((user.hasPass && password.currentPassword) || !user.hasPass) && password.newPassword && password.newPasswordConfirm) return false;
         return true;
     }
 
@@ -46,7 +48,7 @@ const ChangePassword = () => {
         <div className={classes.form}>
             <div>
                 <label>Current Password</label>
-                <input type='password' autoComplete='new-password' onChange={e => fieldOnchange(e, 'currentPassword')} />
+                <input disabled={user && !user.hasPass} type='password' autoComplete='new-password' onChange={e => fieldOnchange(e, 'currentPassword')} />
             </div>
             <div>
                 <label>New Password</label>

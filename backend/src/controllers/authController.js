@@ -27,7 +27,7 @@ const checkAuth = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
     }
   
-    res.status(200).json({ user });
+    res.status(200).json({ user: {...user, hasPass: !!user.password} });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
         return res.status(401).json({ message: "Access token expired" }); // 🟢 Trả về lỗi 401 để frontend gọi refresh-token
@@ -161,6 +161,7 @@ const postUserLogin = async (req, res) => {
           userPoints: user.userPoints || 0,
           _id: user._id,
           role: user.role,
+          hasPass: !!user.password
         } });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -293,4 +294,18 @@ const getFacebookCallback = () => [
   }
 ]
 
-module.exports = {checkAuth, refreshToken, postUserRegister, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword}
+const getUsers = async (req, res) => {
+  try {
+    if (!(req.user && req.user.role === 'admin')) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+    // chỉ lấy các field cần
+    const users = await User.find({}, "name email username avatar noOfPosts noOfComments userPoints noOfFollowers noOfFollowings").lean();
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
+module.exports = {checkAuth, refreshToken, postUserRegister, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword, getUsers}

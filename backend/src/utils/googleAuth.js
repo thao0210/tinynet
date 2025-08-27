@@ -65,6 +65,7 @@ passport.use(
           userPoints: user.userPoints,
           authProvider: 'google',
           pointsChange: isNewUser ? bonusPoints : 0,
+          hasPass: !!user.password,
         };
 
         return done(null, safeUser);   // ✅ chỉ truyền 2 tham số

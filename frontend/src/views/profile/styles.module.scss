@@ -130,7 +130,7 @@
         display: flex;
         li {
           margin-bottom: 10px;
-          color: #00000060;
+          color: #00000090;
           cursor: pointer;
           margin: 0 10px;
           font-size: 14px;
@@ -541,5 +541,29 @@
         }
       }
     }
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    background: #f9f9f9;
+    font-weight: 600;
+  }
+
+  tr:hover {
+    background: #fafafa;
   }
 }

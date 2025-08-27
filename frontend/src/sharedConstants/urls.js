@@ -11,6 +11,7 @@ const urls = {
     CHECK_AUTH: `${host}/auth/check-auth`,
     REFRESH_TOKEN: `${host}/auth/refresh-token`,
     LOUTOUT: `${host}/auth/logout`,
+    GET_USERS: `${host}/auth/get-users`,
     UPDATE_USER: `${host}/update-user`,
     UPDATE_AVATAR: `${host}/update-avatar`,
     UPLOAD_AVATAR: `${host}/upload-avatar`,

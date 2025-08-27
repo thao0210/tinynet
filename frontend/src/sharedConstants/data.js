@@ -130,6 +130,7 @@ export const profileMenuItems = [
   { key: 'support', label: 'Support Methods' },
   { key: 'hideblock', label: 'Blocked / Hidden' },
   { key: 'reports', label: 'Reports' },
+  { key: 'users', label: 'Users'}
 ];
 
 export const VideoSpeeds = [

@@ -19,6 +19,7 @@ import BlockHide from './blockHide';
 import ReportsPage from './report';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BsGridFill } from 'react-icons/bs';
+import AdminUsers from './users';
 
 const Profile = () => {
     const {user, showModal} = useStore();
@@ -153,7 +154,9 @@ const Profile = () => {
                 {
                     isMyProfile &&
                     <ul className={classes.menus}>
-                        {profileMenuItems.map(item => (
+                        {profileMenuItems
+                        .filter(item => item.key !== "users" || user?.role === "admin")
+                        .map(item => (
                             <li
                             key={item.key}
                             className={menu === item.key ? classes.active : ''}
@@ -188,6 +191,10 @@ const Profile = () => {
                     {
                         menu === 'reports' &&
                         <ReportsPage user={user} />
+                    }
+                    {
+                        menu === 'users' &&
+                        <AdminUsers />
                     }
                 </div>
             </div>

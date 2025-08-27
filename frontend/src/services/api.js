@@ -4,17 +4,16 @@ import urls from '@/sharedConstants/urls';
 import { emitter } from './events';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    timeout: 5000,
-    withCredentials: true,
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 5000,
+  withCredentials: true,
 });
 
-// 🟢 Kiểm tra Request Interceptor
-api.interceptors.request.use((config) => {
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
+// 🟢 Request Interceptor
+api.interceptors.request.use(
+  (config) => config,
+  (error) => Promise.reject(error)
+);
 
 let isRefreshing = false;
 
@@ -39,42 +38,37 @@ api.interceptors.response.use(
 
     console.log("❌ Interceptor caught error:", status, data);
 
+    // đang ở login page thì bỏ qua
     if (window.location.pathname.includes("/login")) {
-      return Promise.reject(error); // đang ở login thì không xử lý
+      return Promise.reject(error);
     }
 
-    // Chỉ xử lý 401/403
-    if ((status === 401 || status === 403)) {
-      // 1. Trường hợp chưa login và API yêu cầu login
-      if (data?.requireLogin) {
-        console.log("🔐 Emit requireLogin");
-        emitter.emit("requireLogin", {
-          redirectUrl: window.location.pathname + window.location.search,
-          nextStep: {
-            requirePassword: data.requirePassword,
-            requireOtp: data.requireOtp,
-            itemId: data.itemId,
-          },
-        });
-        return Promise.reject(error);
-      }
-
-      // 2. Trường hợp đã login nhưng thiếu password/otp
-      if (data?.requirePassword || data?.requireOtp) {
-        console.log("🧩 Emit requireItemAuth");
-        emitter.emit("requireItemAuth", {
+    // 🔹 Nếu API yêu cầu login
+    if (status === 401 && data?.requireLogin) {
+      emitter.emit("requireLogin", {
+        redirectUrl: window.location.pathname + window.location.search,
+        nextStep: {
           requirePassword: data.requirePassword,
           requireOtp: data.requireOtp,
           itemId: data.itemId,
-        });
-        // ✅ Thêm toast ở đây
-        if (data?.message) {
-          toast.error(data.message);
-        }
-        return Promise.reject(error);
-      }
+        },
+      });
+      return Promise.reject(error);
+    }
 
-      // 3. Trường hợp cần refresh token
+    // 🔹 Nếu cần password/otp cho resource
+    if (status === 401 && (data?.requirePassword || data?.requireOtp)) {
+      emitter.emit("requireItemAuth", {
+        requirePassword: data.requirePassword,
+        requireOtp: data.requireOtp,
+        itemId: data.itemId,
+      });
+      if (data?.message) toast.error(data.message);
+      return Promise.reject(error);
+    }
+
+    // 🔹 Chỉ refresh token khi 401
+    if (status === 401) {
       const isLoggedIn = localStorage.getItem("userLoggedIn") === "true";
       if (!isLoggedIn) {
         console.warn("❌ Not logged in, skip refresh-token");
@@ -86,7 +80,9 @@ api.interceptors.response.use(
         try {
           await api.post(urls.REFRESH_TOKEN);
           isRefreshing = false;
-          console.log("✅ Token refreshed. Retrying request...");
+          console.log("✅ Token refreshed. Retrying request once...");
+          // retry đúng 1 lần
+          originalRequest._retry = true;
           return api(originalRequest);
         } catch (refreshError) {
           isRefreshing = false;
@@ -98,7 +94,13 @@ api.interceptors.response.use(
       }
     }
 
-    // Các lỗi khác
+    // 🔹 Nếu là 403 => không refresh, chỉ báo lỗi
+    if (status === 403) {
+      toast.error(data?.message || "Bạn không có quyền truy cập");
+      return Promise.reject(error);
+    }
+
+    // 🔹 Các lỗi khác
     const message =
       data?.message || data?.error || error.message || "Unknown error";
     if (
@@ -113,6 +115,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export default api;
