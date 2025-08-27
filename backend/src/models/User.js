@@ -51,7 +51,8 @@ const UserSchema = new mongoose.Schema({
       type: String,
       enum: ['user', 'admin'],
       default: 'user'
-    }
+    },
+    authProvider: { type: String, enum: ["local", "google", "facebook"], default: "local" }
   });
   
   UserSchema.pre('save', function (next) {

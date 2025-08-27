@@ -19,6 +19,7 @@ import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
 import DataDeletion from '@/views/aboutUs/dataDeletion';
+import AuthSuccess from '@/views/authSuccess';
 
 const ReportForm = ({showModal, setShowModal}) => {
     const [reason, setReason] = useState('');
@@ -100,6 +101,7 @@ export function AppRoutes() {
       <Route path='profile/:userId' element={<Profile />} />
       <Route path='terms-and-privacy' element={<TermsPrivacy />} />
       <Route path='data-deletion' element={<DataDeletion />} />
+      <Route path="/auth-success" element={<AuthSuccess />} />
     </Routes>
   );
 }

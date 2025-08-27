@@ -26,6 +26,7 @@ passport.use(
             lang: "en-US",
             role: "user",
             userPoints: 0,
+            authProvider: 'google'
           });
           await user.save();
         }
@@ -50,6 +51,7 @@ passport.use(
           lang: "en-US",
           role: "user",
           userPoints: 0,
+          authProvider: 'google'
         };
 
         return done(null, safeUser);   // ✅ chỉ truyền 2 tham số

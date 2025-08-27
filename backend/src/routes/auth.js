@@ -24,27 +24,10 @@ router.get('/google/callback', passport.authenticate("google", { failureRedirect
     }
     const { accessToken, refreshToken } = req.user;
 
-    // res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
-    // res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict" });
-    res.cookie("accessToken", accessToken, { 
-      httpOnly: true, 
-      secure: process.env.NODE_ENV === "production", 
-      sameSite: "Strict" 
-    });
+    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict" });
 
-    res.cookie("refreshToken", refreshToken, { 
-      httpOnly: true, 
-      secure: process.env.NODE_ENV === "production", 
-      sameSite: "Strict" 
-    });
-
-    // Trả JSON về FE (giống postUserLogin)
-    res.status(200).json({
-      message: "Login successful",
-      userInfo: req.user,
-    });
-
-    res.redirect(process.env.VITE_FE_URL); // Điều hướng về trang chính
+    res.redirect(`${process.env.VITE_FE_URL}/auth-success?provider=google`);
   });
 
 module.exports = router;

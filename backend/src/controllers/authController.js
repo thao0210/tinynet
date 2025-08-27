@@ -292,4 +292,5 @@ const getFacebookCallback = () => [
     res.redirect(process.env.VITE_FE_URL);
   }
 ]
+
 module.exports = {checkAuth, refreshToken, postUserRegister, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword}
