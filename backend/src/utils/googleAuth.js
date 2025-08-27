@@ -2,6 +2,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User"); // Model User trong MongoDB
 const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require('../config');
 
 passport.use(
   new GoogleStrategy(
@@ -32,8 +33,8 @@ passport.use(
         }
 
         // Sinh JWT để frontend dùng
-        const myAccessToken = jwt.sign({ id: user._id }, "ACCESS_SECRET", { expiresIn: "1h" });
-        const myRefreshToken = jwt.sign({ id: user._id }, "REFRESH_SECRET", { expiresIn: "15d" });
+        const myAccessToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+        const myRefreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "15d" });
 
         user.refreshToken = myRefreshToken;
         await user.save();
