@@ -11,12 +11,8 @@ export default function AuthSuccess() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const pChange = params.get("pointsChange");
-
-    if (pChange) {
-        setPointsChange(pChange);
-    }
-    console.log('points change', pChange);
+    const pChange = Number(params.get("pointsChange")) || 0;
+    setPointsChange(pChange);
     const fetchUser = async () => {
       try {
         const res = await api.get(urls.CHECK_AUTH);

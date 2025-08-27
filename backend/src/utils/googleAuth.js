@@ -17,13 +17,15 @@ passport.use(
       try {
         let user = await User.findOne({ email: profile.emails[0].value });
         let bonusPoints = 0;
-        const totalUsers = await User.countDocuments();
+        let isNewUser = false;
 
-        if (totalUsers < 10) bonusPoints = 10000;
-        else if (totalUsers < 100) bonusPoints = 3000;
-        else bonusPoints = 500;
-        
         if (!user) {
+          isNewUser = true;
+          const totalUsers = await User.countDocuments();
+
+          if (totalUsers < 10) bonusPoints = 10000;
+          else if (totalUsers < 100) bonusPoints = 3000;
+          else bonusPoints = 500;
           user = new User({
             email: profile.emails?.[0]?.value || `google-${profile.id}@example.com`,
             username: profile.emails?.[0]?.value.split("@")[0] || `google_${profile.id}`,
@@ -60,9 +62,9 @@ passport.use(
           timezone: "Asia/Saigon",
           lang: "en-US",
           role: "user",
-          pointsChange: user.userPoints,
+          userPoints: user.userPoints,
           authProvider: 'google',
-          pointsChange: bonusPoints,
+          pointsChange: isNewUser ? bonusPoints : 0,
         };
 
         return done(null, safeUser);   // ✅ chỉ truyền 2 tham số
