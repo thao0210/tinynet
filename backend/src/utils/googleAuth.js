@@ -15,7 +15,13 @@ passport.use(
     async (req, accessToken, refreshToken, profile, done) => {
       try {
         let user = await User.findOne({ email: profile.emails[0].value });
+        let bonusPoints = 0;
+        const totalUsers = await User.countDocuments();
 
+        if (totalUsers < 10) bonusPoints = 10000;
+        else if (totalUsers < 100) bonusPoints = 3000;
+        else bonusPoints = 500;
+        
         if (!user) {
           user = new User({
             email: profile.emails?.[0]?.value || `google-${profile.id}@example.com`,
@@ -26,7 +32,7 @@ passport.use(
             timezone: "Asia/Saigon",
             lang: "en-US",
             role: "user",
-            userPoints: 0,
+            userPoints: bonusPoints,
             authProvider: 'google'
           });
           await user.save();
@@ -51,8 +57,9 @@ passport.use(
           timezone: "Asia/Saigon",
           lang: "en-US",
           role: "user",
-          userPoints: 0,
-          authProvider: 'google'
+          pointsChange: user.userPoints,
+          authProvider: 'google',
+          pointsChange: bonusPoints,
         };
 
         return done(null, safeUser);   // ✅ chỉ truyền 2 tham số

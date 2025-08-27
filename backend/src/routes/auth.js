@@ -22,12 +22,12 @@ router.get('/google/callback', passport.authenticate("google", { failureRedirect
       console.error("Google callback: req.user undefined");
       return res.status(401).send("User not found");
     }
-    const { accessToken, refreshToken } = req.user;
+    const { accessToken, refreshToken, pointsChange, authProvider } = req.user;
 
     res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict" });
 
-    res.redirect(`${process.env.VITE_FE_URL}/auth-success?provider=google`);
+    res.redirect(`${process.env.VITE_FE_URL}/auth-success?provider=${authProvider}&pointsChange=${pointsChange}`);
   });
 
 module.exports = router;

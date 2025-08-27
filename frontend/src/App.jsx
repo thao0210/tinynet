@@ -14,7 +14,7 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import AppModalContent, { AppRoutes, modalConfig } from './components/appContent';
 
   function App() {
-    const {setUser, user, showModal, setShowModal, curTheme} = useStore();
+    const {setUser, user, showModal, setShowModal, curTheme, pointsChange} = useStore();
     const [points, setPoints] = useState(null);
     const [nextModal, setNextModal] = useState(null);
     const config = showModal && Object.entries(modalConfig).find(([key]) => showModal.includes(key))?.[1] || {};
@@ -105,6 +105,12 @@ import AppModalContent, { AppRoutes, modalConfig } from './components/appContent
     };
   }, []);
 
+  useEffect(()=>{
+    if (pointsChange) {
+      setPoints(pointsChange);
+    }
+  }, [pointsChange]);
+  
   return (
     <PayPalScriptProvider options={{ 'client-id': import.meta.env.VITE_PAYPAL_CLIENT_ID }}>
     <BrowserRouter>

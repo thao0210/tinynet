@@ -15,9 +15,11 @@ export const useGlobalStates = () => {
         images: []
     });
     const [curTheme, setCurTheme] = useState(localStorage.getItem('currentTheme') || 'pastel');
+    const [pointsChange, setPointsChange] = useState(0);
     return {
         user, setUser, showModal, setShowModal, loading, setLoading, loadList, setLoadList,
         itemId, setItemId, curItemId, setCurItemId, searchFor, setSearchFor, list, setList,
-        loadViewContent, setLoadViewContent, customValues, setCustomValues, curTheme, setCurTheme
+        loadViewContent, setLoadViewContent, customValues, setCustomValues, curTheme, setCurTheme,
+        pointsChange, setPointsChange
     }
 }

@@ -1,14 +1,21 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "@/services/api"; // chỗ bạn gọi BE
 import urls from '@/sharedConstants/urls'
 import { useStore } from "@/store/useStore";
 
 export default function AuthSuccess() {
-  const { setUser } = useStore();
+  const { setUser, setPointsChange } = useStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const pointsChange = params.get("pointsChange");
+
+    if (pointsChange) {
+        setPointsChange(pointsChange);
+    }
     const fetchUser = async () => {
       try {
         const res = await api.get(urls.CHECK_AUTH);
@@ -23,5 +30,5 @@ export default function AuthSuccess() {
     fetchUser();
   }, []);
 
-  return <div>Đang đăng nhập, vui lòng chờ...</div>;
+  return <div>Loging in, please wait...</div>;
 }

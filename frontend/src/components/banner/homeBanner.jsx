@@ -48,11 +48,12 @@ const HomeBanner = ({onClose}) => {
         },
     };
     return (
-        <div className={classes.introduction}>
+        <div className={classes.introduction} onClick={() => onClose && onClose()}>
             <button className={classes.close} onClick={onClose}>&times;</button>
             <div 
                 className={classes.banner} 
-                onClick={() => {
+                onClick={(e) => {
+                    e.stopPropagation();
                     onClose && onClose();
                     setShowModal('login');
                 }} 
