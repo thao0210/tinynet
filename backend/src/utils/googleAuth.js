@@ -3,6 +3,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User"); // Model User trong MongoDB
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require('../config');
+const PointsHistory = require("../models/PointsHistory");
 
 passport.use(
   new GoogleStrategy(
@@ -36,6 +37,8 @@ passport.use(
             authProvider: 'google'
           });
           await user.save();
+          await PointsHistory.create({ userId: user.id, points: bonusPoints, description: 'New user bonus' });
+
         }
 
         // Sinh JWT để frontend dùng

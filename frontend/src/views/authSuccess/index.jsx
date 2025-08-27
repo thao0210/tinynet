@@ -11,11 +11,12 @@ export default function AuthSuccess() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const pointsChange = params.get("pointsChange");
+    const pChange = params.get("pointsChange");
 
-    if (pointsChange) {
-        setPointsChange(pointsChange);
+    if (pChange) {
+        setPointsChange(pChange);
     }
+    console.log('points change', pChange);
     const fetchUser = async () => {
       try {
         const res = await api.get(urls.CHECK_AUTH);
@@ -30,5 +31,6 @@ export default function AuthSuccess() {
     fetchUser();
   }, []);
 
+  
   return <div>Loging in, please wait...</div>;
 }
