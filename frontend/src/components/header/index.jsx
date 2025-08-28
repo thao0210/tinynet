@@ -40,7 +40,6 @@ const ThumbProfile = ({user, setUser, avatar}) => {
         navigate('/profile/' + user._id);
     }
 
-    console.log(user);
     return (
         <div className={classes.thumbProfile}>
             <Notifications />

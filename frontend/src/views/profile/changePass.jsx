@@ -64,7 +64,7 @@ const ChangePassword = () => {
         <div className={classes.form}>
             <div>
                 <label>Current Password</label>
-                <div>
+                <div className='input-with-icon'>
                     <input disabled={user && !user.hasPass} type='password' autoComplete='new-password' onChange={e => fieldOnchange(e, 'currentPassword')} />
                     {
                         user.hasPass &&
