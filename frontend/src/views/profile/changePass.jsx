@@ -6,12 +6,22 @@ import toast from 'react-hot-toast';
 import { useStore } from '@/store/useStore';
 
 const ChangePassword = () => {
+    const [showPassText, setShowPassText] = useState(false);
+    const [showConfirmPassText, setShowConfirmPassText] = useState(false);
     const {user} = useStore();
     const [password, setPassword] = useState({
         currentPassword: '',
         newPassword: '',
         newPasswordConfirm: ''
     });
+
+    const onShowPass = () => {
+        setShowPassText(!showPassText);
+    }
+
+    const onShowConfirmPass = () => {
+        setShowConfirmPassText(!showConfirmPassText);
+    }
 
     const isDisabled = () => {
         if (((user.hasPass && password.currentPassword) || !user.hasPass) && password.newPassword && password.newPasswordConfirm) return false;

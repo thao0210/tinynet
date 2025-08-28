@@ -9,6 +9,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import OtpInput from '@/components/otpInput';
 import CountdownTimer from '@/components/countdown';
 import Loader from '@/components/loader';
+import toast from 'react-hot-toast';
+import ReferrerInput from './referrerInput';
 
 export const VerifyOtp = ({ email, onSuccess, itemId }) => {  
     const handleVerifyOtp = async (otp) => {
@@ -29,33 +31,24 @@ const Register = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {setUser, setLoading, loading, setShowModal} = useStore();
-    const [showPassText, setShowPassText] = useState(false);
-    const [showConfirmPassText, setShowConfirmPassText] = useState(false);
+    
     const [error, setError] = useState({case: null, message: ''});
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    const usernameRegex = /^(?!.*[_.]{2})[a-zA-Z][a-zA-Z0-9_.]{2,19}$/;
     const [verified, setVerified] = useState(false);
     const [showOtpBox, setShowOtpBox] = useState(false);
     const [canResend, setCanResend] = useState(false);
     const userLang = navigator.language || navigator.userLanguage || 'en-US';
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-
+    const [showReferer, setShowReferrer] = useState(false);
 
     const [account, setAccount] = useState({
-        username: '',
-        password: '',
-        passConfirm: '',
         email: '',
         referrer: ''
     })
 
     const handleVerifyEmail = async () => {
         if (!account.email.toLowerCase().match(emailRegex)) {
-            setError({
-                case: 1,
-                message: 'Email is not valid'
-            });
+            toast.error('Email is required!')
             return;
         }
         setLoading(true);
@@ -72,51 +65,15 @@ const Register = () => {
         }
     }
 
-    const onShowPass = () => {
-        setShowPassText(!showPassText);
-    }
-
-    const onShowConfirmPass = () => {
-        setShowConfirmPassText(!showConfirmPassText);
-    }
-
-    const isDisabled = () => {
-        if (account.username && account.username.length > 2 && account.password && account.passConfirm && account.email) return false;
-        return true;
-    }
-
-    const onRegister = async () => {
-        if (!account.username.toLowerCase().match(usernameRegex)) {
-            setError({
-                case: 2,
-                message: 'Username with only letters, numbers and underscore(_) and dot(.).'
-            });
-                return;
-        }
-
-        if (!account.password.match(strongPasswordRegex)) {
-            setError({
-                case: 3,
-                message: 'Password has at least 8 characters, contains at least 1 lowercase letter, 1 uppercase letter, 1 number, 1 special character.'
-            });
-                return;
-        }
-
-        if (account.passConfirm && account.passConfirm !== account.password) {
-            setError({
-                case: 4,
-                message: 'Password confirmation is not equal to password'
-        });
-            return;
-        }
+    const onRegister = async (username) => {
 
         // create a random avatar
         const baseUrl = import.meta.env.VITE_R2_BASE_URL;
         const avatarUrl = `${baseUrl}/avatar/${Math.round(Math.random()*40)}.webp`;
         setLoading(true);
         const register = await api.post(urls.REGISTER, {
-            username: account.username,
-            password: account.password,
+            username: username,
+            // password: account.password,
             email: account.email,
             avatar: avatarUrl,
             referrer: account.referrer,
@@ -124,10 +81,15 @@ const Register = () => {
             lang: userLang
         })
 
-        if (register.data) {
+        if (register.data && register.data.userInfo) {
             setLoading(false);
-            setShowModal('login');
-        }
+            setShowModal(null);
+            setUser(register.data.userInfo);
+            localStorage.setItem("userLoggedIn", "true");
+            if (location.pathname.includes('/login')) {
+                navigate('/');
+            }
+        }   
     }
 
     const fieldOnChange = (e, field) => {
@@ -148,7 +110,7 @@ const Register = () => {
     const onVerifySuccess = () => {
         setShowOtpBox(false);
         setVerified(true);
-        setAccount({...account, username: account.email.split('@')[0]})
+        onRegister(account.email.split('@')[0]);
     }
 
     const onResend = () => {
@@ -172,11 +134,15 @@ const Register = () => {
                             onKeyDown={onkeyRegister}
                         />
                         <MdEmail />
-                        {
-                            error && error.case === 1 &&
-                            <span>Email is invalid</span>
-                        }
                     </div>
+                    <div className={styles.rightAlign}>
+                        <strong onClick={() => setShowReferrer(!showReferer)}>{showReferer ? 'Hide ' : 'Got '}a referrer?</strong>
+                    </div>
+                    {
+                        showReferer &&
+                        <ReferrerInput setData={setAccount} />
+                    }
+                    
                     <div className='buttons'>
                         <button onClick={handleVerifyEmail} className={loading ? 'btn loading' : 'btn'}>
                             <span>
@@ -211,7 +177,7 @@ const Register = () => {
                     </p>
                 </>
             }
-            {
+            {/* {
                 verified &&
                 <>
                     <div>
@@ -256,7 +222,7 @@ const Register = () => {
                         </button>
                     </div>
                 </>
-            }
+            } */}
             
             <p className={styles.center}>Already has an account? <strong onClick={onLogin}>Login</strong></p>
         </div>

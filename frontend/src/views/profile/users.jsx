@@ -38,6 +38,7 @@ const AdminUsers = () => {
             <th>Name</th>
             <th>Username</th>
             <th>Email</th>
+            <th>Stars</th>
             <th>Posts</th>
             <th>Comments</th>
             <th>Followers</th>
@@ -51,6 +52,7 @@ const AdminUsers = () => {
               <td><img src={u.avatar} alt="avatar" height={30} /> {u.name}</td>
               <td>{u.username}</td>
               <td>{u.email}</td>
+              <td>{u.userPoints}</td>
               <td>{u.noOfPosts}</td>
               <td>{u.noOfComments}</td>
               <td>{u.noOfFollowers}</td>

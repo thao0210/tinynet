@@ -3,6 +3,7 @@ const host = import.meta.env.VITE_API_URL + '/api';
 const urls = {
     COUNTRY_LOOKUP_URL: '',
     SEND_VERIFICATION_EMAIL: `${host}/auth/send-verification-email`,
+    VERIFY_REFERRER: `${host}/auth/verify-referrer`,
     VERIFY_OTP: `${host}/auth/verify-otp`, 
     REGISTER: `${host}/auth/register`,
     LOGIN: `${host}/auth/login`,

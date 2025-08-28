@@ -69,61 +69,110 @@ const refreshToken = (req, res) => {
   
 };
 
-const postUserRegister = async (req, res) => {
-    const { email, username, password, avatar, referrer, timezone, lang } = req.body;
+const verifyRefferer = async (req, res) => {
+  try {
+    const { username } = req.params;
 
-    try {
-        const usernameExists = await User.findOne({ username });
-        if (usernameExists) return res.status(400).json({ error: "Username already exists" });
-    
-        const emailExists = await User.findOne({ email });
-        if (emailExists) return res.status(400).json({ error: "Email already exists" });
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
-        const totalUsers = await User.countDocuments();
-        const user = new User({ 
-          email, 
-          username, 
-          password: hashedPassword,
-          avatar,
-          lang,
-          timezone,
-          userRank: "Rising Talent", // Rank mặc định
-          noOfPosts: 0, // Số bài viết ban đầu là 0
-          noOfFollowers: 0, // Ban đầu không có followers
-          following: [], // Chưa follow ai
-          followers: [], // Chưa có ai follow
-          noOfComments: 0,
-          role: totalUsers === 0 ? "admin" : "user"
-         });
-        await user.save();
-        let bonusPoints = 0;
-
-        if (totalUsers < 10) bonusPoints = 10000;
-        else if (totalUsers < 100) bonusPoints = 3000;
-        else bonusPoints = 500;
-
-        await PointsHistory.create({ userId: user.id, points: bonusPoints, description: 'New user bonus' });
-        if (referrer) {
-          // Cộng điểm cho nguoi gioi thieu
-            const bonus = 200;
-            const _referrer = await User.findOne({username : referrer});
-            if (!_referrer) {
-              return res.status(403).json({ error: "Can't find " + referrer + ' in the system!' });
-            }
-            await updateUserPoints(_referrer.id, bonus);
-            await PointsHistory.create({ userId: _referrer.id, points: bonus, description: 'New user referrer' });
-        }
-
-        await updateUserPoints(user.id, bonusPoints);
-        await updateUserRank(user.id);
-        
-        res.status(201).json({ message: 'User registered successfully',
-          user, pointsChange: bonusPoints });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    if (!username || username.trim() === "") {
+      return res.status(400).json({ valid: false, message: "Referrer username is required" });
     }
-}
+
+    const user = await User.findOne({ username: username.trim() });
+
+    if (user) {
+      return res.json({ valid: true, message: "Referrer exists" });
+    } else {
+      return res.json({ valid: false, message: "Referrer not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ valid: false, message: err.message });
+  }
+};
+
+const postUserRegister = async (req, res) => {
+  const { email, username, avatar, referrer, timezone, lang, password } = req.body;
+
+  try {
+    // Kiểm tra username / email
+    const usernameExists = await User.findOne({ username });
+    if (usernameExists) return res.status(400).json({ error: "Username already exists" });
+
+    const emailExists = await User.findOne({ email });
+    if (emailExists) return res.status(400).json({ error: "Email already exists" });
+
+    // Password có thể null/empty => chỉ hash nếu có
+    let hashedPassword = "";
+    if (password && password.trim() !== "") {
+      hashedPassword = await bcrypt.hash(password, 10);
+    }
+
+    const totalUsers = await User.countDocuments();
+    const user = new User({
+      email,
+      username,
+      password: hashedPassword || null,
+      avatar,
+      lang: lang || "en",
+      timezone: timezone || "UTC",
+      userRank: "Rising Talent",
+      noOfPosts: 0,
+      noOfFollowers: 0,
+      following: [],
+      followers: [],
+      noOfComments: 0,
+      role: totalUsers === 0 ? "admin" : "user"
+    });
+    await user.save();
+
+    // Bonus points logic
+    let bonusPoints = 0;
+    if (totalUsers < 10) bonusPoints = 10000;
+    else if (totalUsers < 100) bonusPoints = 3000;
+    else bonusPoints = 500;
+
+    await PointsHistory.create({ userId: user.id, points: bonusPoints, description: "New user bonus" });
+
+    // Referrer logic
+    if (referrer) {
+      const bonus = 500;
+      const _referrer = await User.findOne({ username: referrer });
+      if (!_referrer) {
+        return res.status(403).json({ error: "Can't find " + referrer + " in the system!" });
+      }
+      await updateUserPoints(_referrer.id, bonus);
+      await PointsHistory.create({ userId: _referrer.id, points: bonus, description: "New user referrer" });
+    }
+
+    await updateUserPoints(user.id, bonusPoints);
+    await updateUserRank(user.id);
+
+    // Tự động login luôn sau khi register thành công
+    const accessToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+
+    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "strict" });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "strict" });
+
+    res.status(201).json({
+      message: "User registered & logged in successfully",
+      userInfo: {
+        username: user.username,
+        email: user.email,
+        fullName: user.fullName || null,
+        avatar: user.avatar || null,
+        timezone: user.timezone,
+        lang: user.lang,
+        userPoints: user.userPoints || 0,
+        _id: user._id,
+        role: user.role,
+        hasPass: !!user.password
+      },
+      pointsChange: bonusPoints
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const postUserLogin = async (req, res) => {
     const { input, password } = req.body;
@@ -308,4 +357,4 @@ const getUsers = async (req, res) => {
   }
 }
 
-module.exports = {checkAuth, refreshToken, postUserRegister, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword, getUsers}
+module.exports = {checkAuth, refreshToken, postUserRegister, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer}

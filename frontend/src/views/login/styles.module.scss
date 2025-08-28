@@ -40,6 +40,11 @@
         .center {
             text-align: center;
         }
+        .note {
+            font-size: 12px;
+            font-style: italic;
+            text-align: center;
+        }
         p {
             font-size: 14px;
             strong {
@@ -78,7 +83,10 @@
             margin-bottom: 20px;
             margin-top: 0;
             position: relative;
-            > svg {
+            &.rightAlign {
+                text-align: right;
+            }
+            > svg, > span.inside {
                 position: absolute;
                 top: 8px;
                 right: 10px;
@@ -118,13 +126,14 @@
                 justify-content: center;
                 span {
                     margin: 0 5px;
-                    width: 120px;
+                    width: 130px;
                     cursor: pointer;
                     padding: 10px;
                     border: #ccc solid 1px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    font-weight: bold;
                     img {
                         margin-right: 10px;
                     }
@@ -170,9 +179,9 @@
             border: #00000090 solid 2px;
             height: 40px;
             line-height: 40px;
-            font-size: 16px;
+            font-size: 14px;
             &::placeholder {
-                font-size: 16px;
+                font-size: 14px;
             }
             &:focus {
                 outline: #ff520b 2px solid;

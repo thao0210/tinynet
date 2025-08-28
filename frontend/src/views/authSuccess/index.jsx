@@ -12,7 +12,6 @@ export default function AuthSuccess() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pChange = Number(params.get("pointsChange")) || 0;
-    const hasPass = pare
     setPointsChange(pChange);
     const fetchUser = async () => {
       try {

@@ -47,7 +47,7 @@ span.disabled {
 .read-the-docs {
   color: #888;
 }
-.pastel, .simple, .contrast {
+.pastel, .simple, .contrast, .pastel .head, .simple .head {
   background: white;
 }
 .contrast .head{

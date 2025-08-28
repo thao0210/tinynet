@@ -108,11 +108,12 @@ const Login = ({nextModal}) => {
             <div>
                 <div className={styles.or}>or</div>
                 <div className={styles.others}>
+                    <span onClick={onRegister}><img src='/shield.svg' height={25} />Email OTP</span>
                     <span onClick={googleLogin}><img src='/google.svg' height={25} /> Google</span>
-                    <span onClick={facebookLogin} className='disabled'><img src='/facebook.svg' height={25} /> Facebook</span>
+                    {/* <span onClick={facebookLogin} className='disabled'><img src='/facebook.svg' height={25} /> Facebook</span> */}
                 </div>
             </div>
-            <p className={styles.center}>Don't have an account? <strong onClick={onRegister}>Sign Up</strong> </p>
+            <p className={styles.note}>First time here?<br /> Using <strong onClick={onRegister}>Email OTP</strong> or <strong onClick={googleLogin}>Google</strong> will also <strong onClick={onRegister}>sign you up</strong>. </p>
         </div>
     </div>
     )
