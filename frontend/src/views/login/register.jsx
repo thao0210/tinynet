@@ -11,6 +11,7 @@ import CountdownTimer from '@/components/countdown';
 import Loader from '@/components/loader';
 import toast from 'react-hot-toast';
 import ReferrerInput from './referrerInput';
+import Checkbox from '@/components/checkbox';
 
 export const VerifyOtp = ({ email, onSuccess, itemId }) => {  
     const handleVerifyOtp = async (otp) => {
@@ -40,6 +41,7 @@ const Register = () => {
     const userLang = navigator.language || navigator.userLanguage || 'en-US';
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
     const [showReferer, setShowReferrer] = useState(false);
+    const [emailAvailable, setEmailAvailable] = useState(null);
 
     const [account, setAccount] = useState({
         email: '',
@@ -48,7 +50,7 @@ const Register = () => {
 
     const handleVerifyEmail = async () => {
         if (!account.email.toLowerCase().match(emailRegex)) {
-            toast.error('Email is required!')
+            toast.error('Please provide right email format!')
             return;
         }
         setLoading(true);
@@ -65,8 +67,18 @@ const Register = () => {
         }
     }
 
-    const onRegister = async (username) => {
+    const handleBlurEmail = async () => {
+        if (!account.email) return;
+        if (!account.email.toLowerCase().match(emailRegex)) {
+            toast.error('Please provide right email format!')
+            return;
+        }
+        const res = await api.get(`${urls.CHECK_EMAIL}/${account.email}`);
+        const data = await res.data;
+        setEmailAvailable(data.available);
+    };
 
+    const onRegister = async (username) => {
         // create a random avatar
         const baseUrl = import.meta.env.VITE_R2_BASE_URL;
         const avatarUrl = `${baseUrl}/avatar/${Math.round(Math.random()*40)}.webp`;
@@ -130,17 +142,22 @@ const Register = () => {
                 !verified && !showOtpBox &&
                 <>
                     <div className={error && error.case === 1 ? styles.errorInput : ''}>
-                        <input type='text' placeholder='Email' value={account.email} onChange={e => fieldOnChange(e, 'email')}
+                        <input type='text' placeholder='Email' value={account.email} onBlur={handleBlurEmail} onChange={e => fieldOnChange(e, 'email')}
                             onKeyDown={onkeyRegister}
                         />
                         <MdEmail />
                     </div>
                     <div className={styles.rightAlign}>
-                        <strong onClick={() => setShowReferrer(!showReferer)}>{showReferer ? 'Hide ' : 'Got '}a referrer?</strong>
+                        <Checkbox 
+                            label="Got a referrer (new user only)"
+                            isChecked={showReferer}
+                            setIsChecked={setShowReferrer}
+                            isDisabled={!emailAvailable}
+                        />
                     </div>
                     {
                         showReferer &&
-                        <ReferrerInput setData={setAccount} />
+                        <ReferrerInput setData={setAccount} emailAvailable={emailAvailable} />
                     }
                     
                     <div className='buttons'>
@@ -177,52 +194,6 @@ const Register = () => {
                     </p>
                 </>
             }
-            {/* {
-                verified &&
-                <>
-                    <div>
-                        <input type='text' placeholder='Email' value={account.email} disabled/>
-                        <MdEmail />
-                    </div>
-                    <div className={error && error.case === 2 ? styles.errorInput : ''}>
-                        <input type='text' placeholder='Username' value={account.username} onChange={e => fieldOnChange(e, 'username')}/>
-                        <MdPerson />
-                        {
-                            error && error.case === 2 &&
-                            <span>{error.message}</span>
-                        }
-                    </div>
-                    <div className={error && error.case === 3 ? styles.errorInput : ''}>
-                        <input type={showPassText ? 'text' : 'password'} placeholder='Password' value={account.password} onChange={e => fieldOnChange(e, 'password')}/>
-                        {
-                            showPassText ? <MdVisibility onClick={onShowPass} /> : <MdVisibilityOff onClick={onShowPass} />
-                        }
-                        {
-                            error && error.case === 3 &&
-                            <span>{error.message}</span>
-                        }
-                    </div>
-                    <div className={error && error.case === 4 ? styles.errorInput : ''}>
-                        <input type={showConfirmPassText ? 'text' : 'password'} placeholder='Password Confirmation' value={account.passConfirm} onChange={e => fieldOnChange(e, 'passConfirm')}/>
-                        {
-                            showConfirmPassText ? <MdVisibility onClick={onShowConfirmPass}/> : <MdVisibilityOff onClick={onShowConfirmPass} />
-                        }
-                        {
-                            error && error.case === 4 &&
-                            <span>{error.message}</span>
-                        }
-                    </div>
-                    <div>
-                        <input  type='text' placeholder='referrer (if any)' onChange={e => fieldOnChange(e, 'referrer')}/>
-                    </div>
-                    
-                    <div className='buttons'>
-                        <button className="btn" onClick={onRegister} disabled={isDisabled()}>
-                            <span>Register</span>
-                        </button>
-                    </div>
-                </>
-            } */}
             
             <p className={styles.center}>Already has an account? <strong onClick={onLogin}>Login</strong></p>
         </div>

@@ -11,6 +11,10 @@
             content: var(--freeLeft);
         }
     }
+    &.disabled {
+        color: #aaa;
+        pointer-events: none;
+    }
     &.combine {
         position: relative;
         > label {

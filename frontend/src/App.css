@@ -367,3 +367,15 @@ color: white;
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon span {
+  position: absolute;
+  right: 5px;
+  top:5px;
+  font-size: 20px;
+  color: #888;
+}

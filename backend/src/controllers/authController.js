@@ -89,72 +89,80 @@ const verifyRefferer = async (req, res) => {
   }
 };
 
-const postUserRegister = async (req, res) => {
+// GET /api/check-email?email=xxx
+const checkEmailAvailable = async (req, res) => {
+  try {
+    const { email } = req.params;
+    if (!email) return res.status(400).json({ available: false, message: "Email required" });
+
+    const exists = await User.exists({ email });
+    if (exists) {
+      return res.json({ available: false, message: "Email already registered" });
+    }
+
+    return res.json({ available: true, message: "Email available" });
+  } catch (err) {
+    res.status(500).json({ available: false, message: err.message });
+  }
+};
+
+
+const registerOrLoginWithOTP = async (req, res) => {
   const { email, username, avatar, referrer, timezone, lang, password } = req.body;
 
   try {
-    // Kiểm tra username / email
-    const usernameExists = await User.findOne({ username });
-    if (usernameExists) return res.status(400).json({ error: "Username already exists" });
-
-    const emailExists = await User.findOne({ email });
-    if (emailExists) return res.status(400).json({ error: "Email already exists" });
-
-    // Password có thể null/empty => chỉ hash nếu có
-    let hashedPassword = "";
-    if (password && password.trim() !== "") {
-      hashedPassword = await bcrypt.hash(password, 10);
-    }
-
-    const totalUsers = await User.countDocuments();
-    const user = new User({
-      email,
-      username,
-      password: hashedPassword || null,
-      avatar,
-      lang: lang || "en",
-      timezone: timezone || "UTC",
-      userRank: "Rising Talent",
-      noOfPosts: 0,
-      noOfFollowers: 0,
-      following: [],
-      followers: [],
-      noOfComments: 0,
-      role: totalUsers === 0 ? "admin" : "user"
-    });
-    await user.save();
-
-    // Bonus points logic
+    let user = await User.findOne({ email });
+    let isNewUser = false;
     let bonusPoints = 0;
-    if (totalUsers < 10) bonusPoints = 10000;
-    else if (totalUsers < 100) bonusPoints = 3000;
-    else bonusPoints = 500;
 
-    await PointsHistory.create({ userId: user.id, points: bonusPoints, description: "New user bonus" });
+    if (!user) {
+      isNewUser = true;
+      const totalUsers = await User.countDocuments();
+      if (totalUsers < 10) bonusPoints = 10000;
+      else if (totalUsers < 100) bonusPoints = 3000;
+      else bonusPoints = 500;
 
-    // Referrer logic
-    if (referrer) {
-      const bonus = 500;
-      const _referrer = await User.findOne({ username: referrer });
-      if (!_referrer) {
-        return res.status(403).json({ error: "Can't find " + referrer + " in the system!" });
+      let hashedPassword = null;
+      if (password && password.trim() !== "") {
+        hashedPassword = await bcrypt.hash(password, 10);
       }
-      await updateUserPoints(_referrer.id, bonus);
-      await PointsHistory.create({ userId: _referrer.id, points: bonus, description: "New user referrer" });
+
+      user = new User({
+        email,
+        username,
+        password: hashedPassword || null,
+        avatar,
+        lang: lang || "en",
+        timezone: timezone || "UTC",
+        role: totalUsers === 0 ? "admin" : "user",
+        userRank: "Rising Talent",
+        userPoints: bonusPoints || 0,
+      });
+      await user.save();
+
+      await PointsHistory.create({ userId: user.id, points: bonusPoints, description: "New user bonus" });
+      await updateUserPoints(user.id, bonusPoints);
+      await updateUserRank(user.id);
+
+      if (referrer) {
+        const bonus = 500;
+        const _referrer = await User.findOne({ username: referrer });
+        if (_referrer) {
+          await updateUserPoints(_referrer.id, bonus);
+          await PointsHistory.create({ userId: _referrer.id, points: bonus, description: "New user referrer" });
+        }
+      }
     }
 
-    await updateUserPoints(user.id, bonusPoints);
-    await updateUserRank(user.id);
-
-    // Tự động login luôn sau khi register thành công
+    // Tạo token login (cả user cũ và mới)
     const accessToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
     const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 
     res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "strict" });
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "strict" });
 
-    res.status(201).json({
-      message: "User registered & logged in successfully",
+    res.status(200).json({
+      message: isNewUser ? "User registered & logged in" : "User logged in",
       userInfo: {
         username: user.username,
         email: user.email,
@@ -162,13 +170,14 @@ const postUserRegister = async (req, res) => {
         avatar: user.avatar || null,
         timezone: user.timezone,
         lang: user.lang,
-        userPoints: user.userPoints || bonusPoints || 0,
+        userPoints: user.userPoints,
         _id: user._id,
         role: user.role,
         hasPass: !!user.password
       },
-      pointsChange: bonusPoints
+      pointsChange: isNewUser ? bonusPoints : 0
     });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -269,8 +278,8 @@ const sendVerificationEmail = async (req, res) => {
     const { email } = req.body;
 
     // Kiểm tra email đã có tài khoản chưa
-    const emailExists = await User.findOne({ email });
-    if (emailExists) return res.status(400).json({ error: "Email already exists" });
+    // const emailExists = await User.findOne({ email });
+    // if (emailExists) return res.status(400).json({ error: "Email already exists" });
 
     // Tạo mã OTP ngẫu nhiên
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -357,4 +366,4 @@ const getUsers = async (req, res) => {
   }
 }
 
-module.exports = {checkAuth, refreshToken, postUserRegister, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer}
+module.exports = {checkAuth, refreshToken, registerOrLoginWithOTP, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer, checkEmailAvailable}

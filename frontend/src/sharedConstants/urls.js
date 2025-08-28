@@ -4,6 +4,7 @@ const urls = {
     COUNTRY_LOOKUP_URL: '',
     SEND_VERIFICATION_EMAIL: `${host}/auth/send-verification-email`,
     VERIFY_REFERRER: `${host}/auth/verify-referrer`,
+    CHECK_EMAIL: `${host}/auth//check-email`,
     VERIFY_OTP: `${host}/auth/verify-otp`, 
     REGISTER: `${host}/auth/register`,
     LOGIN: `${host}/auth/login`,

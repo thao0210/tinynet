@@ -52,6 +52,11 @@ textarea, input {
   padding: 5px;
 }
 
+textarea:disabled, input:disabled {
+  border-color: #ddd;
+  background-color: #eee!important;
+}
+
 input[type="color"] {
   padding: 0 2px;
 }

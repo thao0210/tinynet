@@ -4,8 +4,10 @@ import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
 import { useStore } from '@/store/useStore';
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 
 const ChangePassword = () => {
+    const [showNewPassText, setShowNewPassText] = useState(false);
     const [showPassText, setShowPassText] = useState(false);
     const [showConfirmPassText, setShowConfirmPassText] = useState(false);
     const {user} = useStore();
@@ -29,12 +31,16 @@ const ChangePassword = () => {
     }
 
     const onChange = async () => {
-        if (password.newPassword === password.currentPassword) {
+        if (password.currentPassword && password.newPassword === password.currentPassword) {
             toast.error('New password should be different from current password!')
             return ;
         }
 
         const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        if (!strongPasswordRegex.test(password.newPassword)) {
+            toast.error('Password at least 8 characters, mixing uppercase and lowercase letters, numbers, and symbols');
+            return ;
+        }
         // if (password.newPassword.)
         if (password.newPasswordConfirm !== password.newPassword) {
             toast.error('New password confirmation should be same as new password!')
@@ -58,15 +64,47 @@ const ChangePassword = () => {
         <div className={classes.form}>
             <div>
                 <label>Current Password</label>
-                <input disabled={user && !user.hasPass} type='password' autoComplete='new-password' onChange={e => fieldOnchange(e, 'currentPassword')} />
+                <div>
+                    <input disabled={user && !user.hasPass} type='password' autoComplete='new-password' onChange={e => fieldOnchange(e, 'currentPassword')} />
+                    {
+                        user.hasPass &&
+                        <span onClick={() => setShowPassText(!showPassText)}>
+                            {
+                                showPassText ? 
+                                <MdVisibilityOff /> :
+                                <MdVisibility />
+                            }
+                        </span>
+                    }
+                </div>
             </div>
             <div>
                 <label>New Password</label>
-                <input type='password' onChange={e => fieldOnchange(e, 'newPassword')} />
+                <div className='input-with-icon'>
+                    <input type={showNewPassText ? 'text' : 'password'} onChange={e => fieldOnchange(e, 'newPassword')} />
+                    <span onClick={() => setShowNewPassText(!showNewPassText)}>
+                        {
+                            showNewPassText ? 
+                            <MdVisibilityOff /> :
+                            <MdVisibility />
+                        }
+                    </span>
+                </div>
+                
             </div>
             <div>
                 <label>New Password Confirmation</label>
-                <input type='password' onChange={e => fieldOnchange(e, 'newPasswordConfirm')} />
+                <div className='input-with-icon'>
+                    <input type={showConfirmPassText ? 'text' : 'password'} onChange={e => fieldOnchange(e, 'newPasswordConfirm')} />
+                    <span onClick={() => setShowConfirmPassText(!showConfirmPassText)}>
+                        {
+                            showConfirmPassText ? 
+                            <MdVisibilityOff /> :
+                            <MdVisibility />
+                        }
+                    </span>
+                </div>
+                
             </div>
             <div>
                 <button className='btn sm' onClick={onChange} disabled={isDisabled()}>Update</button>

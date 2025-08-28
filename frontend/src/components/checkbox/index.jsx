@@ -5,7 +5,7 @@ import { UsageControl } from '../Utilities';
 import Tippy from '@tippyjs/react';
 import classNames from 'classnames';
 
-const Checkbox = ({label, isChecked, setIsChecked, data, dataFieldName, points, setUsePoint, isEdit, tippy, isCombine}) => {
+const Checkbox = ({label, isChecked, setIsChecked, data, dataFieldName, points, setUsePoint, isEdit, tippy, isCombine, isDisabled}) => {
     const handleCheckboxClick = () => {
         if (data) {
             setIsChecked({...data, [dataFieldName]: !isChecked});
@@ -16,7 +16,7 @@ const Checkbox = ({label, isChecked, setIsChecked, data, dataFieldName, points, 
 
     return (
         <Tippy content={tippy} disabled={!tippy}>
-        <div className={classNames(classes.checkbox, {[classes.combine] : isCombine})} onClick={handleCheckboxClick}>
+        <div className={classNames(classes.checkbox, {[classes.combine] : isCombine, [classes.disabled] : !!isDisabled})} onClick={handleCheckboxClick}>
             {isChecked ? <IoMdCheckboxOutline /> : <MdCheckBoxOutlineBlank />}
             <label>
                 {label}

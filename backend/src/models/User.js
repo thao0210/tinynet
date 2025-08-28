@@ -8,7 +8,7 @@ const supportMethodSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
     username: String,
     email: String,
-    password: String,
+    password: {type: String, default: null},
     phone: String,
     fullName: String,
     fullNameNoAccent: String,

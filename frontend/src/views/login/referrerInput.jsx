@@ -4,7 +4,7 @@ import api from '@/services/api';
 import styles from './styles.module.scss';
 import Tippy from '@tippyjs/react';
 
-const ReferrerInput = ({setData}) => {
+const ReferrerInput = ({setData, emailAvailable}) => {
   const [referrer, setReferrer] = useState("");
   const [status, setStatus] = useState(null);
   const [message, setMessage] = useState(null);
@@ -34,6 +34,7 @@ const ReferrerInput = ({setData}) => {
         value={referrer}
         onChange={(e) => setReferrer(e.target.value)}
         onBlur={checkReferrer}
+        disabled={!emailAvailable}
       />
       {status === "valid" && 
       <Tippy content={message}>

@@ -97,6 +97,9 @@
                     margin-left: 5px;
                 }
             }
+            & + div {
+                padding-bottom: 20px;
+            }
         }
 
         .contributions {
