@@ -27,7 +27,7 @@ const checkAuth = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
     }
   
-    res.status(200).json({ user: {...user, hasPass: !!user.password} });
+    res.status(200).json({ user: {...user.toObject(), hasPass: !!user.password} });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
         return res.status(401).json({ message: "Access token expired" }); // 🟢 Trả về lỗi 401 để frontend gọi refresh-token
