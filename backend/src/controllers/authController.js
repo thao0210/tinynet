@@ -162,7 +162,7 @@ const postUserRegister = async (req, res) => {
         avatar: user.avatar || null,
         timezone: user.timezone,
         lang: user.lang,
-        userPoints: user.userPoints || 0,
+        userPoints: user.userPoints || bonusPoints || 0,
         _id: user._id,
         role: user.role,
         hasPass: !!user.password
