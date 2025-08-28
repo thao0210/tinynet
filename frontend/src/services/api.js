@@ -69,29 +69,38 @@ api.interceptors.response.use(
 
     // 🔹 Chỉ refresh token khi 401
     if (status === 401) {
+      if (data?.notLoggedIn) {
+        console.warn("❌ Not logged in, skip refresh-token");
+        return Promise.reject(error);
+      }
+
       const isLoggedIn = localStorage.getItem("userLoggedIn") === "true";
       if (!isLoggedIn) {
         console.warn("❌ Not logged in, skip refresh-token");
         return Promise.reject(error);
       }
 
-      if (!isRefreshing) {
-        isRefreshing = true;
-        try {
-          await api.post(urls.REFRESH_TOKEN);
-          isRefreshing = false;
-          console.log("✅ Token refreshed. Retrying request once...");
-          // retry đúng 1 lần
-          originalRequest._retry = true;
-          return api(originalRequest);
-        } catch (refreshError) {
-          isRefreshing = false;
-          console.warn("❌ Refresh failed, redirect to login.");
-          localStorage.removeItem("userLoggedIn");
-          window.location.href = import.meta.env.VITE_FE_URL + "login";
-          return Promise.reject(refreshError);
+      if (data?.message === "Access token expired") {
+        if (!isRefreshing) {
+          isRefreshing = true;
+          try {
+            await api.post(urls.REFRESH_TOKEN);
+            isRefreshing = false;
+            console.log("✅ Token refreshed. Retrying request once...");
+            originalRequest._retry = true;
+            return api(originalRequest);
+          } catch (refreshError) {
+            isRefreshing = false;
+            console.warn("❌ Refresh failed, redirect to login.");
+            localStorage.removeItem("userLoggedIn");
+            window.location.href = import.meta.env.VITE_FE_URL + "login";
+            return Promise.reject(refreshError);
+          }
         }
       }
+
+      // Còn lại -> reject luôn
+      return Promise.reject(error);
     }
 
     // 🔹 Nếu là 403 => không refresh, chỉ báo lỗi

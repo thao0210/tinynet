@@ -11,9 +11,13 @@ const {updateUserRank} = require('../utils/updateUserRank');
 
 const checkAuth = async (req, res) => {
   try {
-    if (!req.cookies) {
-      return res.status(401).json({ message: "Unauthorized: No cookies found" });
+    if (!req.cookies || !req.cookies.accessToken) {
+      return res.status(401).json({ 
+        message: "Unauthorized: No token", 
+        notLoggedIn: true   // 🟢 Thêm flag này
+      });
     }
+
     const accessToken = req.cookies.accessToken;
   
     if (!accessToken) {
