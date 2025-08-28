@@ -184,7 +184,6 @@ export const Languages = ({
 
   const handleAdd = () => {
     if (!newLang || languages.includes(newLang)) return;
-    console.log('add');
     onLanguageChange?.(newLang, true);
     setNewLang(null);
     setShowAddBox(false);

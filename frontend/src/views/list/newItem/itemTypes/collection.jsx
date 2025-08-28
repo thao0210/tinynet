@@ -17,7 +17,6 @@ const Collection = ({data, setData, curItemId}) => {
     const [total, setTotal] = useState(0);
   
     const handlePageChange = (page) => {
-      console.log('Chọn trang:', page);
       setCurrentPage(page);
       fetchItems(page);
     };

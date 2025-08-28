@@ -21,13 +21,17 @@ const checkAuth = async (req, res) => {
     }
   
     const decoded = jwt.verify(accessToken, JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-password"); // 🟢 Lấy toàn bộ thông tin user (trừ password)
-  
+    const user = await User.findById(decoded.id).select("+password -refreshToken");
+
     if (!user) {
         return res.status(404).json({ message: "User not found" });
     }
   
-    res.status(200).json({ user: {...user.toObject(), hasPass: !!user.password} });
+    const userObj = user.toObject();
+    const hasPass = !!userObj.password;
+    delete userObj.password; 
+    res.status(200).json({ user: { ...userObj, hasPass } });
+
   } catch (error) {
     if (error.name === "TokenExpiredError") {
         return res.status(401).json({ message: "Access token expired" }); // 🟢 Trả về lỗi 401 để frontend gọi refresh-token
@@ -108,7 +112,7 @@ const checkEmailAvailable = async (req, res) => {
 
 
 const registerOrLoginWithOTP = async (req, res) => {
-  const { email, username, avatar, referrer, timezone, lang, password } = req.body;
+  const { email, avatar, referrer, timezone, lang, password } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -121,6 +125,15 @@ const registerOrLoginWithOTP = async (req, res) => {
       if (totalUsers < 10) bonusPoints = 10000;
       else if (totalUsers < 100) bonusPoints = 3000;
       else bonusPoints = 500;
+
+      let baseUsername = email.split("@")[0];
+      let finalUsername = baseUsername;
+      let counter = 2;
+
+      while (await User.findOne({ username: finalUsername })) {
+        finalUsername = `${baseUsername}${counter}`;
+        counter++;
+      }
 
       let hashedPassword = null;
       if (password && password.trim() !== "") {

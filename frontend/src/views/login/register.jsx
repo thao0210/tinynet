@@ -78,14 +78,12 @@ const Register = () => {
         setEmailAvailable(data.available);
     };
 
-    const onRegister = async (username) => {
+    const onRegister = async () => {
         // create a random avatar
         const baseUrl = import.meta.env.VITE_R2_BASE_URL;
         const avatarUrl = `${baseUrl}/avatar/${Math.round(Math.random()*40)}.webp`;
         setLoading(true);
         const register = await api.post(urls.REGISTER, {
-            username: username,
-            // password: account.password,
             email: account.email,
             avatar: avatarUrl,
             referrer: account.referrer,
@@ -109,12 +107,6 @@ const Register = () => {
         e.target.value && setError({case: null, message: ''});
     }
 
-    const onkeyRegister = (e) => {
-        if (e.key === 'Enter') {
-            onRegister();
-        }
-    }
-
     const onLogin = () => {
         location.pathname.includes('register') ? navigate('/login') : setShowModal('login')
     }
@@ -122,7 +114,7 @@ const Register = () => {
     const onVerifySuccess = () => {
         setShowOtpBox(false);
         setVerified(true);
-        onRegister(account.email.split('@')[0]);
+        onRegister();
     }
 
     const onResend = () => {
@@ -142,9 +134,7 @@ const Register = () => {
                 !verified && !showOtpBox &&
                 <>
                     <div className={error && error.case === 1 ? styles.errorInput : ''}>
-                        <input type='text' placeholder='Email' value={account.email} onBlur={handleBlurEmail} onChange={e => fieldOnChange(e, 'email')}
-                            onKeyDown={onkeyRegister}
-                        />
+                        <input type='text' placeholder='Email' value={account.email} onBlur={handleBlurEmail} onChange={e => fieldOnChange(e, 'email')} />
                         <MdEmail />
                     </div>
                     <div className={styles.rightAlign}>

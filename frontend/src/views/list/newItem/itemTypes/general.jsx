@@ -38,7 +38,6 @@ const GeneralInfos = ({data, setData, type, curItemId, usePoint, setUsePoint, la
         if(!data.isPromoted) {
             const promoteItem = PROMOTION_DATA.filter(item => item.value === data.promoteDuration);
             if (promoteItem?.length > 0 && promoteItem[0].points) {
-                console.log('pomote item', promoteItem[0].points);
                 setData({...data, promoteDuration: ''});
                 setUsePoint(prev => prev - promoteItem[0].points);
             }

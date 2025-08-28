@@ -13,7 +13,6 @@ const AdminUsers = () => {
     const fetchUsers = async () => {
       try {
         const res = await api.get(urls.GET_USERS);
-        console.log("✅ GET_USERS response", res);
         const data = res.data;
         setUsers(data);
       } catch (err) {
