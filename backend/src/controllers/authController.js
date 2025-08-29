@@ -68,7 +68,7 @@ const refreshToken = (req, res) => {
             { expiresIn: "1h" }
         );
   
-        res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: true, sameSite: "strict" });
+        res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: true, sameSite: "lax" });
         res.status(200).json({ message: "Token refreshed" });
     });
   } catch (error) {
@@ -175,8 +175,8 @@ const registerOrLoginWithOTP = async (req, res) => {
     const accessToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
     const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "strict" });
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "strict" });
+    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
 
     res.status(200).json({
       message: isNewUser ? "User registered & logged in" : "User logged in",
@@ -223,8 +223,8 @@ const postUserLogin = async (req, res) => {
         );
 
         // Lưu token vào HTTP Cookies
-        res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "strict" });
-        res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "strict" });
+        res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
+        res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
 
         res.status(200).json({ message: 'Login successful', userInfo: {
           username: user.username,
@@ -351,8 +351,8 @@ const getGoogleCallback = () => [
   (req, res) => {
     const { user, accessToken, refreshToken } = req.user;
 
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict" });
+    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
     res.redirect(process.env.VITE_FE_URL); // Điều hướng về trang chính
   }
 ]
@@ -362,8 +362,8 @@ const getFacebookCallback = () => [
   (req, res) => {
     const { user, accessToken, refreshToken } = req.user;
 
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "Strict" });
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict" });
+    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
 
     res.redirect(process.env.VITE_FE_URL);
   }
