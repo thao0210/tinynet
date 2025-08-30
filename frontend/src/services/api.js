@@ -1,22 +1,30 @@
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import urls from '@/sharedConstants/urls';
-import { emitter } from './events';
+import axios from "axios";
+import toast from "react-hot-toast";
+import urls from "@/sharedConstants/urls";
+import { emitter } from "./events";
+
+let accessToken = null;
+let isRefreshing = false;
+let refreshPromise = null; // giữ promise refresh để tránh gọi nhiều lần
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   timeout: 5000,
-  withCredentials: true,
+  withCredentials: true, // để server đọc cookie refreshToken
 });
 
 // 🟢 Request Interceptor
 api.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
   (error) => Promise.reject(error)
 );
 
-let isRefreshing = false;
-
+// 🟢 Response Interceptor
 api.interceptors.response.use(
   (response) => {
     const change = response.data?.pointsChange;
@@ -38,12 +46,12 @@ api.interceptors.response.use(
 
     console.log("❌ Interceptor caught error:", status, data);
 
-    // đang ở login page thì bỏ qua
+    // Đang ở trang login thì bỏ qua
     if (window.location.pathname.includes("/login")) {
       return Promise.reject(error);
     }
 
-    // 🔹 Nếu API yêu cầu login
+    // 🔹 Nếu API yêu cầu login thẳng
     if (status === 401 && data?.requireLogin) {
       emitter.emit("requireLogin", {
         redirectUrl: window.location.pathname + window.location.search,
@@ -56,7 +64,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // 🔹 Nếu cần password/otp cho resource
+    // 🔹 Nếu cần password/otp riêng cho resource
     if (status === 401 && (data?.requirePassword || data?.requireOtp)) {
       emitter.emit("requireItemAuth", {
         requirePassword: data.requirePassword,
@@ -67,40 +75,56 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // 🔹 Chỉ refresh token khi 401
-    if (status === 401) {
-      if (data?.notLoggedIn) {
-        console.warn("❌ Not logged in, skip refresh-token");
-        return Promise.reject(error);
-      }
-
-      const isLoggedIn = localStorage.getItem("userLoggedIn") === "true";
-      if (!isLoggedIn) {
-        console.warn("❌ Not logged in, skip refresh-token");
-        return Promise.reject(error);
-      }
-
-      if (data?.message === "Access token expired") {
-        if (!isRefreshing) {
-          isRefreshing = true;
-          try {
-            await api.post(urls.REFRESH_TOKEN);
-            isRefreshing = false;
-            console.log("✅ Token refreshed. Retrying request once...");
-            originalRequest._retry = true;
-            return api(originalRequest);
-          } catch (refreshError) {
-            isRefreshing = false;
-            console.warn("❌ Refresh failed, redirect to login.");
-            localStorage.removeItem("userLoggedIn");
-            window.location.href = import.meta.env.VITE_FE_URL + "login";
-            return Promise.reject(refreshError);
-          }
-        }
-      }
-
-      // Còn lại -> reject luôn
+    // 🔹 Nếu user chưa login (public page)
+    if (status === 401 && data?.notLoggedIn) {
+      clearAccessToken();
+      console.log("ℹ️ Public user: skip refresh");
       return Promise.reject(error);
+    }
+
+    // 🔹 Nếu accessToken hết hạn HOẶC thiếu accessToken nhưng có refreshToken
+    if (status === 401 && data?.canRefresh) {
+      if (originalRequest._retry) {
+        // tránh lặp vô tận
+        return Promise.reject(error);
+      }
+      originalRequest._retry = true;
+
+      if (!isRefreshing) {
+        isRefreshing = true;
+        refreshPromise = api
+          .post(urls.REFRESH_TOKEN)
+          .then((res) => {
+            const newToken = res.data?.accessToken;
+            if (newToken) {
+              setAccessToken(newToken);
+            }
+            return newToken;
+          })
+          .catch((refreshError) => {
+            console.warn("❌ Refresh token failed:", refreshError);
+            clearAccessToken();
+            localStorage.removeItem("userLoggedIn");
+            // chỉ redirect nếu user đã login
+            if (localStorage.getItem("userLoggedIn") === "true") {
+              window.location.href = import.meta.env.VITE_FE_URL + "login";
+            }
+            throw refreshError;
+          })
+          .finally(() => {
+            isRefreshing = false;
+          });
+      }
+
+      try {
+        const newToken = await refreshPromise;
+        if (newToken) {
+          originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+          return api(originalRequest);
+        }
+      } catch (e) {
+        return Promise.reject(e);
+      }
     }
 
     // 🔹 Nếu là 403 => không refresh, chỉ báo lỗi
@@ -124,5 +148,13 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export function setAccessToken(token) {
+  accessToken = token;
+}
+
+export function clearAccessToken() {
+  accessToken = null;
+}
 
 export default api;

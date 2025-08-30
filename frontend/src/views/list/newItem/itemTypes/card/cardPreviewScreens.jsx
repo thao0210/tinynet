@@ -2,13 +2,12 @@ import classes from './styles.module.scss';
 import { motion } from 'framer-motion';
 import { transitionPresets } from './effect';
 import TextBoxPreview from './TextBoxPreview';
-import { CommentIcon, LikeIcon, ViewIcon } from '../../../list-components';
+import { CommentIcon, LikeIcon, ViewIcon } from '@/components/listComponents/icons';
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { FaPause, FaPlay } from 'react-icons/fa';
 import Tippy from '@tippyjs/react';
 import UserAvatar from '@/components/userAvatar';
 import { Languages } from '../generalComponents';
-import { useEffect, useState } from 'react';
 
 const CardPreviewScreens = ({
   screen,

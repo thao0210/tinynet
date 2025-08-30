@@ -3,30 +3,15 @@ import urls from '@/sharedConstants/urls';
 import styles from './styles.module.scss';
 import { useStore } from '@/store/useStore';
 import classNames from 'classnames';
-import { MdEmail, MdPerson, MdVisibility, MdVisibilityOff } from 'react-icons/md';
-import api from '@/services/api';
+import { MdEmail} from 'react-icons/md';
+import api, { setAccessToken } from "@/services/api";
 import { useNavigate, useLocation } from 'react-router-dom';
-import OtpInput from '@/components/otpInput';
 import CountdownTimer from '@/components/countdown';
 import Loader from '@/components/loader';
 import toast from 'react-hot-toast';
 import ReferrerInput from './referrerInput';
 import Checkbox from '@/components/checkbox';
-
-export const VerifyOtp = ({ email, onSuccess, itemId }) => {  
-    const handleVerifyOtp = async (otp) => {
-      const res = await api.post(itemId ? `${urls.LIST}/${itemId}/verify-otp` : urls.VERIFY_OTP, {email, otp})
-      if (res.data) {
-        res.data.tempToken ?  onSuccess(res.data.tempToken) : onSuccess();
-    };
-    }
-  
-    return (
-      <div>
-        <OtpInput length={6} onComplete={handleVerifyOtp} />
-      </div>
-    );
-  };
+import VerifyOtp from '@/components/otpInput';
   
 const Register = () => {
     const navigate = useNavigate();
@@ -79,27 +64,36 @@ const Register = () => {
     };
 
     const onRegister = async () => {
-        // create a random avatar
-        const baseUrl = import.meta.env.VITE_R2_BASE_URL;
-        const avatarUrl = `${baseUrl}/avatar/${Math.round(Math.random()*40)}.webp`;
-        setLoading(true);
-        const register = await api.post(urls.REGISTER, {
-            email: account.email,
-            avatar: avatarUrl,
-            referrer: account.referrer,
-            timezone: userTimezone,
-            lang: userLang
-        })
+        try {
+            // create a random avatar
+            const baseUrl = import.meta.env.VITE_R2_BASE_URL;
+            const avatarUrl = `${baseUrl}/avatar/${Math.round(Math.random()*40)}.webp`;
+            setLoading(true);
+            const register = await api.post(urls.REGISTER, {
+                email: account.email,
+                avatar: avatarUrl,
+                referrer: account.referrer,
+                timezone: userTimezone,
+                lang: userLang
+            })
 
-        if (register.data && register.data.userInfo) {
-            setLoading(false);
-            setShowModal(null);
-            setUser(register.data.userInfo);
+            setAccessToken(res.data.accessToken);
             localStorage.setItem("userLoggedIn", "true");
-            if (location.pathname.includes('/login')) {
-                navigate('/');
-            }
-        }   
+
+            if (register.data && register.data.userInfo) {
+                setLoading(false);
+                setShowModal(null);
+                setUser(register.data.userInfo);
+                localStorage.setItem("userLoggedIn", "true");
+                if (location.pathname.includes('/login')) {
+                    navigate('/');
+                }
+            }   
+
+        } catch (err) {
+            console.error("Login failed:", err);
+            throw err;
+        }
     }
 
     const fieldOnChange = (e, field) => {

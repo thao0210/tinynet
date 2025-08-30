@@ -5,88 +5,19 @@ import { useStore } from '@/store/useStore';
 import api from '@/services/api';
 import Head from '@/components/header';
 import urls from '@/sharedConstants/urls';
-import New, { CommentIcon, Filters, ItemType, LikeIcon, TopMenus } from './list-components';
 import classNames from 'classnames';
 import Loader from '@/components/loader';
 import iconChampion from '@/assets/champion.svg';
 import { useInView } from "react-intersection-observer";
 import HomeBanner from '@/components/banner/homeBanner';
-import { useNavigate } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
-import { CountdownDateTime } from "@/components/countdown";
 import useClickOutside from '@/hooks/useClickOutsite';
-import { BsGlobe2, BsThreeDots } from 'react-icons/bs';
-import { getTitleByLang } from '@/utils/lang';
 import ReactDOM from 'react-dom';
+import { Filters } from '@/components/listComponents/filters';
+import { Item } from '@/components/listComponents/listItem';
+import { NewType } from '@/components/listComponents/newType';
+import { PasswordModal } from '@/components/listComponents/modals';
 
-const Item = ({item, setShowModal, className}) => {
-    const {user} = useStore();
-    const navigate = useNavigate();
-    const myPost = item?.author && item?.author?.username && (user?.username === item?.author?.username);
-    const onItemClick = async () => {
-        if (item.hasPass) {
-            let hint = '';
-            if (item.passwordHint) {
-                hint = item.passwordHint;
-            }
-            setShowModal(`itemPassword-${item._id}-${hint}`);
-        } else if(item.sendOtp) {
-            //api sendOtp
-            const sendOtp = await api.post(urls.ITEM_SEND_OTP, {email: user.email});
-            if (sendOtp.data) {
-                setShowModal('itemOtp-'+item._id);
-            }
-        } else {
-            navigate('/post/' + (item.slug || item._id));
-        }
-    }
-
-    return (
-        <Tippy content={`Recommended ${item.type}`} disabled={!item.isCurrentlyPromoted}>
-        <div className={classNames(classes.item, className, item.type, {[classes.locked]: item.hasPass || item.sendOtp, [classes.promoted]: item.isCurrentlyPromoted})}>
-            {
-                item.type === 'vote' &&
-                <div className={classes.alert}>
-                    {
-                        item.deadline && user && user.timezone &&
-                        <CountdownDateTime deadline={item.deadline} userTimezone={user.timezone} />
-                    }
-                </div>
-            }
-            <div onClick={onItemClick}>
-                {
-                    item.showTitle &&
-                    <h3>
-                        {
-                            item.type === "card"
-                            ? (item.cardMeta?.[navigator.language]?.title || "card")
-                            : (item?.translations?.length > 0
-                                ? getTitleByLang(item, navigator.language)
-                                : (item?.title || ""))
-                        }
-                        {item.type === 'collection' && item.items && item.items.length ? <sup>{item.items.length}</sup>: ''}
-                    </h3>                                                                                                                                
-                }
-                <ItemType item={item} />
-            </div>
-            {
-                item.language && item.translations?.length > 0 &&
-                <Tippy content='Available in multi languages'>
-                <span className={classNames(classes.multiLanguages, 'multiLanguages')}>
-                    <BsGlobe2 />
-                </span>
-                </Tippy>
-            }
-            <div className={classes.infos}>
-                {
-                    (user) &&
-                    <TopMenus item={item} isMyPost={myPost} isUser={user} showUser={true} />
-                }
-            </div>
-        </div>
-        </Tippy>
-    )
-}
 const Home = () => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -97,6 +28,7 @@ const Home = () => {
     const {user, setShowModal, setLoadList, list, setList, loadList, setLoading, loading, searchFor, setSearchFor, curTheme} = useStore();
     const [showIntro, setShowIntro] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
+    const [showPasswordInfo, setShowPasswordInfo] = useState(true);
     const [filters, setFilters] = useState({
         sortBy: 'latest',
     });
@@ -168,9 +100,9 @@ const Home = () => {
 
     useEffect(() => {
         if (loadList) {
-            setPage(1);  // reset page về 1
-            setHasMore(true); // reset hasMore luôn
-            callListItem(1); // gọi lại page 1
+            setPage(1);
+            setHasMore(true);
+            callListItem(1);
         }
     }, [loadList]);
 
@@ -193,6 +125,7 @@ const Home = () => {
     useEffect(()=>{
         callListItem(1);
     }, [filters]);
+
     useEffect(() => {
         const viewedIntroduction = localStorage.getItem('viewedIntroduction');
         if (viewedIntroduction) {
@@ -204,6 +137,11 @@ const Home = () => {
         }
     }, []);
 
+    useEffect(()=>{
+        if (user && !localStorage.getItem('viewedPasswordInfo')) {
+            setShowPasswordInfo(true);
+        }
+    }, [user])
     return (
         <div id={classes.home}>
             <Head 
@@ -233,7 +171,7 @@ const Home = () => {
                         {
                             list && list.length > 0 && !loading &&
                             list.map((item, index) => 
-                                <Item 
+                                <Item
                                     key={`item${index}`}
                                     item={item} 
                                     setShowModal={setShowModal}
@@ -254,7 +192,7 @@ const Home = () => {
                 {hasMore && <div ref={ref} style={{ height: 20 }} />}
             </div>
             
-            <Filters 
+            <Filters
                 setFilters={setFilters} 
                 setShowFilters={setShowFilters} 
                 showFilters={showFilters} 
@@ -283,7 +221,7 @@ const Home = () => {
                 user && user.username &&
                 ReactDOM.createPortal(
                     <div className={classNames(classes.bMenus, 'bMenus')}>
-                        <New />
+                        <NewType />
                         <Tippy content='Weekly Champions'>
                             <img src={iconChampion} alt='Chaampion' title='Chanpion Board' className={classes.championView} onClick={() => setShowModal('champions')} />
                         </Tippy>
@@ -296,6 +234,10 @@ const Home = () => {
             {
                 showIntro &&
                 <HomeBanner onClose={onBannerClose}/>
+            }
+            {
+                showPasswordInfo && user && !localStorage.getItem('viewedPassInfo') &&
+                <PasswordModal setShowModal={setShowPasswordInfo} />
             }
         </div>
     )

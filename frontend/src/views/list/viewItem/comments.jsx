@@ -6,7 +6,7 @@ import { BsPersonCircle } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
 import { formatDate } from "@/utils/numbers";
 import ItemMenus from '@/components/itemMenu';
-import { LikeIcon } from '../list-components';
+import { LikeIcon } from '@/components/listComponents/icons';
 import { FaSmile } from 'react-icons/fa';
 // import EmojiPicker from 'emoji-picker-react';
 import { useStore } from '@/store/useStore';

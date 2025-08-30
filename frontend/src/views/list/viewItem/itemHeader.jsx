@@ -1,10 +1,11 @@
 // ViewItem/ItemHeader.jsx
 import UserAvatar from '@/components/userAvatar';
-import { ViewIcon, CommentIcon, LikeIcon, TopMenus } from '../list-components';
+import { ViewIcon, CommentIcon, LikeIcon } from '@/components/listComponents/icons';
 import { BsGridFill } from 'react-icons/bs';
 import Tippy from '@tippyjs/react';
 import themeClasses from './themes.module.scss';
 import classNames from 'classnames';
+import { TopMenus } from '@/components/listComponents/topMenus';
 
 const ItemHeader = ({ item, user, views, onCommentClick, navigate, isModal }) => {
     return (

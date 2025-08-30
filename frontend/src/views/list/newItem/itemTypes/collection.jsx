@@ -7,7 +7,7 @@ import { useStore } from '@/store/useStore';
 import { IoMdCheckboxOutline } from 'react-icons/io';
 import { MdCheckBoxOutlineBlank } from 'react-icons/md';
 import Pagination from '@/components/pagination';
-import { ItemType } from '../../list-components';
+import { ItemType } from '@/components/listComponents/itemType';
 
 const Collection = ({data, setData, curItemId}) => {
     const [items, setItems] = useState([]);

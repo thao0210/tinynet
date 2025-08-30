@@ -5,13 +5,14 @@ import ViewItem from '.';
 import { useStore } from '@/store/useStore';
 import { FcPrevious, FcNext } from "react-icons/fc";
 import UserAvatar from '@/components/userAvatar';
-import { CommentIcon, LikeIcon, TopMenus } from '../list-components';
+import { CommentIcon, LikeIcon } from '@/components/listComponents/icons';
 import ItemVote, { VoteResults } from './itemVote';
 import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
 import themeClasses from './themes.module.scss';
 import classNames from 'classnames';
+import { TopMenus } from '@/components/listComponents/topMenus';
 
 const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTimeout, authorId, voteMode, alreadyVoted}) => {
     const {user, setShowModal, curTheme} = useStore();

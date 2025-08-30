@@ -10,7 +10,6 @@ import AboutUs from '@/views/aboutUs';
 import TermsPrivacy from '@/views/aboutUs/terms';
 import ContactUs from '@/views/aboutUs/contactForm';
 import DonationMethods from '@/views/aboutUs/donationMethods';
-import { InputOTP, InputPassword } from '@/views/list/list-components';
 import { Routes, Route } from 'react-router-dom';
 import List from '@/views/list';
 import classes from './styles.module.scss';
@@ -20,6 +19,9 @@ import api from '@/services/api';
 import toast from 'react-hot-toast';
 import DataDeletion from '@/views/aboutUs/dataDeletion';
 import AuthSuccess from '@/views/authSuccess';
+import NotFound from '@/views/notFound';
+import { InputOTP } from '@/components/listComponents/inputOtp';
+import { InputPassword } from '@/components/listComponents/inputPassword';
 
 const ReportForm = ({showModal, setShowModal}) => {
     const [reason, setReason] = useState('');
@@ -99,9 +101,11 @@ export function AppRoutes() {
       <Route path='register' element={<Register />} />
       <Route path='post/:id' element={<ViewItem />} />
       <Route path='profile/:userId' element={<Profile />} />
+       <Route path='myProfile' element={<Profile />} />
       <Route path='terms-and-privacy' element={<TermsPrivacy />} />
       <Route path='data-deletion' element={<DataDeletion />} />
       <Route path="/auth-success" element={<AuthSuccess />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

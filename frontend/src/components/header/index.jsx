@@ -2,7 +2,7 @@ import classes from './styles.module.scss';
 import { useStore } from '@/store/useStore';
 import { BsPersonCircle } from "react-icons/bs";
 import { IoLogOutSharp } from "react-icons/io5";
-import api from '@/services/api';
+import api, { clearAccessToken } from '@/services/api';
 import urls from '@/sharedConstants/urls';
 import SearchBar from './search';
 import Notifications from './notifications';
@@ -32,12 +32,13 @@ const ThumbProfile = ({user, setUser, avatar}) => {
         const logout = await api.post(urls.LOUTOUT);
         if (logout.data) {
             setUser(null);
+            clearAccessToken(); 
             localStorage.removeItem("userLoggedIn");
         }
     }
 
     const onProfile = () => {
-        navigate('/profile/' + user._id);
+        navigate('/myProfile');
     }
 
     return (

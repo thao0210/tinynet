@@ -1,5 +1,7 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import classes from './styles.module.scss';
+import urls from '@/sharedConstants/urls';
+import api from '@/services/api';
 
 const OtpInput = ({ length = 6, onComplete }) => {
   const [otp, setOtp] = useState(Array(length).fill(""));
@@ -44,4 +46,19 @@ const OtpInput = ({ length = 6, onComplete }) => {
   );
 };
 
-export default OtpInput;
+const VerifyOtp = ({ email, onSuccess, itemId }) => {  
+    const handleVerifyOtp = async (otp) => {
+      const res = await api.post(itemId ? `${urls.LIST}/${itemId}/verify-otp` : urls.VERIFY_OTP, {email, otp})
+      if (res.data) {
+        res.data.tempToken ?  onSuccess(res.data.tempToken) : onSuccess();
+    };
+    }
+  
+    return (
+      <div>
+        <OtpInput length={6} onComplete={handleVerifyOtp} />
+      </div>
+    );
+  };
+
+export default VerifyOtp;

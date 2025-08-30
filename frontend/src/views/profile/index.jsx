@@ -23,7 +23,7 @@ import AdminUsers from './users';
 
 const Profile = () => {
     const {user, showModal} = useStore();
-    const [menu, setMenu] = useState('general');
+    const [menu, setMenu] = useState(new URLSearchParams(location.search).get("tab") || 'general');
     const { userId: routeUserId } = useParams();
     const [imageFile, setImageFile] = useState('');
     const baseUrl = import.meta.env.VITE_R2_BASE_URL;
@@ -57,21 +57,27 @@ const Profile = () => {
             } else {
                 setImageFile(tempAvatar);
             }
+        } else {
+            navigate('/login');
         }
 
         const getUserInfo = async () => {
-            const getInfo = await api.get(`${urls.USER_INFO}?userId=${effectiveUserId}`);
-            if (getInfo.data && getInfo.data.user) {
-                setUserInfo(getInfo.data.user);
-                setImageFile(getInfo.data.user.avatar + '?v=' + (getInfo.data.user.avatarDate || Date.now()) );
-                setIsFollowing(getInfo.data.isFollowing);
-                if (getInfo.data.user.supportMethods?.length > 0) {
-                    setPayments(getInfo.data.user.supportMethods);
+            try {
+                const getInfo = await api.get(`${urls.USER_INFO}?userId=${effectiveUserId}`);
+                if (getInfo.data && getInfo.data.user) {
+                    setUserInfo(getInfo.data.user);
+                    setImageFile(getInfo.data.user.avatar + '?v=' + (getInfo.data.user.avatarDate || Date.now()) );
+                    setIsFollowing(getInfo.data.isFollowing);
+                    if (getInfo.data.user.supportMethods?.length > 0) {
+                        setPayments(getInfo.data.user.supportMethods);
+                    }
+            
+                    if (getInfo.data.user.supportNote) {
+                        setNote(getInfo.data.user.supportNote);
+                    }
                 }
-        
-                if (getInfo.data.user.supportNote) {
-                    setNote(getInfo.data.user.supportNote);
-                }
+            } catch (err) {
+                console.log(err);
             }
         }
         getUserInfo();
@@ -80,13 +86,12 @@ const Profile = () => {
 
     return (
         <div className={classes.profile} id='profile'>
-            {routeUserId && (
-                <Tippy content="Back to list">
-                    <span className={classes.viewList} onClick={() => navigate('/list')}>
-                        <BsGridFill />
-                    </span>
-                </Tippy>
-            )}
+            <Tippy content="Back to list">
+                <span className={classes.viewList} onClick={() => navigate('/list')}>
+                    <BsGridFill />
+                </span>
+            </Tippy>
+        
             <div className={classes.left}>
                 <div className={classes.avatar}>
                     <span className={!imageFile.includes('webp') ? classes.hideOver : ''}>

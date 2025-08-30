@@ -4,7 +4,7 @@ import { IoMdCheckboxOutline } from 'react-icons/io';
 import { MdCheckBoxOutlineBlank, MdPerson, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import urls from '@/sharedConstants/urls';
 import { useStore } from '@/store/useStore';
-import api from '@/services/api';
+import api, { setAccessToken } from "@/services/api";
 import { useNavigate, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 
@@ -26,20 +26,27 @@ const Login = ({nextModal}) => {
     }
 
     const onLogin = async () => {
-        const login = await api.post(urls.LOGIN, {
+        try {
+            const login = await api.post(urls.LOGIN, {
                     input: account.input,
                     password: account.password,
                     rememberMe: isRememberMe ? true : false,
                 });
 
-        if (login.data && login.data.userInfo) {
-            setUser(login.data.userInfo);
-            localStorage.setItem("userLoggedIn", "true");
-            nextModal && setShowModal(nextModal);
-            if (location.pathname.includes('/login')) {
-                navigate('/');
-            }
-        }        
+            setAccessToken(login.data.accessToken);
+            if (login.data && login.data.userInfo) {
+                setUser(login.data.userInfo);
+                localStorage.setItem("userLoggedIn", "true");
+                nextModal && setShowModal(nextModal);
+                if (location.pathname.includes('/login')) {
+                    navigate('/');
+                }
+            }    
+
+        } catch (err) {
+            console.error("Login failed:", err);
+            throw err;
+        }
     }
 
     const onkeyLogin = (e) => {

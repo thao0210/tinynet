@@ -36,11 +36,12 @@ const Shapes = ({ data, setData }) => {
     </div>
   );
 
-  const renderImgIcon = (src, isActive, onClick) => (
+  const renderImgIcon = (src, isActive, onClick, key) => (
     <img
       src={src}
       alt="img"
       onClick={onClick}
+      key={key}
       style={{
         width: 40,
         height: 40,
@@ -73,11 +74,12 @@ const Shapes = ({ data, setData }) => {
     <div className={classes.shapes}>
         <label>Custom</label>
         <div className={classes.list}>
-            {Array.from({ length: 14 }, (_, i) => `/shapes/${i + 1}.svg`).map((src) =>
+            {Array.from({ length: 14 }, (_, i) => `/shapes/${i + 1}.svg`).map((src, i) =>
             renderImgIcon(
                 src,
                 themeShape.group === 'custom' && themeShape.name === src,
-                () => updateThemeShape({ group: 'custom', name: src })
+                () => updateThemeShape({ group: 'custom', name: src }),
+                `shape${i}`
             )
             )}
         </div>
@@ -94,7 +96,8 @@ const Shapes = ({ data, setData }) => {
             return renderImgIcon(
             src,
             themeShape.group === 'emoji' && themeShape.name === name,
-            () => updateThemeShape({ group: 'emoji', name })
+            () => updateThemeShape({ group: 'emoji', name }),
+            `emoji${i}`
             );
         })}
         </div>
@@ -112,7 +115,8 @@ const Shapes = ({ data, setData }) => {
             return renderImgIcon(
             src,
             themeShape.group === 'animals' && themeShape.name === name,
-            () => updateThemeShape({ group: 'animals', name })
+            () => updateThemeShape({ group: 'animals', name }),
+            `animal${i}`
             );
         })}
         </div>

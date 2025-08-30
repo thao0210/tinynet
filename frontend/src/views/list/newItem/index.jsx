@@ -35,7 +35,7 @@ const NewItem = () => {
         password: '',
         sendOtp: false,
         showTitle: true,
-        type: type || 'story',
+        type: type || '',
         themeType: null,
         language: navigator.language || navigator.userLanguage || 'en-US',
         translations: []
@@ -100,6 +100,21 @@ const NewItem = () => {
 
             setLanguages([...new Set(allLangs)]);
         }
+
+        if ((type === "card" && data.searchContent) || 
+        (type === "story" && data.text) ||
+        (type === "draco" && data.base64)
+        ) {
+            const interval = setInterval(() => {
+                if (data) {
+                    const _d = JSON.stringify(data);
+                    localStorage.setItem("draftContent", _d);
+                    console.log("Draft saved");
+                }
+            }, 10000);
+
+            return () => clearInterval(interval);
+        }
     }, [data]);
 
     useEffect(()=>{
@@ -111,6 +126,17 @@ const NewItem = () => {
                 type: arr[1],
                 title: arr[1]
             }));
+            const savedData = localStorage.getItem("draftContent");
+            if (savedData) {
+                const dt = JSON.parse(savedData);
+                if (dt.type === arr[1]) {
+                    const confirm = window.confirm("You have an unpublished draft, would you like to continue?");
+                    if (confirm) {
+                        setData(dt);
+                    }
+                    localStorage.removeItem("draftContent");
+                }
+            }
         }
     }, []);
 
@@ -142,6 +168,7 @@ const NewItem = () => {
         setIsNext(true);
     }
 
+    
     return (
         <div className={classes.new}>
             {

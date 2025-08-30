@@ -52,7 +52,8 @@ const UserSchema = new mongoose.Schema({
       enum: ['user', 'admin'],
       default: 'user'
     },
-    authProvider: { type: String, enum: ["local", "google", "facebook"], default: "local" }
+    authProvider: { type: String, enum: ["local", "google", "facebook"], default: "local" },
+    refreshToken: String
   });
   
   UserSchema.pre('save', function (next) {

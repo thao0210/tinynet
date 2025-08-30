@@ -11,71 +11,100 @@ const {updateUserRank} = require('../utils/updateUserRank');
 
 const checkAuth = async (req, res) => {
   try {
-    if (!req.cookies || !req.cookies.accessToken) {
-      return res.status(401).json({ 
-        message: "Unauthorized: No token", 
-        notLoggedIn: true   // 🟢 Thêm flag này
-      });
+    const authHeader = req.headers["authorization"];
+
+    // --- Không có access token ở header ---
+    if (!authHeader) {
+      const hasRefreshCookie = !!(req.cookies && req.cookies.refreshToken);
+
+      if (hasRefreshCookie) {
+        // Có refresh token -> client có thể thử refresh (chỉ thử 1 lần phía client)
+        return res.status(401).json({
+          message: "Missing access token",
+          canRefresh: true
+        });
+      } else {
+        // Không có gì -> user chưa login (public)
+        return res.status(401).json({
+          message: "Unauthorized: No token",
+          notLoggedIn: true
+        });
+      }
     }
 
-    const accessToken = req.cookies.accessToken;
-  
+    // --- Có header, lấy token ---
+    const parts = authHeader.split(" ");
+    const accessToken = parts.length === 2 ? parts[1] : null;
+
     if (!accessToken) {
-        return res.status(401).json({ message: "Unauthorized" });
+      const hasRefreshCookie = !!(req.cookies && req.cookies.refreshToken);
+      if (hasRefreshCookie) {
+        return res.status(401).json({ message: "Missing access token", canRefresh: true });
+      } else {
+        return res.status(401).json({ message: "Unauthorized: Missing token", notLoggedIn: true });
+      }
     }
-  
-    const decoded = jwt.verify(accessToken, JWT_SECRET);
-    const user = await User.findById(decoded.id).select("+password -refreshToken");
 
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
+    // --- Verify accessToken ---
+    let decoded;
+    try {
+      decoded = jwt.verify(accessToken, JWT_SECRET);
+    } catch (err) {
+      if (err && err.name === "TokenExpiredError") {
+        // Access token hết hạn -> client có thể thử refresh
+        return res.status(401).json({ message: "Access token expired", canRefresh: true });
+      }
+      // Token không hợp lệ
+      return res.status(401).json({ message: "Unauthorized: Invalid token" });
     }
-  
+
+    // --- Lấy user (vẫn check password existence như trước) ---
+    const user = await User.findById(decoded.id).select("+password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const userObj = user.toObject();
     const hasPass = !!userObj.password;
-    delete userObj.password; 
-    res.status(200).json({ user: { ...userObj, hasPass } });
+    delete userObj.password;
 
+    return res.status(200).json({ user: { ...userObj, hasPass } });
   } catch (error) {
-    if (error.name === "TokenExpiredError") {
-        return res.status(401).json({ message: "Access token expired" }); // 🟢 Trả về lỗi 401 để frontend gọi refresh-token
-    }
-    return res.status(401).json({ message: "Unauthorized: Invalid token" });
-}
-  
-};
-
-const refreshToken = (req, res) => {
-  try {
-    if (!req.cookies) {
-      return res.status(401).json({ message: "Unauthorized: No cookies found" });
-    }
-    const refreshToken = req.cookies.refreshToken; // Lấy refresh token từ cookies}
-  
-    if (!refreshToken) {
-        return res.status(401).json({ message: "No refresh token provided" });
-    }
-  
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ message: "Refresh token expired" });
-        }
-  
-        // Tạo mới access token
-        const newAccessToken = jwt.sign(
-            { id: decoded.id },
-            JWT_SECRET,
-            { expiresIn: "1h" }
-        );
-  
-        res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: true, sameSite: "lax" });
-        res.status(200).json({ message: "Token refreshed" });
-    });
-  } catch (error) {
-    return res.status(401).json({ message: "Unauthorized: Invalid or expired refreshToken" });
+    console.error("checkAuth error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-  
 };
+
+const refreshToken = async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) {
+      return res.status(401).json({ message: "No refresh token provided" });
+    }
+
+    // verify refreshToken
+    const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+
+    // check refreshToken trong DB
+    const user = await User.findOne({ _id: decoded.id, refreshToken: token });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    // cấp mới accessToken
+    const newAccessToken = jwt.sign(
+      { id: decoded.id },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    return res.status(200).json({ accessToken: newAccessToken });
+  } catch (error) {
+    console.error("Refresh error:", error);
+    return res.status(401).json({ message: "Unauthorized: Invalid or expired refresh token" });
+  }
+};
+
 
 const verifyRefferer = async (req, res) => {
   try {
@@ -173,12 +202,16 @@ const registerOrLoginWithOTP = async (req, res) => {
 
     // Tạo token login (cả user cũ và mới)
     const accessToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
-    const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+    const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "15d" });
 
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
+    // res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
+    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 30 * 24 * 60 * 60 * 1000 });
+
+    user.refreshToken = refreshToken;
+    await user.save();
 
     res.status(200).json({
+      accessToken,
       message: isNewUser ? "User registered & logged in" : "User logged in",
       userInfo: {
         username: user.username,
@@ -219,34 +252,59 @@ const postUserLogin = async (req, res) => {
         const refreshToken = jwt.sign(
           { id: user._id },
           process.env.REFRESH_TOKEN_SECRET,
-          { expiresIn: "7d" }
+          { expiresIn: "15d" }
         );
 
         // Lưu token vào HTTP Cookies
-        res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
-        res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
+        res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 30 * 24 * 60 * 60 * 1000 });
 
-        res.status(200).json({ message: 'Login successful', userInfo: {
-          username: user.username,
-          email: user.email,
-          fullName: user.fullName,
-          avatar: user.avatar || null,
-          timezone: user.timezone,
-          lang: user.lang,
-          userPoints: user.userPoints || 0,
-          _id: user._id,
-          role: user.role,
-          hasPass: !!user.password
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        res.status(200).json({ 
+          accessToken,
+          message: 'Login successful', 
+          userInfo: {
+            username: user.username,
+            email: user.email,
+            fullName: user.fullName,
+            avatar: user.avatar || null,
+            timezone: user.timezone,
+            lang: user.lang,
+            userPoints: user.userPoints || 0,
+            _id: user._id,
+            role: user.role,
+            hasPass: !!user.password
         } });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-const logout = (req, res) => {
-  res.clearCookie("accessToken");
-  res.clearCookie("refreshToken");
-  res.status(200).json({ message: "Logged out successfully" });
+const logout = async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) {
+      return res.status(200).json({ message: "Already logged out" });
+    }
+
+    const user = await User.findOne({ refreshToken: token });
+    if (user) {
+      user.refreshToken = null;
+      await user.save();
+    }
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+    });
+
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (err) {
+    console.error("Logout error:", err);
+    res.status(500).json({ message: "Server error during logout" });
+  }
 };
 
 const postUserForgotPass = async (req, res) => {
@@ -346,29 +404,6 @@ const verifyOtp = async (req, res) => {
 const getGoogle = passport.authenticate("google", { scope: ["profile", "email"], accessType: "offline", prompt: "consent" });
 const getFacebook = passport.authenticate("facebook", { scope: ["email"] });
 
-const getGoogleCallback = () => [
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
-    const { user, accessToken, refreshToken } = req.user;
-
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
-    res.redirect(process.env.VITE_FE_URL); // Điều hướng về trang chính
-  }
-]
-
-const getFacebookCallback = () => [
-  passport.authenticate("facebook", { failureRedirect: "/" }),
-  (req, res) => {
-    const { user, accessToken, refreshToken } = req.user;
-
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
-    res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
-
-    res.redirect(process.env.VITE_FE_URL);
-  }
-]
-
 const getUsers = async (req, res) => {
   try {
     if (!(req.user && req.user.role === 'admin')) {
@@ -383,4 +418,4 @@ const getUsers = async (req, res) => {
   }
 }
 
-module.exports = {checkAuth, refreshToken, registerOrLoginWithOTP, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getGoogleCallback, getFacebookCallback, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer, checkEmailAvailable}
+module.exports = {checkAuth, refreshToken, registerOrLoginWithOTP, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer, checkEmailAvailable}

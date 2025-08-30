@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import api from "@/services/api"; // chỗ bạn gọi BE
+import api, { setAccessToken } from "@/services/api";
 import urls from '@/sharedConstants/urls'
 import { useStore } from "@/store/useStore";
 
@@ -12,13 +12,22 @@ export default function AuthSuccess() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pChange = Number(params.get("pointsChange")) || 0;
+    const accessToken = params.get("accessToken") || null;
     setPointsChange(pChange);
     const fetchUser = async () => {
       try {
+        if (token) {
+          setAccessToken(accessToken); // 🟢 gắn token vào memory
+          localStorage.setItem("userLoggedIn", "true");
+        }
+
         const res = await api.get(urls.CHECK_AUTH);
         setUser(res.data.user);
-        localStorage.setItem("userLoggedIn", "true");
-        navigate("/list"); // hoặc navigate tới trang trước đó
+
+        const redirectUrl = localStorage.getItem("redirectUrl") || "/list";
+        localStorage.removeItem("redirectUrl");
+        navigate(redirectUrl);
+
       } catch (err) {
         console.error("AuthSuccess error:", err);
         navigate("/login");

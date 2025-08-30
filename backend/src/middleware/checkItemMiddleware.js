@@ -16,7 +16,12 @@ const checkItemAccess = async (req, res, next) => {
 
     // 3. Xử lý auth từ accessToken (nếu có)
     let user = null;
-    const token = req.cookies.accessToken;
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+      return res.status(401).json({ message: "Unauthorized: No token" });
+    }
+
+    const token = authHeader.split(" ")[1];
     if (token) {
       const decoded = checkToken(token);
       if (!(decoded instanceof Error)) {

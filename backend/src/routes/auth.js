@@ -1,6 +1,6 @@
 const express = require('express');
 const auth = require('../middleware/authMiddleware');
-const {checkAuth, refreshToken, postUserLogin, logout, registerOrLoginWithOTP, postUserForgotPass, sendVerificationEmail, verifyOtp, getFacebook, getGoogle, getGoogleCallback, getFacebookCallback, resetPassword, getUsers, verifyRefferer, checkEmailAvailable} = require('../controllers/authController');
+const {checkAuth, refreshToken, postUserLogin, logout, registerOrLoginWithOTP, postUserForgotPass, sendVerificationEmail, verifyOtp, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer, checkEmailAvailable} = require('../controllers/authController');
 const router = express.Router();
 const passport = require("passport");
 
@@ -18,20 +18,20 @@ router.post('/verify-otp', verifyOtp);
 router.get('/get-users', auth, getUsers);
 router.get("/facebook", getFacebook);
 router.get('/google', getGoogle);
-router.get("/facebook/callback", getFacebookCallback);
-// router.get('/google/callback', getGoogleCallback);
+// router.get("/facebook/callback", getFacebookCallback);
 router.get('/google/callback', passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
+  async (req, res) => {
     if (!req.user) {
       console.error("Google callback: req.user undefined");
       return res.status(401).send("User not found");
     }
     const { accessToken, refreshToken, pointsChange, authProvider, hasPass } = req.user;
 
-    res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" });
+    req.user.refreshToken = refreshToken;
+    await req.user.save();
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
-
-    res.redirect(`${process.env.VITE_FE_URL}/auth-success?provider=${authProvider}&pointsChange=${pointsChange}&hasPass=${hasPass}`);
+    
+    res.redirect(`${process.env.VITE_FE_URL}/auth-success?accessToken=${accessToken}&provider=${authProvider}&pointsChange=${pointsChange}&hasPass=${hasPass}`);
   });
 
 module.exports = router;

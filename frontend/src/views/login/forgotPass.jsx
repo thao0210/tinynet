@@ -5,9 +5,9 @@ import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import Loader from '@/components/loader';
 import CountdownTimer from '@/components/countdown';
-import { VerifyOtp } from './register';
 import toast from 'react-hot-toast';
 import { useStore } from '@/store/useStore';
+import VerifyOtp from '@/components/otpInput';
 
 const ForgotPass = () => {
     const [loading, setLoading] = useState(false);

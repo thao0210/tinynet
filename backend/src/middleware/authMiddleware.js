@@ -4,9 +4,14 @@ const checkToken = require("../utils/tokenHelper");
 const User = require("../models/User");
 
 const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.accessToken;
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) {
+    return res.status(401).json({ message: "Unauthorized: No token" });
+  }
+
+  const token = authHeader.split(" ")[1];
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 
   const decoded = checkToken(token);
