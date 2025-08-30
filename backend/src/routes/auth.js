@@ -27,8 +27,6 @@ router.get('/google/callback', passport.authenticate("google", { failureRedirect
     }
     const { accessToken, refreshToken, pointsChange, authProvider, hasPass } = req.user;
 
-    req.user.refreshToken = refreshToken;
-    await req.user.save();
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "lax" });
     
     res.redirect(`${process.env.VITE_FE_URL}/auth-success?accessToken=${accessToken}&provider=${authProvider}&pointsChange=${pointsChange}&hasPass=${hasPass}`);
