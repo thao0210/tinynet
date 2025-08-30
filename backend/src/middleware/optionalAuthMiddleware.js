@@ -1,10 +1,11 @@
-const checkToken = require("../utils/tokenHelper");
 const User = require("../models/User");
+const checkToken = require("../utils/tokenHelper");
 
 const optionalAuthMiddleware = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   if (!authHeader) {
-    return res.status(401).json({ message: "Unauthorized: No token" });
+    req.user = null; // guest
+    return next();
   }
 
   const token = authHeader.split(" ")[1];

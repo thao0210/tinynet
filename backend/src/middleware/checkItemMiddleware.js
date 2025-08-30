@@ -1,6 +1,6 @@
 const checkToken = require("../utils/tokenHelper");
 const User = require("../models/User");
-const {findItemByIdOrSlug} = require('../utils/itemUtils');
+const { findItemByIdOrSlug } = require('../utils/itemUtils');
 
 const checkItemAccess = async (req, res, next) => {
   const { itemId } = req.params;
@@ -17,18 +17,16 @@ const checkItemAccess = async (req, res, next) => {
     // 3. Xử lý auth từ accessToken (nếu có)
     let user = null;
     const authHeader = req.headers["authorization"];
-    if (!authHeader) {
-      return res.status(401).json({ message: "Unauthorized: No token" });
-    }
-
-    const token = authHeader.split(" ")[1];
-    if (token) {
-      const decoded = checkToken(token);
-      if (!(decoded instanceof Error)) {
-        user = await User.findById(decoded.id).select("username fullName avatar email dob phone password");
-        req.user = user;
-      } else {
-        console.warn("Invalid access token:", decoded.message || decoded.name);
+    if (authHeader) {
+      const token = authHeader.split(" ")[1];
+      if (token) {
+        const decoded = checkToken(token);
+        if (!(decoded instanceof Error)) {
+          user = await User.findById(decoded.id).select("username fullName avatar email dob phone password");
+          req.user = user;
+        } else {
+          console.warn("Invalid access token:", decoded.message || decoded.name);
+        }
       }
     }
 
