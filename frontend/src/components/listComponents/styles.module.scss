@@ -310,3 +310,43 @@ ul.typeslist {
         margin-top: 0;
     }
   }
+
+
+  .addPassword {
+  padding: 20px;
+
+  label {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+  }
+  input {
+    width: 100%;
+    font-size: 16px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+  }
+
+  >div:last-child {
+    text-align: right;
+  }
+
+  .hint {
+    font-size: 14px;
+    > span {
+      color: purple;
+      display: block;
+      text-align: right;
+      cursor: pointer;
+    }
+    > div {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #f5e2fc;
+      color: purple;
+      box-shadow: inset 1px 1px 3px #00000030;
+    }
+  }
+}
