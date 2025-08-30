@@ -16,7 +16,7 @@ export default function AuthSuccess() {
     setPointsChange(pChange);
     const fetchUser = async () => {
       try {
-        if (token) {
+        if (accessToken) {
           setAccessToken(accessToken); // 🟢 gắn token vào memory
           localStorage.setItem("userLoggedIn", "true");
         }
