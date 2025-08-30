@@ -257,7 +257,7 @@
 }
 
 .theme1 {
-    background: #f7b4ba;
+    background: #f7b4ba!important;
     .infos {
         background: #60171c;
         box-shadow: none;
@@ -277,7 +277,7 @@
     }
 }
 .theme2 {
-    background: #f1e7d8;
+    background: #f1e7d8!important;
     .content {
         height: calc(100% - 60px);
         border: none;
@@ -299,7 +299,7 @@
 }
 
 .theme3 {
-    background: #e6c2c2;
+    background: #e6c2c2!important;
     .content {
         background: linear-gradient(#FFFFFFCC, #FFFFFF40);
         height: calc(100% - 60px);
@@ -316,7 +316,7 @@
 }
 
 .theme4 {
-    background: #049fca;
+    background: #049fca!important;
     color: white;
     text-shadow: 1px 1px 5px #00000060;
     .content {
@@ -355,7 +355,7 @@
 }
 
 .theme6 {
-    background: #ead3e4;
+    background: #ead3e4!important;
     &::before {
         background: url("/dec/6.webp") no-repeat right top/contain;
         mask-image: linear-gradient(to left, rgba(0, 0, 0, 1),rgba(0, 0, 0, 0.8) 250px, rgba(0, 0, 0, 0) 350px);
@@ -368,7 +368,7 @@
 }
 
 .theme7 {
-    background: #7f1b14;
+    background: #7f1b14!important;
     color: white;
     text-shadow: 1px 1px 5px #00000060;
     .content {
