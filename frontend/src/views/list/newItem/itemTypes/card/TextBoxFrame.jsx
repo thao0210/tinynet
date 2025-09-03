@@ -10,9 +10,23 @@ const FrameOptionsForm = ({ frameOptions, onChange }) => {
       <div>
         <label>Type</label>
         <Dropdown
-          list={['speech', 'thought']}
+          list={['none', 'speech', 'thought']}
           curValue={frameOptions?.type}
-          onSelect={(val) => onChange({ type: val })}
+          onSelect={(val) => {
+            if (val === 'none') {
+              // reset toàn bộ field khác
+              onChange({
+                type: 'none',
+                shape: '',
+                fill: '',
+                strokeColor: '',
+                direction: 'none',
+                opacity: '',
+              });
+            } else {
+              onChange({ type: val });
+            }
+          }}
           width={130}
           dropdownContainerSelector='#textbox-frame'
         />
@@ -24,7 +38,7 @@ const FrameOptionsForm = ({ frameOptions, onChange }) => {
             <div
               key={key}
               title={key}
-              onClick={() => onChange({ shape: key })}
+              onClick={() => frameOptions?.type !== 'none' && onChange({ shape: key })}
               style={{
                 width: 50,
                 height: 50,
@@ -50,7 +64,7 @@ const FrameOptionsForm = ({ frameOptions, onChange }) => {
         <Dropdown
           list={arrowOptions}
           curValue={frameOptions?.direction}
-          onSelect={(val) => onChange({ direction: val })}
+          onSelect={(val) => frameOptions?.type !== 'none' && onChange({ direction: val })}
           width={130}
           dropdownContainerSelector='#textbox-frame'
         />
@@ -62,6 +76,7 @@ const FrameOptionsForm = ({ frameOptions, onChange }) => {
           type="color"
           value={frameOptions?.fill || '#CCCCCC'}
           onChange={(e) => onChange({ fill: e.target.value })}
+          disabled={frameOptions?.type === 'none'}
         />
       </div>
 
@@ -71,6 +86,7 @@ const FrameOptionsForm = ({ frameOptions, onChange }) => {
           type="color"
           value={frameOptions?.strokeColor || '#CCCCCC'}
           onChange={(e) => onChange({ strokeColor: e.target.value })}
+          disabled={frameOptions?.type === 'none'}
         />
       </div>
        <div>
@@ -82,6 +98,7 @@ const FrameOptionsForm = ({ frameOptions, onChange }) => {
           max={1}
           step={0.1}
           onChange={(e) => onChange({ opacity: e.target.value })}
+          disabled={frameOptions?.type === 'none'}
         />
       </div>
     </div>

@@ -113,6 +113,17 @@ const Card = ({ data, setData }) => {
     const { text, ...styleData } = newData;
     screen.textboxes[idx] = { ...box, ...styleData };
     setScreens(updatedScreens);
+
+    const lastStyle = {
+      fontSize: screen.textboxes[idx].fontSize,
+      fontFamily: screen.textboxes[idx].fontFamily,
+      textAlign: screen.textboxes[idx].textAlign,
+      color: screen.textboxes[idx].color,
+      textShadow: screen.textboxes[idx].textShadow,
+      effect: screen.textboxes[idx].effect,
+      frame: screen.textboxes[idx].frame
+    };
+    sessionStorage.setItem('lastTextStyle', JSON.stringify(lastStyle));
   };
 
   const deleteTextbox = (index) => {

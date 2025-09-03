@@ -6,7 +6,13 @@ export const PasswordModal = ({setShowModal}) => {
     const navigate = useNavigate();
     const onSetPass = () => {
         navigate('/myProfile?tab=change-password');
-        localStorage.setItem('viewedPassInfo', true)
+        localStorage.setItem('viewedPassInfo', true);
+        setShowModal(false);
+    }
+
+    const onSkip = () => {
+        setShowModal(false);
+        localStorage.setItem('viewedPassInfo', true);
     }
     return (
         <Modal setShowModal={setShowModal} width={500}>
@@ -19,7 +25,7 @@ export const PasswordModal = ({setShowModal}) => {
                 </p>
                 <div className='buttons'>
                     <button className='btn' onClick={onSetPass}>Set password now</button>
-                    <button className='btn sub' onClick={() => localStorage.setItem('viewedPassInfo', true)}>Ok / Maybe later</button>
+                    <button className='btn sub' onClick={onSkip}>Ok / Maybe later</button>
                 </div>
             </div>
         </Modal>

@@ -123,7 +123,7 @@ const Register = () => {
     }
     return <div className={classNames(styles.login, {[styles.page]: location.pathname.includes('register')})}>
         <div className={styles.register}>
-            <h1>Sign Up</h1>
+            <h1>Email OTP</h1>
             {
                 !verified && !showOtpBox &&
                 <>

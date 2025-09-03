@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
 import styles from "./styles.module.scss";
+import Loader from '../loader';
 
 const getEmbedUrl = (url) => {
   try {
@@ -39,18 +40,24 @@ const getEmbedUrl = (url) => {
 };
 
 const Embed = ({ url }) => {
+  const [loading, setLoading] = useState(true);
   const embedUrl = getEmbedUrl(url);
 
   if (!embedUrl) return <p className={styles.error}>Unsupported or invalid URL</p>;
 
   return (
     <div className={styles.embedWrapper}>
+      {loading && (
+        <Loader />
+      )}
       <iframe
         src={embedUrl}
         frameBorder="0"
         allow="autoplay; encrypted-media; picture-in-picture"
         allowFullScreen
         title="Embedded content"
+        onLoad={() => setLoading(false)}
+        style={{ display: loading ? "none" : "block" }}
       />
     </div>
   );

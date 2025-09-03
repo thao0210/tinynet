@@ -45,6 +45,18 @@ const ScreenMenus = forwardRef(({ screens, setScreens, setActiveIndex, activeScr
         const x = contentBox ? (contentBox.width - boxWidth) / 2 : 100;
         const y = contentBox ? ((contentBox.height - boxHeight) / 2) - 80 : 100;
 
+        const getLastTextStyle = () => {
+            const saved = sessionStorage.getItem('lastTextStyle');
+            return saved
+                ? JSON.parse(saved)
+                : { fontSize: '20px', fontFamily: 'Arial', textAlign:'center', color:'#666', textShadow:'none', effect:'typing', frame: {type: 'speech',
+                shape: '',
+                fill: '',
+                strokeColor: '',
+                direction: 'none',
+                shadow: false} };
+        };
+
         screen.textboxes.push({
             id: genId(),
             x,
@@ -54,20 +66,7 @@ const ScreenMenus = forwardRef(({ screens, setScreens, setActiveIndex, activeScr
             offsetX: -boxWidth/2, // -width/2
             offsetY: -boxHeight/2,  // -height/2
             text: "Your text here",
-            fontSize: '20px',
-            fontFamily: 'Arial',
-            textAlign: 'center',
-            color: '#666666',
-            textShadow: 'none',
-            effect: 'typing',
-            frame: {
-                type: '',
-                shape: '',
-                fill: '',
-                strokeColor: '',
-                direction: 'none',
-                shadow: false
-            }
+            ...getLastTextStyle(),
         });
 
         setScreens(updatedScreens);
