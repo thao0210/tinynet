@@ -70,7 +70,8 @@ const ThumbProfile = ({user, setUser, avatar}) => {
 }
 const Head = ({isDark, ...rest}) => {
     const {user, setUser, setShowModal} = useStore();
-        
+    const hasAccount = localStorage.getItem('hasAccount');
+
     return (
         <div className={classNames(classes.head, 'head')}>
             <img className={classes.logo} src={'/logo.svg'} alt='Logo' height={35} />
@@ -80,7 +81,7 @@ const Head = ({isDark, ...rest}) => {
                     user && user.username ?
                     <ThumbProfile user={user} setUser={setUser} avatar={user.avatar} /> :
                     <>
-                        <span onClick={() => setShowModal('login')}>Sign In</span>
+                        <span onClick={() => setShowModal('login')}>{hasAccount ? 'Sign In' : 'Sign Up'}</span>
                     </>
                 }
             </div>

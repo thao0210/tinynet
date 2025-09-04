@@ -1,67 +1,17 @@
 import { useState } from 'react';
 import styles from './styles.module.scss';
-import { IoMdCheckboxOutline } from 'react-icons/io';
-import { MdCheckBoxOutlineBlank, MdPerson, MdVisibility, MdVisibilityOff } from 'react-icons/md';
-import urls from '@/sharedConstants/urls';
 import { useStore } from '@/store/useStore';
-import api, { setAccessToken } from "@/services/api";
 import { useNavigate, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
+import Upass from './upass';
+import EmailOtp from './emailOtp';
+import OtpBox from './otpBox';
 
 const Login = ({nextModal}) => {
-    const navigate = useNavigate();
     const location = useLocation();
-    const [showPassText, setShowPassText] = useState(false);
-    const {setUser, setShowModal} = useStore();
-
-    const [account, setAccount] = useState({
-        input: '',
-        password: ''
-    })
-    const [isRememberMe, setIsRememberMe] = useState(true);
-
-    const isDisabled = () => {
-        if (account.input && account.password) return false;
-        return true;
-    }
-
-    const onLogin = async () => {
-        try {
-            const login = await api.post(urls.LOGIN, {
-                    input: account.input,
-                    password: account.password,
-                    rememberMe: isRememberMe ? true : false,
-                });
-
-            setAccessToken(login.data.accessToken);
-            if (login.data && login.data.userInfo) {
-                setUser(login.data.userInfo);
-                localStorage.setItem("userLoggedIn", "true");
-                nextModal && setShowModal(nextModal);
-                if (location.pathname.includes('/login')) {
-                    navigate('/');
-                }
-            }    
-
-        } catch (err) {
-            console.error("Login failed:", err);
-            throw err;
-        }
-    }
-
-    const onkeyLogin = (e) => {
-        if (e.key === 'Enter') {
-            onLogin();
-        }
-    }
-
-    const onShowPass = () => {
-        setShowPassText(!showPassText);
-    }
-
-    const onRegister = () => {
-        location.pathname.includes('login') ? navigate('/register') : setShowModal('register');
-    }
+    const [showPassField, setShowPassField] = useState(false || !!localStorage.getItem('hasAccountPassword'));
+    const [showOtpBox, setShowOtpBox] = useState(false);
+    const [email, setEmail] = useState('');
 
     const googleLogin = () => {
         // Redirect to Google OAuth
@@ -70,58 +20,34 @@ const Login = ({nextModal}) => {
         }
     }
 
-    const facebookLogin = () => {
-        if (import.meta.env.VITE_FACEBOOK_URL) {
-            // Redirect to Facebook OAuth
-            window.location.href = import.meta.env.VITE_FACEBOOK_URL; 
-        }
-    }
     return (
     <div className={classNames(styles.login, {[styles.page]: location.pathname.includes('login')})}>
-        <div>
-            <h1>Sign In</h1>
+        {
+            !showOtpBox &&
             <div>
-                <input type='text' placeholder={'Email or username'} value={account.input} onChange={e => setAccount({...account, input: e.target.value})}/>
-                <MdPerson />
-            </div>
-            <div>
-                <input 
-                    type={showPassText ? 'text' : 'password'} 
-                    placeholder='Password'
-                    value={account.password} 
-                    onChange={e => setAccount({...account, password: e.target.value})}
-                    onKeyDown={onkeyLogin}
-                />
                 {
-                    showPassText ? <MdVisibility onClick={onShowPass} /> : <MdVisibilityOff onClick={onShowPass} />
+                    showPassField ?
+                    <Upass nextModal={nextModal} /> :
+                    <EmailOtp setShowOtpBox={setShowOtpBox} email={email} setEmail={setEmail} />
                 }
-            </div>
-            <div className={styles.subOptions}>
-                <div onClick={() => setIsRememberMe(!isRememberMe)}>
-                    {
-                        isRememberMe ?
-                        <IoMdCheckboxOutline/> :
-                        <MdCheckBoxOutlineBlank />
-                    }
-                    <label>Remember me</label>
+                <div>
+                    <div className={styles.or}>or</div>
+                    <div className={styles.others}>
+                        <span onClick={googleLogin}><img src='/google.svg' height={25} /> Google</span>
+                        {
+                            !showPassField ?
+                            <span onClick={() => setShowPassField(true)}><img src='/key.svg' height={25} />Password</span> :
+                            <span onClick={() => setShowPassField(false)}><img src='/shield.svg' height={25} />Email OTP</span>
+                        }
+                    </div>
                 </div>
-                <strong onClick={() => setShowModal('forgotPass')}>Forgot password?</strong>
+                <p className={styles.note}>Using <strong onClick={() => setShowPassField(false)}>Email OTP</strong> or <strong onClick={googleLogin}>Google</strong> to sign up or sign in. </p>
             </div>
-            <div className='buttons'>
-                <button className="btn" onClick={onLogin} disabled={isDisabled()}>
-                    <span>Login</span>
-                </button>
-            </div>
-            <div>
-                <div className={styles.or}>or</div>
-                <div className={styles.others}>
-                    <span onClick={onRegister}><img src='/shield.svg' height={25} />Email OTP</span>
-                    <span onClick={googleLogin}><img src='/google.svg' height={25} /> Google</span>
-                    {/* <span onClick={facebookLogin} className='disabled'><img src='/facebook.svg' height={25} /> Facebook</span> */}
-                </div>
-            </div>
-            <p className={styles.note}>First time here?<br /> Using <strong onClick={onRegister}>Email OTP</strong> or <strong onClick={googleLogin}>Google</strong> will also <strong onClick={onRegister}>sign you up</strong>. </p>
-        </div>
+        }
+        {
+            showOtpBox &&
+            <OtpBox setShowOtpBox={setShowOtpBox}  email={email}/>
+        }
     </div>
     )
 }

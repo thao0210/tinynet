@@ -1,5 +1,4 @@
 import Login from '@/views/login';
-import Register from '@/views/login/register';
 import ForgotPass from '@/views/login/forgotPass';
 import NewItem from '@/views/list/newItem';
 import ViewItem from '@/views/list/viewItem';
@@ -58,7 +57,6 @@ const ReportForm = ({showModal, setShowModal}) => {
 }
 export default function AppModalContent({ showModal, nextModal, setShowModal }) {
   if (showModal === 'login') return <Login nextModal={nextModal} />;
-  if (showModal === 'register') return <Register />;
   if (showModal === 'forgotPass') return <ForgotPass />;
   if (showModal.includes('newItem')) return <NewItem />;
   if (showModal.includes('itemPassword')) return <InputPassword />;
@@ -98,7 +96,6 @@ export function AppRoutes() {
       <Route path='/' element={<List />} />
       <Route path='list' element={<List />} />
       <Route path='login' element={<Login />} />
-      <Route path='register' element={<Register />} />
       <Route path='post/:id' element={<ViewItem />} />
       <Route path='profile/:userId' element={<Profile />} />
        <Route path='myProfile' element={<Profile />} />

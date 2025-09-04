@@ -220,7 +220,7 @@ const Champions = () => {
                     visible={showMyAward}
                     points={myAward.map(item => item.points).reduce((item, total) => total = total + item)}
                     content={returnContentHtml(myAward)}
-                    time={6}
+                    time={4}
                     onClose={onCongratsClose}
                 />
             }

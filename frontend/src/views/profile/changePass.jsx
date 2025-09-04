@@ -54,6 +54,7 @@ const ChangePassword = () => {
 
         if (changePass.data) {
             toast.success('Password is updated successfully!');
+            localStorage.setItem('hasAccountPassword', true);
         }
     }
 

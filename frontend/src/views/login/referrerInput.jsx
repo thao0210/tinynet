@@ -3,6 +3,7 @@ import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import styles from './styles.module.scss';
 import Tippy from '@tippyjs/react';
+import { MdPerson } from "react-icons/md";
 
 const ReferrerInput = ({setData, emailAvailable}) => {
   const [referrer, setReferrer] = useState("");
@@ -34,8 +35,9 @@ const ReferrerInput = ({setData, emailAvailable}) => {
         value={referrer}
         onChange={(e) => setReferrer(e.target.value)}
         onBlur={checkReferrer}
-        disabled={!emailAvailable}
       />
+      <div>referrer is only for new registered users</div>
+      <MdPerson />
       {status === "valid" && 
       <Tippy content={message}>
         <span className={styles.inside} style={{ color: "green" }}>✅</span>

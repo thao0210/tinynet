@@ -126,7 +126,7 @@
                 justify-content: center;
                 span {
                     margin: 0 5px;
-                    width: 130px;
+                    width: 48%;
                     cursor: pointer;
                     padding: 10px;
                     border: #ccc solid 1px;
@@ -134,6 +134,8 @@
                     align-items: center;
                     justify-content: center;
                     font-weight: bold;
+                    position: relative;
+                    line-height: 18px;
                     img {
                         margin-right: 10px;
                     }

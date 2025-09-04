@@ -77,7 +77,7 @@ const CongratsBanner = ({ visible, onClose, time = 3, points, content }) => {
       backgroundImage: `url(${baseUrl}/girl6.webp)`,
       backgroundRepeat: "no-repeat",
       backgroundPosition: "right top",
-      backgroundColor: "#ff3434cc",
+      backgroundColor: "#b40000",
       backgroundSize: "contain"
       }}>
         <h2>CONGRATULATIONS!</h2>

@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     username: String,
     email: String,
     password: {type: String, default: null},
+    referrer: String,
     phone: String,
     fullName: String,
     fullNameNoAccent: String,

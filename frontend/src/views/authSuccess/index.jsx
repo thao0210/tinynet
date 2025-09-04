@@ -26,6 +26,7 @@ export default function AuthSuccess() {
 
         const redirectUrl = localStorage.getItem("redirectUrl") || "/list";
         localStorage.removeItem("redirectUrl");
+        localStorage.setItem('hasAccount', "true");
         navigate(redirectUrl);
 
       } catch (err) {

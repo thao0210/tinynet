@@ -145,7 +145,7 @@ const checkEmailAvailable = async (req, res) => {
 
 
 const registerOrLoginWithOTP = async (req, res) => {
-  const { email, avatar, referrer, timezone, lang, password } = req.body;
+  const { email, avatar, timezone, lang, password } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -175,7 +175,7 @@ const registerOrLoginWithOTP = async (req, res) => {
 
       user = new User({
         email,
-        username,
+        username: finalUsername,
         password: hashedPassword || null,
         avatar,
         lang: lang || "en",
@@ -189,15 +189,6 @@ const registerOrLoginWithOTP = async (req, res) => {
       await PointsHistory.create({ userId: user.id, points: bonusPoints, description: "New user bonus" });
       await updateUserPoints(user.id, bonusPoints);
       await updateUserRank(user.id);
-
-      if (referrer) {
-        const bonus = 500;
-        const _referrer = await User.findOne({ username: referrer });
-        if (_referrer) {
-          await updateUserPoints(_referrer.id, bonus);
-          await PointsHistory.create({ userId: _referrer.id, points: bonus, description: "New user referrer" });
-        }
-      }
     }
 
     // Tạo token login (cả user cũ và mới)
@@ -230,6 +221,38 @@ const registerOrLoginWithOTP = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+const addReferrer = async (req, res) => {
+  try {
+    const userId = req.user.id; // lấy từ JWT middleware
+    const { referrer } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (user.referrer) {
+      return res.status(400).json({ error: "Referrer already set" });
+    }
+
+    const _referrer = await User.findOne({ username: referrer });
+    if (!_referrer) {
+      return res.status(400).json({ error: "Referrer not found" });
+    }
+
+    // Gán referrer cho user
+    user.referrer = _referrer.username;
+    await user.save();
+
+    // Cộng điểm cho referrer
+    const bonus = 500;
+    await updateUserPoints(_referrer.id, bonus);
+    await PointsHistory.create({ userId: _referrer.id, points: bonus, description: "New user referrer" });
+
+    return res.status(200).json({ message: "Referrer added successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -352,10 +375,6 @@ const sendVerificationEmail = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Kiểm tra email đã có tài khoản chưa
-    // const emailExists = await User.findOne({ email });
-    // if (emailExists) return res.status(400).json({ error: "Email already exists" });
-
     // Tạo mã OTP ngẫu nhiên
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expireTime = Date.now() + 5 * 60 * 1000; // OTP hết hạn sau 5 phút
@@ -418,4 +437,4 @@ const getUsers = async (req, res) => {
   }
 }
 
-module.exports = {checkAuth, refreshToken, registerOrLoginWithOTP, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer, checkEmailAvailable}
+module.exports = {checkAuth, refreshToken, registerOrLoginWithOTP, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer, checkEmailAvailable, addReferrer}
