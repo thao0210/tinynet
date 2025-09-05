@@ -14,21 +14,21 @@ import { formatMessageContent } from "@/utils/formatMessageContent";
 import { formatDate } from "@/utils/numbers";
 
 const SendMessageForm = ({ onSuccess, onClose }) => {
-    const [selectedUser, setSelectedUser] = useState([]); // Lưu ý: array, nhưng chỉ chọn 1
+    const [selectedUser, setSelectedUser] = useState(''); // Lưu ý: array, nhưng chỉ chọn 1
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(false);
 
     const sendMessage = async () => {
-        if (selectedUser.length === 0 || !text.trim()) return;
+        if (!selectedUser) return;
         setLoading(true);
         const res = await api.post(urls.MESSAGE, {
-            receiverId: selectedUser[0]._id, // chỉ gửi đến 1 người
+            receiverId: selectedUser, // chỉ gửi đến 1 người
             text,
             content: text
         });
         if (res.data) {
             setText('');
-            setSelectedUser([]);
+            setSelectedUser('');
             onSuccess?.();
             onClose?.();
         }
@@ -56,7 +56,7 @@ const SendMessageForm = ({ onSuccess, onClose }) => {
             </div>
             
 
-            <button className="btn" onClick={sendMessage} disabled={loading || selectedUser.length === 0}>
+            <button className="btn" onClick={sendMessage} disabled={loading || !selectedUser}>
                 {loading ? 'Sending...' : 'Send'}
             </button>
         </div>

@@ -28,7 +28,7 @@ const Home = () => {
     const {user, setShowModal, setLoadList, list, setList, loadList, setLoading, loading, searchFor, setSearchFor, curTheme} = useStore();
     const [showIntro, setShowIntro] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
-    const [showPasswordInfo, setShowPasswordInfo] = useState(true);
+    const [showPasswordInfo, setShowPasswordInfo] = useState(false);
     const [filters, setFilters] = useState({
         sortBy: 'latest',
     });
@@ -135,6 +135,12 @@ const Home = () => {
             setShowIntro(true);
             }
         }
+
+        const timer = setTimeout(() => {
+            setShowPasswordInfo(true);
+        }, 5000);
+
+        return () => clearTimeout(timer);
     }, []);
 
     useEffect(()=>{
@@ -142,6 +148,7 @@ const Home = () => {
             setShowPasswordInfo(true);
         }
     }, [user])
+
     return (
         <div id={classes.home}>
             <Head 
@@ -232,7 +239,7 @@ const Home = () => {
                 )
             }
             {
-                showIntro &&
+                showIntro && !user &&
                 <HomeBanner onClose={onBannerClose}/>
             }
             {

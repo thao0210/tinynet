@@ -62,7 +62,7 @@ const GeneralInfos = ({data, setData, type, curItemId, usePoint, setUsePoint, la
                 datafield='privacy'
             />
             {
-                data.privacy === 'share' &&
+                data.privacy === 'shared' &&
                 <div>
                     <label>Share with (users)</label>
                     <SearchUsers users={data.shareWith || []} setUsers={setData} datafield='shareWith' />
