@@ -182,7 +182,7 @@ const registerOrLoginWithOTP = async (req, res) => {
         timezone: timezone || "UTC",
         role: totalUsers === 0 ? "admin" : "user",
         userRank: "Rising Talent",
-        userPoints: bonusPoints || 0,
+        userPoints: 0,
         joinedDate: new Date(),
         referrer: null,
       });
