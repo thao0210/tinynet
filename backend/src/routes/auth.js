@@ -1,6 +1,6 @@
 const express = require('express');
 const auth = require('../middleware/authMiddleware');
-const {checkAuth, refreshToken, postUserLogin, logout, addReferrer, registerOrLoginWithOTP, postUserForgotPass, sendVerificationEmail, verifyOtp, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer, checkEmailAvailable} = require('../controllers/authController');
+const {checkAuth, refreshToken, postUserLogin, logout, addReferrer, registerOrLoginWithOTP, postUserForgotPass, sendVerificationEmail, verifyOtp, getFacebook, getGoogle, resetPassword, getUsers, verifyReferrer, checkEmailAvailable} = require('../controllers/authController');
 const router = express.Router();
 const passport = require("passport");
 
@@ -13,7 +13,7 @@ router.post("/logout", logout);
 router.post("/forgot-password", postUserForgotPass);
 router.post('/reset-password', resetPassword);
 router.post('/send-verification-email', sendVerificationEmail);
-router.get('/verify-referrer/:username', verifyRefferer);
+router.get('/verify-referrer/:username', verifyReferrer);
 router.get('/check-email/:email', checkEmailAvailable);
 router.post('/verify-otp', verifyOtp);
 router.get('/get-users', auth, getUsers);

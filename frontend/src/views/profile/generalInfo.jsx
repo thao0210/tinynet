@@ -10,10 +10,12 @@ import { format } from 'date-fns';
 import Dropdown from "@/components/dropdown";
 import LANGUAGES from "@/sharedConstants/languages";
 import { getFlag } from "@/utils/lang";
+import SearchUsers from "@/components/searchUsers";
 
 const GeneralInformation = ({userInfo, setUserInfo, isMyProfile}) => {
     const {user, setUser, setLoadList} = useStore();
     const [editProfile, setEditProfile] = useState(false);
+    const [referrerDeadline, setReferrerDeadline] = useState('');
 
     const info = (text) => {
         return text ? text : 'N/A';
@@ -27,14 +29,20 @@ const GeneralInformation = ({userInfo, setUserInfo, isMyProfile}) => {
     }
 
     const onChange = async () => {
-        const updateUser = await api.put(urls.UPDATE_USER, user);
-        if (updateUser.data) {
-            toast.success('Your profile has been updated');
-            setEditProfile(false);
-            setLoadList(true);
-            setUserInfo(user);
-        }   
-    }
+        const payload = { ...user };
+        try {
+            const updateUser = await api.put(urls.UPDATE_USER, payload);
+            if (updateUser.data) {
+                toast.success('Your profile has been updated');
+                setEditProfile(false);
+                setLoadList(true);
+                setUserInfo(updateUser.data.user);
+                setReferrerDeadline(updateUser.data.referrerDeadline);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.error || 'Update failed');
+        }
+    };
 
     return (
         <>
@@ -76,6 +84,10 @@ const GeneralInformation = ({userInfo, setUserInfo, isMyProfile}) => {
                             <li>
                                 <label>Primary language</label>
                                 <strong>{getFlag(userInfo.lang || navigator.language || 'en-US')}</strong>
+                            </li>
+                            <li>
+                                <label>Referrer</label>
+                                <strong>{info(userInfo.referrer)}</strong>
                             </li>
                         </>
                     }
@@ -134,6 +146,31 @@ const GeneralInformation = ({userInfo, setUserInfo, isMyProfile}) => {
                         dropdownContainerSelector='#profile'
                     />
                 </div>  
+                <div>
+                    <label>
+                        Referrer 
+                        {referrerDeadline && ` (You can add a referrer until: ${new Date(referrerDeadline).toLocaleDateString()})`}
+                    </label>
+
+                    {user?.referrer ? (
+                        <input
+                        type="text"
+                        value={user.referrer}
+                        disabled
+                        />
+                    ) : new Date() > new Date(referrerDeadline) ? (
+                        <p className="note">
+                        Adding a referrer is no longer available after 7 days from registration.
+                        </p>
+                    ) : (
+                        <SearchUsers
+                        users={user?.referrer}
+                        setUsers={setUser}
+                        datafield={'referrer'}
+                        onlyOne={true}
+                        />
+                    )}
+                    </div>
                 <div className="buttons">
                     <button className='btn sm' onClick={onChange} disabled={false}>Save</button>
                     <button className="btn sub" onClick={() => setEditProfile(false)}>Cancel</button>

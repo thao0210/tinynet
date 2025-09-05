@@ -106,7 +106,7 @@ const refreshToken = async (req, res) => {
 };
 
 
-const verifyRefferer = async (req, res) => {
+const verifyReferrer = async (req, res) => {
   try {
     const { username } = req.params;
 
@@ -183,6 +183,8 @@ const registerOrLoginWithOTP = async (req, res) => {
         role: totalUsers === 0 ? "admin" : "user",
         userRank: "Rising Talent",
         userPoints: bonusPoints || 0,
+        joinedDate: new Date(),
+        referrer: null,
       });
       await user.save();
 
@@ -214,7 +216,8 @@ const registerOrLoginWithOTP = async (req, res) => {
         userPoints: user.userPoints,
         _id: user._id,
         role: user.role,
-        hasPass: !!user.password
+        hasPass: !!user.password,
+        referrer: null,
       },
       pointsChange: isNewUser ? bonusPoints : 0
     });
@@ -231,6 +234,14 @@ const addReferrer = async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
+
+    const now = new Date();
+    const joined = new Date(user.joinedDate);
+    const diffDays = Math.floor((now - joined) / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 7) {
+      return res.status(400).json({ error: "Referrer deadline expired" });
+    }
 
     if (user.referrer) {
       return res.status(400).json({ error: "Referrer already set" });
@@ -297,7 +308,8 @@ const postUserLogin = async (req, res) => {
             userPoints: user.userPoints || 0,
             _id: user._id,
             role: user.role,
-            hasPass: !!user.password
+            hasPass: !!user.password,
+            referrer: user.referrer,
         } });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -437,4 +449,4 @@ const getUsers = async (req, res) => {
   }
 }
 
-module.exports = {checkAuth, refreshToken, registerOrLoginWithOTP, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getFacebook, getGoogle, resetPassword, getUsers, verifyRefferer, checkEmailAvailable, addReferrer}
+module.exports = {checkAuth, refreshToken, registerOrLoginWithOTP, postUserLogin, logout, postUserForgotPass, verifyOtp, sendVerificationEmail, getFacebook, getGoogle, resetPassword, getUsers, verifyReferrer, checkEmailAvailable, addReferrer}

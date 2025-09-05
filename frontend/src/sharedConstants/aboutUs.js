@@ -29,7 +29,7 @@ export const aboutData = {
         title: "Stars System",
         content: [
           "10,000 Stars for first 10 users. 3,000 for the next 90. 500 for everyone else.",
-          "Refer a friend = +200 Stars.",
+          "Refer a friend = +500 Stars.",
           "Use Stars to buy themes, post locks, or promote posts.",
           "Weekly leaderboards reward top viewed and liked content."
         ]

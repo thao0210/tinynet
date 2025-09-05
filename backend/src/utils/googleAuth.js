@@ -36,7 +36,9 @@ passport.use(
             lang: "en-US",
             role: "user",
             userPoints: bonusPoints,
-            authProvider: 'google'
+            authProvider: 'google',
+            joinedDate: new Date(),
+            referrer: null,
           });
           await user.save();
           await PointsHistory.create({ userId: user.id, points: bonusPoints, description: 'New user bonus' });
@@ -64,8 +66,10 @@ passport.use(
           role: "user",
           userPoints: user.userPoints,
           authProvider: 'google',
+          joinedDate: user.joinedDate,
           pointsChange: isNewUser ? bonusPoints : 0,
           hasPass: !!user.password,
+          referrer: user.referrer || null,
         };
 
         return done(null, safeUser);   // ✅ chỉ truyền 2 tham số

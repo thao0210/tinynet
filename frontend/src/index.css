@@ -315,6 +315,10 @@ ul, li {
   color: #7a460b;
 }
 
+.note img {
+  vertical-align: middle;
+}
+
 .forbidden {
   margin-top: 10%;
   color: #AAA;

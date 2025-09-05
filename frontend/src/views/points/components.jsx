@@ -67,7 +67,7 @@ export const List = ({list}) => {
 export const SendStars = ({userInfo}) => {
     const {user, setUser} = useStore();
     const [stars, setStars] = useState(100);
-    const [usersForPoints, setUsersForPoints] = useState([]);
+    const [usersForPoints, setUsersForPoints] = useState('');
 
     const handleChange = (e) => {
         const value = parseInt(e.target.value);
@@ -78,9 +78,9 @@ export const SendStars = ({userInfo}) => {
       };
     const sendStars = async () => {
         try {
-            const send = await api.post(urls.SEND_STARS, {recipientId: usersForPoints.length === 1 ? usersForPoints[0]._id : userInfo._id, amount: stars});
+            const send = await api.post(urls.SEND_STARS, {username: usersForPoints, amount: stars});
             if (send.data) {
-                toast.success(`Sent to ${usersForPoints.length === 1 ? (usersForPoints[0].fullName || usersForPoints[0].username) : (userInfo.fullName || userInfo.username)} ${stars} stars successfully!`);
+                toast.success(`Sent to ${usersForPoints} ${stars} stars successfully!`);
                 setUser(prev => ({...prev, userPoints: prev.userPoints - stars}));
             }
         } catch (error) {
@@ -90,6 +90,7 @@ export const SendStars = ({userInfo}) => {
 
     return (
         <div className={classes.sendStars}>
+            <p className='note'>Max stars can be sent will be 5000 <img src='/star.webp' alt='star' height={20} />, min stars can be sent will be 100 <img src='/star.webp' alt='star' height={20} /></p>
             <div>
                 <label>Your current stars</label>
                 <div>
@@ -106,7 +107,7 @@ export const SendStars = ({userInfo}) => {
                     {
                         userInfo._id === user._id &&
                         <div>
-                            <SearchUsers users={usersForPoints || []} setUsers={setUsersForPoints} onlyOne={true} />
+                            <SearchUsers users={usersForPoints || ''} setUsers={setUsersForPoints} onlyOne={true} />
                         </div>
                     }
                     <div className={classes.stars}>

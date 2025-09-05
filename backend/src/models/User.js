@@ -54,7 +54,8 @@ const UserSchema = new mongoose.Schema({
       default: 'user'
     },
     authProvider: { type: String, enum: ["local", "google", "facebook"], default: "local" },
-    refreshToken: String
+    refreshToken: String, 
+    joinedDate: { type: Date, default: null },
   });
   
   UserSchema.pre('save', function (next) {

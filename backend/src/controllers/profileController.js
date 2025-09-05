@@ -43,7 +43,13 @@ const PointsHistory = require('../models/PointsHistory');
       // Kiểm tra xem user hiện tại có follow user này không
       const isFollowing = currentUserId ? user.followers.includes(currentUserId) : false;
 
-      res.status(200).json({ user, isFollowing, avatarDate: new Date() });
+      let referrerDeadline = null;
+        if (user.joinedDate) {
+            const joined = new Date(user.joinedDate);
+            referrerDeadline = new Date(joined.getTime() + 7 * 24 * 60 * 60 * 1000);
+        }
+
+      res.status(200).json({ user, isFollowing, avatarDate: new Date(), referrerDeadline, });
 
     } catch (error) {
       res.status(500).json({ error: "Error getting profile information" });
@@ -51,19 +57,64 @@ const PointsHistory = require('../models/PointsHistory');
   }
 
   const updateUser = async (req, res) => {
-    const { fullName, dob, phone, occupation, timezone, lang } = req.body;
+    const { fullName, dob, phone, occupation, timezone, lang, referrer } = req.body;
   
     try {
-      // Sử dụng req.user từ middleware
-      req.user.fullName = fullName || req.user.fullName;
-      req.user.dob = dob || req.user.dob;
-      req.user.phone = phone || req.user.phone;
-      req.user.occupation = occupation || req.user.occupation;
-      req.user.timezone = timezone || req.user.timezone;
-      req.user.lang = lang || req.user.lang;
+      const user = req.user;
+
+      user.fullName = fullName || user.fullName;
+      user.dob = dob || user.dob;
+      user.phone = phone || user.phone;
+      user.occupation = occupation || user.occupation;
+      user.timezone = timezone || user.timezone;
+      user.lang = lang || user.lang;
   
-      await req.user.save();
-      res.status(200).json({ message: "Profile updated successfully", user: req.user });
+      if (referrer) {
+        if (user.referrer) {
+          return res.status(400).json({ error: "Referrer already set" });
+        }
+
+        const now = new Date();
+        const joined = new Date(user.joinedDate);
+        const diffDays = Math.floor((now - joined) / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 7) {
+          return res.status(400).json({ error: "Referrer deadline expired" });
+        }
+
+        const _referrer = await User.findOne({ username: referrer });
+        if (!_referrer) {
+          return res.status(400).json({ error: "Referrer not found" });
+        }
+
+        if (_referrer.id === user.id) {
+          return res.status(400).json({ error: "You cannot refer yourself" });
+        }
+
+        // Set referrer
+        user.referrer = _referrer.username;
+
+        // Tặng điểm cho referrer
+        const bonus = 500;
+        await updateUserPoints(_referrer.id, bonus);
+        await PointsHistory.create({
+          userId: _referrer.id,
+          points: bonus,
+          description: "New user referrer",
+        });
+
+        // tặng điểm cho người add
+        await updateUserPoints(user.id, 100);
+        await PointsHistory.create({
+          userId: user.id,
+          points: 100,
+          description: "Add new user referrer",
+        });
+      }
+      await user.save();
+      const userObj = user.toObject();
+      delete userObj.password;
+      res.status(200).json({ message: "Profile updated successfully", user: userObj, pointsChange: 100 });
     } catch (error) {
       res.status(500).json({ error: "Error updating profile" });
     }

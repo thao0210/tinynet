@@ -71,7 +71,7 @@ const dailyCheckin = async (req, res) => {
         
         // Cộng điểm
         const points = 100; // hoặc tính logic streak
-        user.points += points;
+        user.userPoints += points;
         user.lastCheckin = now;
         await user.save();
         
@@ -85,21 +85,21 @@ const dailyCheckin = async (req, res) => {
 };
 
 const sendPoints = async (req, res) => {
-    const { recipientId, amount } = req.body;
+    const { username, amount } = req.body;
     try {
         const sender = await User.findById(req.user.id);
-        const recipient = await User.findById(recipientId);
+        const recipient = await User.findOne({ username });
         
         if (!recipient || sender.id === recipient.id) {
             return res.status(400).json({ message: 'Invalid recipient!' });
         }
-        if (sender.points < 5000 || sender.points < amount) {
+        if (sender.userPoints < 5000 || sender.userPoints < amount) {
             return res.status(400).json({ message: 'You don\'t have enough stars to gift!' });
         }
         
         // Trừ điểm người gửi, cộng điểm người nhận
-        sender.points -= amount;
-        recipient.points += amount;
+        sender.userPoints -= amount;
+        recipient.userPoints += amount;
         await sender.save();
         await recipient.save();
         
@@ -111,7 +111,7 @@ const sendPoints = async (req, res) => {
           points: amount
         });
         // Lưu lịch sử
-        await PointsHistory.create({ userId: sender.id, points: -amount, description: 'Send points', recipientId });
+        await PointsHistory.create({ userId: sender.id, points: -amount, description: 'Send points', senderId: recipient.id });
         await PointsHistory.create({ userId: recipient.id, points: amount, description: 'Receive points', senderId: sender.id });
         
         res.json({ message: `You have sent ${amount} stars to ${recipient.username}!` });

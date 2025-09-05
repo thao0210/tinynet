@@ -38,7 +38,7 @@ const Profile = () => {
     const [starsType, setStarsType] = useState('');
     const navigate = useNavigate();
     const effectiveUserId =
-        routeUserId || (showModal.includes('-') ? showModal.split('-')[1] : user?._id);
+        routeUserId || (showModal && showModal.includes('-') ? showModal.split('-')[1] : user?._id);
     const isMyProfile = user && user._id === userInfo._id;
 
     const toggleFollow = async () => {
