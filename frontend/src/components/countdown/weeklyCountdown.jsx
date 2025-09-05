@@ -12,7 +12,7 @@ function WeeklyChampionCountdown({ nextReset, week }) {
       const end = new Date(nextReset);
       const diff = end.getTime() - now.getTime();
 
-      if (diff <= 0) return setTimeLeft("Đang trao giải...");
+      if (diff <= 0) return setTimeLeft("Awarding...");
 
       const duration = dayjs.duration(diff);
       setTimeLeft(`${duration.days() > 0 ? duration.days() + ' days' : ''} ${numberWith0(duration.hours())} : ${numberWith0(duration.minutes())} : ${numberWith0(duration.seconds())}`);

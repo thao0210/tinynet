@@ -26,7 +26,10 @@ const Home = () => {
     const [isDarkTheme, setIsDarkTheme] = useState(false);
     const { ref, inView } = useInView({ triggerOnce: false });
     const {user, setShowModal, setLoadList, list, setList, loadList, setLoading, loading, searchFor, setSearchFor, curTheme} = useStore();
-    const [showIntro, setShowIntro] = useState(false);
+    const [showIntro, setShowIntro] = useState(() => {
+        const viewed = localStorage.getItem('viewedIntroduction');
+        return !viewed && !user && window.innerWidth >= 600;
+    });;
     const [showInfo, setShowInfo] = useState(false);
     const [showPasswordInfo, setShowPasswordInfo] = useState(false);
     const [filters, setFilters] = useState({
@@ -127,15 +130,6 @@ const Home = () => {
     }, [filters]);
 
     useEffect(() => {
-        const viewedIntroduction = localStorage.getItem('viewedIntroduction');
-        if (viewedIntroduction) {
-            setShowIntro(false);
-        } else {
-            if (window.innerWidth >= 600) { // chỉ show intro trên desktop
-            setShowIntro(true);
-            }
-        }
-
         const timer = setTimeout(() => {
             setShowPasswordInfo(true);
         }, 5000);
