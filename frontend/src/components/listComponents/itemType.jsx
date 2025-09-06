@@ -25,7 +25,7 @@ export const ItemType = ({item}) => {
                 </div>
             }
             { item.type === 'draco' && item.imageUrl &&
-                <img className={classes.image} src={item.imageUrl} alt={item.type} />
+                <img className={classes.itemImage} src={item.imageUrl} alt={item.type} />
             }
             {
                 item.type === 'shareUrl' && item.preview && item.url &&
