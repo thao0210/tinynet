@@ -1,7 +1,7 @@
 import classes from '../styles.module.scss';
 import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useStore } from '@/store/useStore';
 import { IoMdCheckboxOutline } from 'react-icons/io';
@@ -37,9 +37,13 @@ const Collection = ({data, setData, curItemId}) => {
         try {
           const res = await api.get(curItemId ? `${urls.SEARCH_ITEMS}?page=${page}&userId=${user._id}&itemId=${curItemId}` : `${urls.SEARCH_ITEMS}?page=${page}&userId=${user._id}`);
           if (res.data) {
-            setItems(res.data.results);
-            setPageCount(res.data.pageCount);
-            setTotal(res.data.totalResults);
+            if (res.data.results?.length) {
+                const items = res.data.results.filter(item => !item.restrictedAccess);
+                setItems(items);
+                setPageCount(res.data.pageCount);
+                setTotal(res.data.totalResults);
+            }
+            
           }
         } catch (error) {
           console.error("Error fetching items:", error);

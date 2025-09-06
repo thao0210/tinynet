@@ -118,7 +118,7 @@ import AppModalContent, { AppRoutes, modalConfig } from './components/appContent
         <AppRoutes />
         {
             showModal &&
-            <Modal setShowModal={setShowModal} width={config.width || 880} height={'auto'} isFull={config.isFull || false}>
+            <Modal onClose={() => setShowModal(null)} width={config.width || 880} height={'auto'} isFull={config.isFull || false}>
                 <AppModalContent showModal={showModal} nextModal={nextModal} setShowModal={setShowModal} />
             </Modal>
         }

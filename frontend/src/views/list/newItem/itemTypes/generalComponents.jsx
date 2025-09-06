@@ -440,7 +440,7 @@ export const LanguageModal = ({setShowLanguage, setNewLang, newLang, setData}) =
         setShowLanguage(false);
     }
   return (
-    <Modal setShowModal={setShowLanguage} width={400}>
+    <Modal onClose={() => setShowLanguage(null)} width={400}>
         <div className={classes.postLang} id='postLang'>
             <h2>Primary language for this post</h2>
             <p className='note'>This helps us show your post to the right audience.</p>

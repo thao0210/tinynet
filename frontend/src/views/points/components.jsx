@@ -140,7 +140,7 @@ export const BuyStars = ({}) => {
                 }
             </ul>
             {selectedPackage && (
-                <Modal setShowModal={setSelectedPackage} width={600}>
+                <Modal onClose={() => setSelectedPackage(null)} width={600}>
                     <div className={classes.paypalPay}>
                         <h3>Pay for the package: <StarPoints points={selectedPackage.points} size={25} /></h3>
                         <PayPalBuy selectedPackage={selectedPackage} onSuccess={() => {

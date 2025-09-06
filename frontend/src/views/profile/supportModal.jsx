@@ -5,7 +5,7 @@ import PaymentQRCode from '@/components/qrCode';
 
 const SupportModal = ({setShowModal, note, payments, userInfo, imageFile}) => {
     return (
-        <Modal width={900} setShowModal={setShowModal}>
+        <Modal width={900} onClose={() => setShowModal(null)}>
             <div className={classes.reviewPayment}>
                 <div>
                     <div className={classes.avatar}>

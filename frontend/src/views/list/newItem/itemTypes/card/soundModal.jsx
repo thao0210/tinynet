@@ -85,7 +85,7 @@ const SoundModal = ({
   };
 
   return (
-    <Modal width={600} setShowModal={setShowSound}>
+    <Modal width={600} onClose={() => setShowSound(null)}>
       <div className={classes.bgAndR} id='bgAndR'>
         <h2>Choose Sound</h2>
         <div className={classes.content}>

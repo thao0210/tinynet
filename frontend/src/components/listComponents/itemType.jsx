@@ -33,7 +33,7 @@ export const ItemType = ({item}) => {
                 {
                     metaData && metaData.image &&
                     <>
-                    <img className={classes.image} src={metaData.image} alt={item.type} /><br/>
+                    <img className={classes.itemImage} src={metaData.image} alt={item.type} /><br/>
                     {
                         ['facebook', 'youtube', 'instagram', 'tiktok'].includes(metaData.source) && metaData.title && metaData.title!== 'Error'?
                         <img className={classes[metaData.source]} src={`/${metaData.source}.svg`} height={20} />:
@@ -47,7 +47,7 @@ export const ItemType = ({item}) => {
             }
             {
                 item.type === 'card' && item.thumbnailImage &&
-                <img className={classes.image} src={item.thumbnailImage} alt={item.type} />
+                <img className={classes.itemImage} src={item.thumbnailImage} alt={item.type} />
             }
             {
                 (item.hasPass || item.sendOtp) &&

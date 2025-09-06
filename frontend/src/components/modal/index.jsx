@@ -2,17 +2,20 @@ import React, {useRef} from 'react';
 import classes from './modal.module.scss';
 import classNames from 'classnames';
 import ReactDOM from "react-dom";
+import { useParams } from 'react-router-dom';
 
-const Modal = ({children, setShowModal, width, height, isFull}) => {
+const Modal = ({children, onClose, width, height, isFull}) => {
     const contentRef = useRef();
+    const { childId } = useParams();
+
+    const handleClose = (e) => {
+      e?.stopPropagation();
+      if (onClose) onClose();
+    };
+
     const modalClick = (e) => {
         e.stopPropagation();
-        if (!contentRef.current.contains(e.target)) setShowModal(false);
-    }
-
-    const closeButtonOnClick = (e) => {
-        e.stopPropagation();
-        setShowModal(false);
+        if (!contentRef.current.contains(e.target)) handleClose(e);
     }
 
     const modalContent = (
@@ -30,7 +33,7 @@ const Modal = ({children, setShowModal, width, height, isFull}) => {
               position: "relative",
             }}
           >
-            <button onClick={closeButtonOnClick} className={classes.close}>
+            <button onClick={handleClose} className={classNames(classes.close, {[classes.closeChild]: !!childId})}>
               &times;
             </button>
             {children}

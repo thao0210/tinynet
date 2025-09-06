@@ -263,7 +263,7 @@ const TiptapEditor = ({content, setData, data, onContentChange, onTextChange, us
       <EditorContent editor={editor} className={classNames(classes.content)} />
       {
         showModal &&
-        <Modal width={showModal === 'qr' ? 800 : 550} height={'auto'} setShowModal={setShowModal}>
+        <Modal width={showModal === 'qr' ? 800 : 550} height={'auto'} onClose={() => setShowModal(null)}>
           {
             showModal === 'draw' &&
             <DrawingBlock onSave={handleSaveDrawing} />

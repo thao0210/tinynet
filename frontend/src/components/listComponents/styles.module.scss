@@ -112,60 +112,12 @@ ul.typeslist {
       }
       h3 {
         margin-top: 0;
-        > sup {
-          background: black;
-          color: white;
-          padding: 3px 6px;
-          border-radius: 10px;
-          font-size: 0.6em;
-        }
-      }
-
-      img.image {
-        max-width: 100%;
-        max-height: 150px;
-        border-radius: 10px;
-        box-shadow: 0px 1px 1px #00000060;
-        border: solid 4px #FFF;
-      }
-
-      span.source {
-        text-transform: capitalize;
-      }
-
-      img.youtube {
-        padding: 3px;
       }
       
       h4 {
         margin: 5px 0;
       }
 
-      ul.collectionItems > li{
-        display: inline-block;
-        width: 25px;
-        height: 25px;
-        margin: 5px;
-        border: solid 2px #FFF;
-        background: #FFF4;
-        box-shadow: 1px 1px 2px #00000060;
-        // border-radius: 5px;
-      }
-      
-      .collectionItemsVote {
-        > div {
-          background: white;
-          border-radius: 15px;
-          box-shadow: inset 1px 1px 3px #00000060;
-        }
-        svg {
-          margin: 5px;
-          background: white;
-          padding: 5px;
-          box-shadow: 1px 1px 1px #00000060;
-          border-radius: 5px;
-        }
-      }
       &.secret > div{
         text-align: center;
         opacity: 0.7
@@ -350,3 +302,54 @@ ul.typeslist {
     }
   }
 }
+
+ul.collectionItems > li{
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    margin: 5px;
+    border: solid 2px #FFF;
+    background: #FFF4;
+    box-shadow: 1px 1px 2px #00000060;
+  }
+  
+  .collectionItemsVote {
+    > div {
+      background: white;
+      border-radius: 15px;
+      box-shadow: inset 1px 1px 3px #00000060;
+    }
+    svg {
+      position: static!important;
+      margin: 5px;
+      background: white;
+      padding: 5px;
+      box-shadow: 1px 1px 1px #00000060;
+      border-radius: 5px;
+    }
+  }
+
+img.itemImage {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: 10px;
+    box-shadow: 0px 1px 1px #00000060;
+    border: solid 4px #FFF;
+  }
+
+  span.source {
+    text-transform: capitalize;
+  }
+
+  img.youtube {
+    padding: 3px;
+  }
+
+  h3 > sup {
+          background: black;
+          color: white;
+          padding: 3px 6px;
+          border-radius: 10px;
+          font-size: 0.6em;
+          margin-left: 5px;
+        }

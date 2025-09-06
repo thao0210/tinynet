@@ -583,3 +583,12 @@
   flex-direction: column;
   gap: 12px;
 }
+
+@media screen and (max-width: 600px) {
+  .dragHandle {
+    touch-action: none;
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+}

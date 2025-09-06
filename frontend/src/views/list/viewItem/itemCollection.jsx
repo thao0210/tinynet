@@ -1,51 +1,25 @@
 import { useEffect, useState } from 'react';
-import classes from './styles.module.scss';
-import Modal from '@/components/modal';
-import ViewItem from '.';
 import { useStore } from '@/store/useStore';
-import { FcPrevious, FcNext } from "react-icons/fc";
 import UserAvatar from '@/components/userAvatar';
-import { CommentIcon, LikeIcon } from '@/components/listComponents/icons';
 import ItemVote, { VoteResults } from './itemVote';
 import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
 import themeClasses from './themes.module.scss';
 import classNames from 'classnames';
-import { TopMenus } from '@/components/listComponents/topMenus';
+import { useNavigate } from 'react-router-dom';
+import { ItemType } from '@/components/listComponents/itemType';
+import { getTitleByLang } from '@/utils/lang';
 
 const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTimeout, authorId, voteMode, alreadyVoted}) => {
-    const {user, setShowModal, curTheme} = useStore();
-    const [viewChild, setViewChild] = useState(null);
+    const {user, setShowModal, curTheme, setAllIds} = useStore();
     const [votes, setVotes] = useState([]);
     const [disabled, setDisabled] = useState(false);
+    const navigate = useNavigate();
 
-    const onItemClick = async (item, index) => {
-        setViewChild({
-            itemId: item._id,
-            index: index,
-            nextId: colItems.length > index+1 ? colItems[index+1]._id : null,
-            prevId: index - 1 >= 0 ? colItems[index-1]._id : null
-        })
-    }
-
-    const viewItem = (itemId, index) => {
-        setViewChild({
-            itemId: itemId,
-            index: index,
-            nextId: colItems.length > index+1 ? colItems[index+1]._id : null,
-            prevId: index - 1 >= 0 ? colItems[index-1]._id : null,
-        })
-    }
-
-    const onKeyDown = (e) => {
-        if (e.keyCode === 37 && viewChild && viewChild.prevId) {
-            viewItem(viewChild.prevId, viewChild.index-1)
-        }
-
-        if (e.keyCode === 39 && viewChild &&  viewChild.nextId) {
-            viewItem(viewChild.nextId, viewChild.index+1)
-        }
+    const onItemClick = (item) => {
+        setAllIds(colItems.map(item => item._id));
+        navigate(`/post/${id}/${item._id}?isVote=${isVote}`);
     }
 
     const callVote = async () => {
@@ -68,6 +42,7 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
             setDisabled(true);
         }
     }, [alreadyVoted]);
+
     return (
         <>
             {
@@ -84,23 +59,21 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
                 {
                     colItems.map((item, index) => 
                         <li key={`item${index}`} className={classNames(`item${index%12}`, item.type)}>
-                            <h3 onClick={() => onItemClick(item, index)}>{item.title}</h3>
-                            <div onClick={() => onItemClick(item, index)} className={themeClasses.body}>
-                                {item.type === 'story' && item.text && item.text.substring(0, 100)}
-                                {item.type === 'collection' && item.items && item.items.length > 0 &&
-                                    <ul className={themeClasses.collectionItems}>
-                                        {
-                                            item.items.map((it, index) => <li key={`item${index}`}></li>)
-                                        }
-                                    </ul>
-                                }
-                                {item.type === 'draco' && item.imageUrl &&
-                                    <img src={item.imageUrl} alt='draco' />
-                                }
+                            <div onClick={() => onItemClick(item, index)}>
                                 {
-                                    item.type === 'shareUrl' && item.preview && item.url &&
-                                    <a href={item.url} target='_blank'>View</a>
+                                    item.showTitle &&
+                                    <h3>
+                                        {
+                                            item.type === "card"
+                                            ? (item.cardMeta?.[navigator.language]?.title || "card")
+                                            : (item?.translations?.length > 0
+                                                ? getTitleByLang(item, navigator.language)
+                                                : (item?.title || ""))
+                                        }
+                                        {item.type === 'collection' && item.items && item.items.length ? <sup>{item.items.length}</sup>: ''}
+                                    </h3>                                                                                                                                
                                 }
+                                <ItemType item={item} />
                             </div>
                             <div className={themeClasses.itemInfos}>
                                 <UserAvatar
@@ -110,19 +83,6 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
                                     date={item.date}
                                     profileId={item.author._id}
                                 />
-
-                                    {
-                                        !isVote && <LikeIcon item={item} />
-                                    }
-                                    
-                                    {
-                                        item.noOfComments > 0 && !isVote &&
-                                        <CommentIcon noOfComments={item.noOfComments}/>
-                                    }
-                                    {
-                                        (user && item && item.author && item.author.username && (user.username === item.author.username)) && !isVote &&
-                                        <TopMenus item={item} />
-                                    }
                                     {
                                         isVote &&
                                         <ItemVote item={item} isVoted={item.votedUsers && item.votedUsers.includes(user?._id)} isTimeout={isTimeout} votes={votes} setVotes={setVotes} voteMode={voteMode} disabled={disabled} />
@@ -133,7 +93,7 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
                     )
                 }
             </ul>
-            {
+            {/* {
                 viewChild && viewChild.itemId && 
                 <Modal setShowModal={setViewChild} isFull={true}>
                     <div onKeyDown={onKeyDown} tabIndex={0}>
@@ -141,11 +101,11 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
                         viewChild.prevId &&
                         <FcPrevious className={classes.prevBtn} onClick={() => viewItem(viewChild.prevId, viewChild.index-1)} />
                     }
-                    
+                    'abc'
                     <ViewItem itemId={viewChild.itemId} />
                     {
                         isVote &&
-                        <ItemVote item={viewChild} isVoted={viewChild.votedUsers && viewChild.votedUsers.include(user._id)} isTimeout={isTimeout} votes={votes} setVotes={setVotes} voteMode={voteMode} disabled={disabled} />
+                        <ItemVote item={viewChild} isVoted={viewChild.votedUsers && viewChild.votedUsers.includes(user._id)} isTimeout={isTimeout} votes={votes} setVotes={setVotes} voteMode={voteMode} disabled={disabled} />
                     }
                     {
                         viewChild.nextId &&
@@ -153,7 +113,7 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
                     }
                     </div>
                 </Modal>
-            }
+            } */}
         </>
         
     )

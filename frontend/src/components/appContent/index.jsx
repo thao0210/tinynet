@@ -9,7 +9,7 @@ import AboutUs from '@/views/aboutUs';
 import TermsPrivacy from '@/views/aboutUs/terms';
 import ContactUs from '@/views/aboutUs/contactForm';
 import DonationMethods from '@/views/aboutUs/donationMethods';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import List from '@/views/list';
 import classes from './styles.module.scss';
 import { useState } from 'react';
@@ -21,6 +21,7 @@ import AuthSuccess from '@/views/authSuccess';
 import NotFound from '@/views/notFound';
 import { InputOTP } from '@/components/listComponents/inputOtp';
 import { InputPassword } from '@/components/listComponents/inputPassword';
+import Modal from '../modal';
 
 const ReportForm = ({showModal, setShowModal}) => {
     const [reason, setReason] = useState('');
@@ -90,13 +91,27 @@ export const modalConfig = {
   report: { width: 500}
 };
 
+function ChildModalWrapper() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  return (
+    <Modal onClose={() => navigate(`/post/${id}`)} isFull={true}>
+      <ViewItem />
+    </Modal>
+  );
+}
+
+
 export function AppRoutes() {
   return (
     <Routes>
       <Route path='/' element={<List />} />
       <Route path='list' element={<List />} />
       <Route path='login' element={<Login />} />
-      <Route path='post/:id' element={<ViewItem />} />
+      <Route path="/post/:id" element={<ViewItem />}>
+        <Route path=":childId" element={<ChildModalWrapper />} />
+      </Route>
       <Route path='profile/:userId' element={<Profile />} />
        <Route path='myProfile' element={<Profile />} />
       <Route path='terms-and-privacy' element={<TermsPrivacy />} />

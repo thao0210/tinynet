@@ -15,7 +15,7 @@ export const PasswordModal = ({setShowModal}) => {
         localStorage.setItem('viewedPassInfo', true);
     }
     return (
-        <Modal setShowModal={setShowModal} width={500}>
+        <Modal onClose={() => setShowModal(null)} width={500}>
             <div className={classes.modalContent}>
                 <h4>You’ve successfully signed up!</h4>
                 <p>

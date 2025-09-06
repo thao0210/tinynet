@@ -209,7 +209,7 @@ const Message = () => {
             </div>
             </Tippy>
             {showMesList && (
-                <Modal setShowModal={setShowMesList} width={600}>
+                <Modal onClose={() => setShowMesList(null)} width={600}>
                     <div className={classes.mesList} id="message-box">
                         <div className={classes.header}>
                             <h2>Messages

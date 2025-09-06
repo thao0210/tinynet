@@ -353,7 +353,7 @@ const Draco = ({data, setData, onNext, curItemId, saveBgData, setSaveBgData}) =>
         </div>
         {
           !coloringImage && !curItemId && showSubModal === 'coloring' &&
-          <Modal width={800} setShowModal={setShowSubModal}>
+          <Modal width={800} onClose={() => setShowSubModal(null)}>
             <div className={classes.coloringList}>
               <h2>Select an image to color</h2>
               <div>
@@ -372,7 +372,7 @@ const Draco = ({data, setData, onNext, curItemId, saveBgData, setSaveBgData}) =>
         }
         {
           showSubModal==='draco' &&
-          <Modal width={350} setShowModal={setShowSubModal}>
+          <Modal width={350} onClose={() => setShowSubModal(null)}>
             <div className={classes.coloringList}>
               <h2>Select your choice</h2>
               <div className={classes.selectDraco}>

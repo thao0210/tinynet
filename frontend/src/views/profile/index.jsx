@@ -205,13 +205,13 @@ const Profile = () => {
             </div>
             {
                 starsType &&
-                <Modal setShowModal={setStarsType} width={800}>
+                <Modal onClose={() => setStarsType(null)} width={800}>
                     <PointsHistory isUser={isMyProfile}  type={starsType} userInfo={userInfo}/>
                 </Modal>
             }
             {
                 showMedalRule &&
-                <Modal setShowModal={setShowMedalRule} width={600}>
+                <Modal onClose={() => setShowMedalRule(null)} width={600}>
                     <MedalRules />
                 </Modal>
             }

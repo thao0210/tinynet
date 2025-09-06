@@ -44,7 +44,7 @@ const Games = () => {
             </ul>
             {
                 game &&
-                <Modal setShowModal={setGame} isFull={true}>
+                <Modal onClose={() => setGame(null)} isFull={true}>
                     <div className={classes.cover}>
                     {
                         game === 'Coin Flip' &&

@@ -25,7 +25,7 @@ const Home = () => {
     const [searchHasMore, setSearchHasMore] = useState(true);
     const [isDarkTheme, setIsDarkTheme] = useState(false);
     const { ref, inView } = useInView({ triggerOnce: false });
-    const {user, setShowModal, setLoadList, list, setList, loadList, setLoading, loading, searchFor, setSearchFor, curTheme} = useStore();
+    const {user, setShowModal, setLoadList, list, setList, loadList, setLoading, loading, searchFor, setSearchFor, curTheme, setAllIds} = useStore();
     const [showIntro, setShowIntro] = useState(() => {
         const viewed = localStorage.getItem('viewedIntroduction');
         return !viewed && !user && window.innerWidth >= 600;
@@ -49,16 +49,19 @@ const Home = () => {
                 .map(([key]) => key)
                 .join(',');
             const getListItems = await api.get(`${urls.LIST}?page=${pageNum}&type=${filters?.type}&sortBy=${filters?.sortBy}&from=${filters?.fromDate}&to=${filters?.toDate}&filters=${filtersString}&userId=${user?._id}`);
-            if (getListItems.data) {
-                if (getListItems.data.length === 0) {
+            if (getListItems.data.items) {
+                if (getListItems.data.items.length === 0) {
                     setHasMore(false);
                 }
                 if (pageNum === 1) {
-                    setList(getListItems.data); // nếu là page 1: reset list
+                    setList(getListItems.data.items); // nếu là page 1: reset list
                 } else {
-                    setList(prev => [...prev, ...getListItems.data]); // nếu là page 2++: cộng thêm
+                    setList(prev => [...prev, ...getListItems.data.items]); // nếu là page 2++: cộng thêm
                 }
                 setLoadList(false);
+            }
+            if (getListItems.data.allIds?.length > 0) {
+                setAllIds(getListItems.data.allIds);
             }
         } catch (error) {
             setLoadList(false);

@@ -89,25 +89,6 @@ export const VoteResults = ({id, authorId}) => {
                     topVoted && !loading && topVoted.noOfVotes === 0 &&
                     <p>No vote available.</p>
                 }
-                {/* {
-                    allVotes && allVotes.length > 0 && !loading &&
-                    <div>
-                        <h3>All Votes</h3>
-                        <ul>
-                        {
-                            allVotes.map((item, index) => (
-                                <li key={`allvotes${index}`} className={classes.item}>
-                                    <h4>{item.item && item.item.title}</h4>
-                                    <div>
-                                        <strong>{item.noOfVotes}</strong>
-                                        <span>Votes</span>
-                                    </div>
-                                </li>
-                            ))
-                        }
-                        </ul>
-                    </div>
-                } */}
             </div>
         </div>
     )

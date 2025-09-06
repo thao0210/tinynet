@@ -116,7 +116,7 @@ const ScreenOption = ({ screens, setScreens, setShowScreenOptions, activeScreenI
     };
  
     return (
-        <Modal setShowModal={setShowScreenOptions} width={screen.backgroundType === 'custom' ? 400 : 730}>
+        <Modal onClose={() => setShowScreenOptions(null)} width={screen.backgroundType === 'custom' ? 400 : 730}>
             <div className={classes.cardBgList}>
                 <h2>Screen {activeScreenIndex + 1}</h2>
                 <div className={classes.options} id='screen-options'>

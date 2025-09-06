@@ -12,6 +12,7 @@ const PostLike = require('../../models/PostLike');
 const PostView = require('../../models/PostView');
 const mongoose = require('mongoose');
 const { deleteFromR2 } = require("../../utils/deleteFromR2");
+const { ObjectId } = require("mongodb");
 
 const postNewItem = async (req, res) => {
     try {
@@ -226,6 +227,10 @@ const postNewItem = async (req, res) => {
     // Convert sortOption to array format for $sort
     const sortArray = Object.entries(sortOption).map(([key, value]) => [key, value]);
 
+    const allIdsDocs = await Item.find(query).sort(sortOption).select('_id restrictedAccess').lean();
+    const allIds = allIdsDocs
+    .filter(doc => !doc.restrictedAccess)
+    .map(doc => String(doc._id));
     // Aggregation with virtual isCurrentlyPromoted field
     const items = await Item.aggregate([
       { $match: query },
@@ -304,7 +309,9 @@ const postNewItem = async (req, res) => {
       return item;
     });
 
-    res.status(200).json(sanitizedItems);
+    res.status(200).json({
+      items: sanitizedItems, allIds
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error fetching items', error: err });
@@ -564,14 +571,14 @@ const editItem = async (req, res) => {
       }
 
       // Xoá khỏi collection, vote nếu có
-      await Item.updateMany(
-        {
-          type: { $in: ['collection', 'vote'] }
-        },
+      const objectId = new ObjectId(itemId);
+
+      await mongoose.connection.db.collection("items").updateMany(
+        { type: { $in: ["collection", "vote"] }, items: objectId },
         {
           $pull: {
-            items: itemId, // chỉ dùng nếu là mảng ObjectId
-            itemsView: { item: itemId } // dùng nếu là mảng object
+            items: objectId,
+            itemsView: { item: objectId }
           }
         }
       );
