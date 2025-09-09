@@ -6,7 +6,7 @@ import useClickOutside from '@/hooks/useClickOutsite';
 import { useState, useRef } from 'react';
 import UserAvatar from '@/components/userAvatar';
 
-const ItemMenus = ({onEdit, onDelete, isMyPost, onHideItem, onReport, isUser, noDots, showUser, item}) => {
+const ItemMenus = ({onEdit, onDelete, isMyPost, onHideItem, onReport, isUser, noDots, showUser, item, hasVote}) => {
     const [openMenus, setOpenMenus] = useState(false);
     const menuRef = useRef();
     useClickOutside(menuRef, () => setOpenMenus(false));
@@ -33,11 +33,15 @@ const ItemMenus = ({onEdit, onDelete, isMyPost, onHideItem, onReport, isUser, no
                     {
                         isMyPost &&
                         <>
-                            <Tippy content='Edit'>
-                                <span>
-                                    <MdEdit onClick={onEdit} />
-                                </span>
-                            </Tippy>
+                            {
+                                !hasVote &&
+                                <Tippy content='Edit'>
+                                    <span>
+                                        <MdEdit onClick={onEdit} />
+                                    </span>
+                                </Tippy>
+                            }
+                            
                             <Tippy content='Delete'>
                                 <span>
                                     <MdDelete onClick={onDelete} />

@@ -5,31 +5,23 @@ import api from '@/services/api';
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import Loader from '@/components/loader';
+import { useVote } from '@/contexts/voteContext';
+import { useStore } from '@/store/useStore';
+import { useVoteItem } from '@/hooks/useVoteItem';
 
-const ItemVote = ({item, isVoted, isTimeout, votes, setVotes, voteMode, disabled}) => {
-    const voteItem = async () => {
-        votes.some(el => el.id === item._id) ?
-            setVotes(votes.filter(vote => vote.id !== item._id)) : 
-            voteMode === 'only-one' ? setVotes([{id: item._id, name: item.title}]) : 
-            setVotes([...votes, {
-                id: item._id, name: item.title}]);
-    }
+const ItemVote = ({item}) => {
+    const { user } = useStore();
+    const { isSelected, isVoteDisabled, toggleVote } = useVoteItem(item, user);
+    const {isTimeout} = useVote();
 
-    const isVoteDisabled =
-        disabled ||
-        isVoted ||
-        (
-            item.maxVoters === 0 &&
-            item.voteReward > 0
-        );
     return (
         <>
         {
             isTimeout ?
             <div className={classes.timeoutVotes}>{item.noOfVotes} <span>votes</span></div> : 
-            <button className={classNames('btn', classes.voteBtn, {[classes.unVote]: votes.some(el => el.id === item._id)})} disabled={isVoteDisabled} onClick={voteItem}>
+            <button className={classNames('btn', classes.voteBtn, {[classes.unVote]: isSelected})} disabled={isVoteDisabled} onClick={toggleVote}>
                 {
-                    votes.some(el => el.id === item._id) ? 
+                    isSelected ? 
                     <BiSolidDownvote size={25} />:
                     <BiSolidUpvote size={25} />
                 }
@@ -44,12 +36,17 @@ export const VoteResults = ({id, authorId}) => {
     const [loading, setLoading] = useState(false);
 
     const loadResults = async (id) => {
-        const results = await api.get(`${urls.VOTE_ITEM}/${id}/results?userId=${authorId}`);
-        if (results.data) {
-            results.data.topVoted && setTopVoted(results.data.topVoted);
-            results.data.allVotes && setAllVotes(results.data.allVotes);
-            setLoading(false);
-        }           
+        try {
+            const results = await api.get(`${urls.VOTE_ITEM}/${id}/results?userId=${authorId}`);
+            if (results.data) {
+                results.data.topVoted && setTopVoted(results.data.topVoted);
+                results.data.allVotes && setAllVotes(results.data.allVotes);
+                setLoading(false);
+            }   
+        } catch (err) {
+            console.error(err);
+        }
+                
     }
 
     useEffect(()=> {

@@ -9,8 +9,14 @@ let refreshPromise = null; // giữ promise refresh để tránh gọi nhiều l
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 5000,
+  timeout: 15000,
   withCredentials: true, // để server đọc cookie refreshToken
+});
+
+// 🔹 Axios riêng cho refresh token (không interceptor để tránh loop)
+const rawApi = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
 });
 
 // 🟢 Request Interceptor
@@ -92,7 +98,7 @@ api.interceptors.response.use(
 
       if (!isRefreshing) {
         isRefreshing = true;
-        refreshPromise = api
+        refreshPromise = rawApi
           .post(urls.REFRESH_TOKEN)
           .then((res) => {
             const newToken = res.data?.accessToken;
@@ -103,10 +109,11 @@ api.interceptors.response.use(
           })
           .catch((refreshError) => {
             console.warn("❌ Refresh token failed:", refreshError);
+            const wasLoggedIn = localStorage.getItem("userLoggedIn") === "true";
             clearAccessToken();
             localStorage.removeItem("userLoggedIn");
             // chỉ redirect nếu user đã login
-            if (localStorage.getItem("userLoggedIn") === "true") {
+           if (wasLoggedIn) {
               window.location.href = import.meta.env.VITE_FE_URL + "login";
             }
             throw refreshError;
@@ -125,6 +132,14 @@ api.interceptors.response.use(
       } catch (e) {
         return Promise.reject(e);
       }
+    }
+
+    if (status === 401 &&
+      (originalRequest?.url?.includes("notifications/count") ||
+      originalRequest?.url?.includes("messages/count"))
+    ) {
+      console.log("ℹ️ Suppressed 401 error for count API:", originalRequest.url);
+      return Promise.reject(error);
     }
 
     // 🔹 Nếu là 403 => không refresh, chỉ báo lỗi

@@ -1,54 +1,38 @@
-import { useEffect, useState } from 'react';
 import { useStore } from '@/store/useStore';
 import UserAvatar from '@/components/userAvatar';
 import ItemVote, { VoteResults } from './itemVote';
-import urls from '@/sharedConstants/urls';
-import api from '@/services/api';
-import toast from 'react-hot-toast';
 import themeClasses from './themes.module.scss';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router-dom';
 import { ItemType } from '@/components/listComponents/itemType';
 import { getTitleByLang } from '@/utils/lang';
+import { useVote } from '@/contexts/voteContext';
 
-const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTimeout, authorId, voteMode, alreadyVoted}) => {
+const ItemCollection = ({colItems, isVote, id, showResults, authorId}) => {
     const {user, setShowModal, curTheme, setAllIds} = useStore();
-    const [votes, setVotes] = useState([]);
-    const [disabled, setDisabled] = useState(false);
+    const { votes, disabled, callVote } = useVote();
     const navigate = useNavigate();
 
     const onItemClick = (item) => {
         setAllIds(colItems.map(item => item._id));
-        navigate(`/post/${id}/${item._id}?isVote=${isVote}`);
+        navigate(`/post/${id}/${item._id}`
+        );
     }
 
-    const callVote = async () => {
+    const confirmVote = () => {
         if (!user) {
-            setShowModal('login');
-            return;
+        setShowModal("login");
+        return;
         }
-        const vote = await api.post(`${urls.VOTE_ITEM}/${id}`, {
-            userId: user._id,
-            votedItemId: votes.map(el => el.id)
-        });
-        if (vote.data) {
-            toast.success('Vote successfully!');
-            setDisabled(true);
-        }
-    }
-
-    useEffect(()=>{
-        if (alreadyVoted && voteMode === 'only-one') {
-            setDisabled(true);
-        }
-    }, [alreadyVoted]);
+        callVote(user, id, votes);
+    };
 
     return (
         <>
             {
-                votes.length > 0 && !disabled &&
+                isVote && votes.length > 0 && !showResults &&
                 <div className={themeClasses.confirmVote}>
-                    Chosen {votes.length} item{votes.length > 1 ? 's' : ''}: <strong>{votes.map(el => el.name).join(', ')}</strong>. <button className="btn" onClick={callVote}>Vote {votes.length > 1 ? 'these' : 'this'} item{votes.length > 1 ? 's' : ''}</button> 
+                    Chosen {votes.length} item{votes.length > 1 ? 's' : ''}: <strong>{votes.map(el => el.name).join(', ')}</strong>. <button className="btn" onClick={confirmVote}>Vote {votes.length > 1 ? 'these' : 'this'} item{votes.length > 1 ? 's' : ''}</button> 
                 </div>
             }
             {
@@ -85,7 +69,7 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
                                 />
                                     {
                                         isVote &&
-                                        <ItemVote item={item} isVoted={item.votedUsers && item.votedUsers.includes(user?._id)} isTimeout={isTimeout} votes={votes} setVotes={setVotes} voteMode={voteMode} disabled={disabled} />
+                                        <ItemVote item={item} />
                                     }
                             </div>
                             
@@ -93,27 +77,6 @@ const ItemCollection = ({colItems, isVote, id, showResults, setShowResults, isTi
                     )
                 }
             </ul>
-            {/* {
-                viewChild && viewChild.itemId && 
-                <Modal setShowModal={setViewChild} isFull={true}>
-                    <div onKeyDown={onKeyDown} tabIndex={0}>
-                    {
-                        viewChild.prevId &&
-                        <FcPrevious className={classes.prevBtn} onClick={() => viewItem(viewChild.prevId, viewChild.index-1)} />
-                    }
-                    'abc'
-                    <ViewItem itemId={viewChild.itemId} />
-                    {
-                        isVote &&
-                        <ItemVote item={viewChild} isVoted={viewChild.votedUsers && viewChild.votedUsers.includes(user._id)} isTimeout={isTimeout} votes={votes} setVotes={setVotes} voteMode={voteMode} disabled={disabled} />
-                    }
-                    {
-                        viewChild.nextId &&
-                        <FcNext className={classes.nextBtn} onClick={() => viewItem(viewChild.nextId, viewChild.index+1)}  />
-                    }
-                    </div>
-                </Modal>
-            } */}
         </>
         
     )

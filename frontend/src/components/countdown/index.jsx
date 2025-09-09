@@ -7,13 +7,15 @@ import duration from 'dayjs/plugin/duration';
 import classes from './styles.module.scss';
 import { numberWith0 } from '@/utils/numbers';
 import Loader from '../loader';
+import { useVote } from '@/contexts/voteContext';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(duration);
 
-export const CountdownDateTime = ({ deadline, userTimezone, setShowResults, setIsTimeout }) => {
+export const CountdownDateTime = ({ deadline, userTimezone, setShowResults }) => {
   const [timeLeft, setTimeLeft] = useState("");
+  const voteCtx = useVote();
   useEffect(() => {
     const interval = setInterval(() => {
       const now = dayjs().tz(userTimezone);
@@ -24,7 +26,7 @@ export const CountdownDateTime = ({ deadline, userTimezone, setShowResults, setI
         setTimeLeft("Timeout");
         clearInterval(interval);
         setShowResults && setShowResults(true);
-        setIsTimeout && setIsTimeout(true);
+        voteCtx?.setIsTimeout?.(true);
         return;
       }
 

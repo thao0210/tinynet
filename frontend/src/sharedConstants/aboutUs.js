@@ -97,7 +97,7 @@ export const aboutData = {
         title: "Hệ thống Stars",
         content: [
           "10,000 Stars cho 10 user đầu tiên. 3,000 cho 90 người tiếp theo. 500 cho phần còn lại.",
-          "Giới thiệu bạn bè = +200 Stars.",
+          "Giới thiệu bạn bè = +500 Stars.",
           "Dùng Stars để mua theme, khoá post, đẩy bài lên top.",
           "Bảng xếp hạng hàng tuần thưởng user có bài view/comment cao."
         ]

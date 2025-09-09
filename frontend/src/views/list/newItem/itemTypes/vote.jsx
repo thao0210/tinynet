@@ -23,14 +23,6 @@ const Vote = ({data, setData, curItemId}) => {
       fetchItems(page);
     };
 
-    const handleTitleInput = (e) => {
-        setData({...data, title: e.target.value});
-    }
-
-    const handleDescriptionInput = (e) => {
-        setData({...data, description: e.target.value});
-    }
-
     const toggleSelectItem = (id) => {
         setData((prev) => ({
             ...prev,
@@ -42,7 +34,8 @@ const Vote = ({data, setData, curItemId}) => {
         try {
             const res = await api.get(curItemId ? `${urls.SEARCH_ITEMS}?page=${page}&userId=${user._id}&itemId=${curItemId}` : `${urls.SEARCH_ITEMS}?page=${page}&userId=${user._id}`);
             if (res.data) {
-            setItems(res.data.results);
+            const items = res.data.results.filter(item => !item.restrictedAccess && item.type !== 'vote');
+            setItems(items);
             setPageCount(res.data.pageCount);
             setTotal(res.data.totalResults);
             }

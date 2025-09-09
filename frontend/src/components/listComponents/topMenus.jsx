@@ -4,7 +4,7 @@ import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import { useNavigate } from 'react-router-dom';
 
-export const TopMenus = ({item, isView, isMyPost, isUser, noDots, showUser}) => {
+export const TopMenus = ({item, isView, isMyPost, isUser, noDots, showUser, hasVote}) => {
     const {setLoadList, setCurItemId, setShowModal} = useStore();
     const navigate = useNavigate();
 
@@ -54,6 +54,7 @@ export const TopMenus = ({item, isView, isMyPost, isUser, noDots, showUser}) => 
             isUser={isUser}
             noDots={noDots}
             showUser={showUser}
+            hasVote={hasVote}
         />
     )
 }

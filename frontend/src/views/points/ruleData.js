@@ -13,7 +13,11 @@ const data = [
     },
     {
         name: 'Introduce an user',
-        value: 200
+        value: 500
+    },
+    {
+        name: 'Add an username as a referrer',
+        value: 100
     },
     {
         name: 'New Story with long text or New Drawing/Coloring',

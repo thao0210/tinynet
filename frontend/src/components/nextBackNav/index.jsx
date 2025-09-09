@@ -1,6 +1,6 @@
-import React from "react";
-import styles from "./styles.module.scss";
+import { useEffect, useRef, useCallback } from "react";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+import styles from "./styles.module.scss";
 
 const NextBackNav = ({ allIds, currentId, parentId, onNavigate }) => {
   if (!allIds || allIds.length === 0) return null;
@@ -11,10 +11,36 @@ const NextBackNav = ({ allIds, currentId, parentId, onNavigate }) => {
   const prevId = allIds[(currentIndex - 1 + allIds.length) % allIds.length];
   const nextId = allIds[(currentIndex + 1) % allIds.length];
 
-  const handleNavigate = (id) => {
-    onNavigate(id, parentId);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const nextIdRef = useRef(nextId);
+  const prevIdRef = useRef(prevId);
+
+  // cập nhật ref mỗi khi nextId/prevId thay đổi
+  useEffect(() => {
+    nextIdRef.current = nextId;
+    prevIdRef.current = prevId;
+  }, [nextId, prevId]);
+
+  const handleNavigate = useCallback(
+    (id) => {
+      onNavigate(id, parentId);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [onNavigate, parentId]
+  );
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        handleNavigate(nextIdRef.current);
+      }
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        handleNavigate(prevIdRef.current);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleNavigate]); // chỉ phụ thuộc handleNavigate ổn định
 
   return (
     <div className={styles.navWrapper}>
@@ -35,6 +61,5 @@ const NextBackNav = ({ allIds, currentId, parentId, onNavigate }) => {
     </div>
   );
 };
-
 
 export default NextBackNav;

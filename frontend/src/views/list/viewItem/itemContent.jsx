@@ -17,9 +17,8 @@ import api from '@/services/api';
 import toast from 'react-hot-toast';
 import Embed from '@/components/embed';
 
-const ItemContent = ({item, activeLang, setShowComments, showComments, navigate, metaData, colItems, setShowContributionModal, contributionList, setCurContributionId, setLoadViewContent}) => {
+const ItemContent = ({item, activeLang, setShowComments, showComments, navigate, metaData, colItems, setShowContributionModal, contributionList, setCurContributionId, setLoadViewContent,}) => {
     const [showResults, setShowResults] = useState(false);
-    const [isTimeout, setIsTimeout] = useState(false);
     const {user} = useStore();
     const commentOnClick = () => setShowComments(!showComments);
     const onDelete = async (id) => {
@@ -126,7 +125,7 @@ const ItemContent = ({item, activeLang, setShowComments, showComments, navigate,
                                         <span>Select</span>
                                         <div>{item.voteMode}</div>
                                     </div>
-                                    <CountdownDateTime deadline={item.deadline} userTimezone={user?.timezone || localStorage.getItem("timezone") || 'UTC'} setShowResults={setShowResults} setIsTimeout={setIsTimeout} />
+                                    <CountdownDateTime deadline={item.deadline} userTimezone={user?.timezone || localStorage.getItem("timezone") || 'UTC'} setShowResults={setShowResults} />
                                     <div>
                                         <span>Reward for each voter</span>
                                         <div>{item.voteReward} <img src={star} height={20} /></div>
@@ -135,8 +134,9 @@ const ItemContent = ({item, activeLang, setShowComments, showComments, navigate,
                             }
                             {
                                 ['collection', 'vote'].includes(item.type) && colItems && colItems.length > 0 &&
-                                <ItemCollection colItems={colItems} isVote={item.type === 'vote'} id={item._id} showResults={showResults} setShowResults={setShowResults} isTimeout={isTimeout}
-                                authorId={item.author && item.author._id} voteMode={item.voteMode} alreadyVoted={item.itemsView && item.itemsView.some(iv =>
+                                <ItemCollection colItems={colItems} isVote={item.type === 'vote'} id={item._id} showResults={showResults} setShowResults={setShowResults}
+                                authorId={item.author && item.author._id} voteMode={item.voteMode}
+                                alreadyVoted={item.itemsView && item.itemsView.some(iv =>
                                     iv.votedUsers.includes(user?._id)
                                 )}/>
                             }

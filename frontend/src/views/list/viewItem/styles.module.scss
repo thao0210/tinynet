@@ -192,10 +192,12 @@
 }
 
 .voteBtn {
-    position: absolute;
-    top: 10px;
-    right: calc(50% - 39px);
-    z-index: 10000;
+    position: absolute!important;
+    // top: 10px;
+    // right: calc(50% - 39px);
+    bottom: 5px;
+    right: 10px;
+    z-index: 10000!important;
     background: linear-gradient(#a2077b, #e11bd0);
     box-shadow: 1px 1px 2px #00000060;
     padding: 15px;
@@ -209,11 +211,12 @@
         background: linear-gradient(#643b5a, #32122f);;
     }
     &:disabled {
-        background: #00000050;
+        background: #BBB;
         pointer-events: none;
         cursor: default;
+        cursor: default;
         svg {
-            color: #ccc;
+            color: #eee;
         }
     }
 }
@@ -221,12 +224,14 @@
     position: absolute!important;
     bottom: 0px;
     right: 10px;
+    z-index: 10000!important;
     padding: 5px;
     background-color: white;
     box-shadow: 1px 1px 2px #00000060;
     border-radius: 5px;
     font-size: 20px;
     color: black;
+    text-align: center;
     > span {
         font-size: 12px;
         display: block;

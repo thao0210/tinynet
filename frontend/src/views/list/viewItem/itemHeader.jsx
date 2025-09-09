@@ -6,8 +6,11 @@ import Tippy from '@tippyjs/react';
 import themeClasses from './themes.module.scss';
 import classNames from 'classnames';
 import { TopMenus } from '@/components/listComponents/topMenus';
+import { useVote } from '@/contexts/voteContext';
 
 const ItemHeader = ({ item, user, views, onCommentClick, navigate, isModal }) => {
+    const { votes} = useVote();
+
     return (
         <div className={classNames(themeClasses.infos, 'infos')}>
             {item.author && (
@@ -27,14 +30,14 @@ const ItemHeader = ({ item, user, views, onCommentClick, navigate, isModal }) =>
                 isView
                 isMyPost={user?.username === item?.author?.username}
                 isUser={user}
+                hasVote={!!(votes.length)}
             />
-            {isModal && (
-                <Tippy content="Back to list">
-                    <span className={themeClasses.viewList} onClick={() => navigate('/list')}>
-                        <BsGridFill />
-                    </span>
-                </Tippy>
-            )}
+            <Tippy content="Back to list">
+                <span className={themeClasses.viewList} onClick={() => navigate('/list')}>
+                    <BsGridFill />
+                </span>
+            </Tippy>
+            
         </div>
     );
 };
