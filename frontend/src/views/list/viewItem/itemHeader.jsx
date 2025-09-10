@@ -1,6 +1,5 @@
 // ViewItem/ItemHeader.jsx
 import { ViewIcon} from '@/components/listComponents/icons';
-import { BsGridFill } from 'react-icons/bs';
 import Tippy from '@tippyjs/react';
 import themeClasses from './themes.module.scss';
 import classNames from 'classnames';
@@ -10,6 +9,7 @@ import ItemPlay from "./itemPlay";
 import { getActiveContent } from "@/utils/lang";
 import { HiSpeakerWave, HiSpeakerXMark } from 'react-icons/hi2';
 import { useEffect, useRef, useState } from 'react';
+import classes from './styles.module.scss';
 
 const ItemHeader = ({ item, user, views, navigate, activeLang }) => {
     const { votes} = useVote();
