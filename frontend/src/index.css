@@ -331,6 +331,21 @@ ul, li {
   text-align: center;
 }
 
+.noComment {
+  text-align: center;
+  color: #aaa;
+  font-size: 20px;
+  margin-top: 20px;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.noComment small {
+  font-size: 14px;
+  color: #999;
+}
+
 .noItem {
   text-align: left;
 }

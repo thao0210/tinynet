@@ -35,14 +35,16 @@ export const VoteResults = ({id, authorId}) => {
     const [allVotes, setAllVotes] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const loadResults = async (id) => {
+    const loadResults = (id) => {
         try {
-            const results = await api.get(`${urls.VOTE_ITEM}/${id}/results?userId=${authorId}`);
-            if (results.data) {
-                results.data.topVoted && setTopVoted(results.data.topVoted);
-                results.data.allVotes && setAllVotes(results.data.allVotes);
-                setLoading(false);
-            }   
+            setTimeout(async()=>{
+                const results = await api.get(`${urls.VOTE_ITEM}/${id}/results?userId=${authorId}`);
+                if (results.data) {
+                    results.data.topVoted && setTopVoted(results.data.topVoted);
+                    results.data.allVotes && setAllVotes(results.data.allVotes);
+                    setLoading(false);
+                }   
+            }, 5000);
         } catch (err) {
             console.error(err);
         }

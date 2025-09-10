@@ -339,10 +339,16 @@
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 22px;
-  background: #00000060;
+  font-size: 20px;
+  background:none;
+  font-weight: bold;
   border: none;
   color: white;
+  text-shadow: 
+    -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px  1px 0 #000,
+    1px  1px 0 #000;
   cursor: pointer;
   z-index: 10000;
   padding: 5px 12px;

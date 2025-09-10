@@ -8,7 +8,7 @@ import Tippy from '@tippyjs/react';
 import { CountdownDateTime } from "@/components/countdown";
 import { BsGlobe2 } from 'react-icons/bs';
 import { getTitleByLang } from '@/utils/lang';
-import { TopMenus } from './topMenus';
+import { ItemMenus } from './itemMenus';
 import { ItemType } from './itemType';
 
 export const Item = ({item, setShowModal, className}) => {
@@ -72,7 +72,7 @@ export const Item = ({item, setShowModal, className}) => {
             <div className={classes.infos}>
                 {
                     (user) &&
-                    <TopMenus item={item} isMyPost={myPost} isUser={user} showUser={true} />
+                    <ItemMenus item={item} isMyPost={myPost} isUser={user} showUser={true} />
                 }
             </div>
         </div>

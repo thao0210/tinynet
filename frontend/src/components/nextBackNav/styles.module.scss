@@ -1,33 +1,56 @@
 .navWrapper {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   position: fixed;
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10000;
-}
 
-.navBtn {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: white;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
+  .navBtn, > div {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    position: relative;
 
-  &:hover {
-    background: #f9f9f9;
-    transform: scale(1.08);
-  }
+    &:hover {
+      background: #f9f9f9;
+      transform: scale(1.08);
+    }
 
-  svg {
-    color: #333;
+    svg {
+      color: #333;
+    }
+    > span {
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      // background: #00000080;
+      // color: white;
+      font-size: 12px;
+      width: 100%;
+      // text-align: center;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      padding: 3px;
+      font-weight: bold;
+      text-shadow: 
+        -1px -1px 0 #fff,  
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        1px 1px 0 #fff;
+    }
   }
 }

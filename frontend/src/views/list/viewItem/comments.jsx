@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { BsPersonCircle } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
 import { formatDate } from "@/utils/numbers";
-import ItemMenus from '@/components/itemMenu';
 import { LikeIcon } from '@/components/listComponents/icons';
 import { FaSmile } from 'react-icons/fa';
 // import EmojiPicker from 'emoji-picker-react';
@@ -13,6 +12,7 @@ import { useStore } from '@/store/useStore';
 import DOMPurify from 'dompurify';
 import EmojiPickerLite from '@/components/emojiPicker';
 import Dropdown from '@/components/dropdown';
+import { ItemMenus } from '@/components/listComponents/itemMenus';
 
 const CommentItem = ({comment, setLoadComments, setComment, setCurCommentId, user, setShowModal}) => {
     const myComment = comment?.author && comment?.author?.username && (user?.username === comment?.author?.username);
@@ -66,7 +66,7 @@ const CommentItem = ({comment, setLoadComments, setComment, setCurCommentId, use
         </li>
     )
 }
-const Comments = ({item, setShowComments}) => {
+const Comments = ({item, setShowComments, setItem}) => {
     const [commentsList, setCommentsList] = useState([]);
     const [loadComments, setLoadComments] = useState(true);
     const [comment, setComment] = useState('');
@@ -80,16 +80,27 @@ const Comments = ({item, setShowComments}) => {
     }
 
     const saveComment = async () => {
-        const data = {
-            content: comment,
-            itemId: item._id
+        try {       
+            const data = {
+                content: comment,
+                itemId: item._id
+            }
+            const save = curCommentId ? await api.put(`${urls.LIST_COMMENTS}/${curCommentId}`, data) : await api.post(`${urls.NEW_COMMENT}`, data);
+            if (save.data) {
+                setLoadComments(true);
+            }
+            setComment('');
+            setCurCommentId('');
+            // if not curCommentId, add to item noOfComments +1
+            if (!curCommentId) {
+                setItem({
+                    ...item,
+                    noOfComments: item.noOfComments + 1
+                });
+            }
+        } catch (error) {
+            console.error(error);
         }
-        const save = curCommentId ? await api.put(`${urls.LIST_COMMENTS}/${curCommentId}`, data) : await api.post(`${urls.NEW_COMMENT}`, data);
-        if (save.data) {
-            setLoadComments(true);
-        }
-        setComment('');
-        setCurCommentId('');
     }
 
     const getCommentsList = async () => {
@@ -140,6 +151,13 @@ const Comments = ({item, setShowComments}) => {
                     }
                 </ul>
             } 
+            {
+                commentsList.length === 0 && !loadComments &&
+                <div className="noComment">
+                    No comments yet.<br />
+                    <small> Be the first to comment!</small>
+                </div>
+            }
             <div className={classes.newComment}>
                 <div 
                     className={classes.editor} 

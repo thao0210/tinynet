@@ -353,3 +353,39 @@ img.itemImage {
           font-size: 0.6em;
           margin-left: 5px;
         }
+
+.menus {
+    svg {
+        color: #888;
+        cursor: pointer;
+        font-size: 18px;
+        &:hover {
+            color: red;
+        }
+    }
+    > div span + span {
+        margin-left: 5px;
+    }
+    > div {
+        position: absolute;
+        right: 0;
+        top: 25px;
+        padding: 5px 10px;
+        background: black;
+        border-radius: 5px;
+        box-shadow: 1px 1px 10px #00000010;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        line-height: 15px;
+        svg {
+            color: white;
+            & + svg {
+                margin-left: 10px;
+            }
+            &:hover {
+                color: #ccc;
+            }
+        }
+    }
+}

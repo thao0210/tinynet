@@ -52,5 +52,5 @@ export function useItemWithParent({ loadViewContent }) {
     load();
   }, [id, childId, loadViewContent]);
 
-  return { item, parent, contributions, loading, colItems };
+  return { item, setItem, parent, contributions, loading, colItems };
 }

@@ -5,7 +5,6 @@ import CardPreview from "../newItem/itemTypes/card/cardPreview";
 import { useRef, useState, useEffect } from 'react';
 import { CountdownDateTime } from "@/components/countdown";
 import ItemCollection from "./itemCollection";
-import ItemPlay from "./itemPlay";
 import star from "@/assets/star.svg";
 import { useStore } from '@/store/useStore';
 import { MdDeleteForever, MdOutlinePostAdd } from "react-icons/md";
@@ -42,21 +41,6 @@ const ItemContent = ({item, activeLang, setShowComments, showComments, navigate,
             {
                 item.type !== 'card' ? (
                     <div className={themeClasses.content} id='story-content'>
-                        {
-                            item.type === 'story' &&
-                            <div className={themeClasses.audio}>
-                                <ItemPlay text={getActiveContent(activeLang, item)?.text} lang={activeLang} isUser={user} />
-                                {
-                                    item.allowContribution && user &&
-                                    <Tippy content='Add your own content'>
-                                    <span onClick={() => setShowContributionModal(true)}>
-                                        <MdOutlinePostAdd size={20} />
-                                    </span>
-                                    </Tippy>
-                                }
-                            </div>
-                        }
-                        
                         <div className={themeClasses.itemContent}>
                             <h1>
                             {

@@ -20,7 +20,7 @@ const CardPreviewScreens = ({
   videoRef,
   item,
   hasMusic,
-  commentOnClick,
+  // commentOnClick,
   cardTextContent,
   activeLang,
   setActiveLang,
@@ -86,17 +86,10 @@ const CardPreviewScreens = ({
             </span>
             </Tippy>
         }
-       
-        {item && (
-          <>
-            <LikeIcon item={item} />
-            <CommentIcon item={item} onClick={commentOnClick} />
-            {
-                item.views > 0 &&
-                <ViewIcon views={item.views} />
-            }
-          </>
-        )}
+        {
+            item?.views > 0 &&
+            <ViewIcon views={item.views} />
+        }
       </div>
       
         <div className={classes.author}>

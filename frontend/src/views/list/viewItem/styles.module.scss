@@ -30,7 +30,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    z-index: 10000;
+    z-index: 10001;
     padding-bottom: 70px;
     color: black;
     text-shadow: none;
@@ -58,6 +58,7 @@
             top: -10px;
             cursor: pointer;
             color: #888;
+            font-size: 30px;
         }
     }
     ul.commentsList {
@@ -160,9 +161,10 @@
         }
         .emojiPicker {
             position: absolute;
-            bottom: 8px;
+            bottom: 4px;
             right: 35px;
             z-index: 10000;
+            font-size: 18px;
             svg.emoji {
                 color: #666;
                 cursor: pointer;

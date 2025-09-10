@@ -4,11 +4,10 @@ import classes from './styles.module.scss';
 import urls from '@/sharedConstants/urls';
 import api from '@/services/api';
 import { formatDistance } from "date-fns";
-import { useStore } from '@/store/useStore';
-import { ItemMenus2 } from "../itemMenu";
 import { StarPoints } from "../Utilities";
 import Dropdown from '@/components/dropdown';
 import { useNavigate } from "react-router-dom";
+import { ItemMenus2 } from "../listComponents/itemMenus";
 
 const Noti = ({notif, setReloadList}) => {
     const navigate = useNavigate();
