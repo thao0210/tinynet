@@ -245,11 +245,11 @@ ul.typeslist {
     align-items: center;
     cursor: pointer;
     svg {
-      color: #981010;
+      // color: #981010;
       margin-left: 5px;
     }
     &.comment svg {
-      color: #666;
+      // color: #666;
     }
     &.noClick, &.noClick svg {
       pointer-events: none;
