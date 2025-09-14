@@ -218,7 +218,7 @@ const Champions = () => {
           visible={true}
           points={totalPoints}
           content={returnContentHtml(myAward)}
-          time={1000}
+          time={5}
           onClose={onCongratsClose}
         />
       )}
