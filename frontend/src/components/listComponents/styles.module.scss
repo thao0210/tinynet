@@ -355,6 +355,9 @@ img.itemImage {
         }
 
 .menus {
+   &:empty {
+        display: none;
+    }
     svg {
         color: #888;
         cursor: pointer;
