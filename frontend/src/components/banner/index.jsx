@@ -76,9 +76,9 @@ const CongratsBanner = ({ visible, onClose, time = 3, points, content }) => {
       <div className={classes.starBanner} style={{animation: exit ? "flyOut 0.8s forwards" : "popUp 0.5s ease-out", 
       backgroundImage: `url(${baseUrl}/girl6.webp)`,
       backgroundRepeat: "no-repeat",
-      backgroundPosition: "right top",
-      backgroundColor: "#b40000",
-      backgroundSize: "contain"
+      backgroundPosition: "right bottom",
+      backgroundColor: "#000000",
+      backgroundSize: "200px 300px"
       }}>
         <h2>CONGRATULATIONS!</h2>
         {

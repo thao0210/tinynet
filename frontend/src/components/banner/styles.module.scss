@@ -16,26 +16,37 @@
     // background: #ff3434cc url('/girl6.webp') right top no-repeat;
     background-size: contain;
     // border: #FFF8 4px solid;
-    outline: #ff5c34 2px solid;
+    // outline: #ff5c34 2px solid;
     padding: 20px 40px;
     padding-right: 100px;
-    border-radius: 20px;
+    // border-radius: 20px;
     font-size: 1.5rem;
     font-weight: 500;
     color: white;
     box-shadow:inset 0 0 5px rgba(0,0,0,0.8);
     text-shadow: 1px 1px 1px #000;
     max-height: calc(100vh - 20px);
+    min-height: 320px;
+    width: 100vw;
     overflow-y: auto;
     h2 {
       margin: 0;
-      font-size: 2rem;
+      font-size: 40px;
+      color: #ffc04a;
+      text-shadow: 1px 1px 0px #804014;
     }
     strong {
-      font-size: larger;
+      font-size: 35px;
+      color: #ff9800;
     }
     p {
       margin: 0;
+    }
+    ul {
+      margin-bottom: 20px;  
+      li {
+        margin: 5px 0;
+    }
     }
   }
 

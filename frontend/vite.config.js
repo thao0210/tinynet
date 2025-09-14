@@ -4,12 +4,18 @@ import path from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
 import { visualizer } from "rollup-plugin-visualizer";
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command, mode }) => {
+  const isAnalyze = process.env.ANALYZE === 'true';
+
+  return {
   plugins: [
     react(),
-    visualizer({ open: true }),
+    ...(isAnalyze ? [visualizer({ open: true, filename: 'bundle-analysis.html' })] : []),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      strategies: 'generateSW',
+      includeAssets: ['favicon.svg', 'robots.txt', 'icons/*.png'],
       manifest: {
         name: 'Tiny Net',
         short_name: 'Tiny Net',
@@ -29,6 +35,12 @@ export default defineConfig({
           { src: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
           { src: '/icons/icon-1024x1024.png', sizes: '1024x1024', type: 'image/png' }
         ]
+      },
+      workbox: {
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
+      },
+      devOptions: {
+      enabled: mode === 'development'
       }
     })
   ],
@@ -38,4 +50,17 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true, // <-- xoá dist trước khi build
+    sourcemap: false,
+    manifest: true, // tạo manifest.json
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name].[hash].js`,
+        chunkFileNames: `assets/[name].[hash].js`,
+        assetFileNames: `assets/[name].[hash].[ext]`
+        }
+    }
+  }}
 })
