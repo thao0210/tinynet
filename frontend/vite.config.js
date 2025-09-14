@@ -37,7 +37,8 @@ export default defineConfig(({ command, mode }) => {
         ]
       },
       workbox: {
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        cleanupOutdatedCaches: true
       },
       devOptions: {
       enabled: mode === 'development'
