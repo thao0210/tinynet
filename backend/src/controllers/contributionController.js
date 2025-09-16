@@ -1,5 +1,6 @@
 // controllers/contributionController.js
 const Contribution = require('../models/Contribution');
+const { findItemByIdOrSlug } = require('../utils/itemUtils');
 
 exports.createContribution = async (req, res) => {
   try {
@@ -19,7 +20,11 @@ exports.createContribution = async (req, res) => {
 exports.getContributionsByStory = async (req, res) => {
   try {
     const { itemId } = req.params;
-    const contributions = await Contribution.find({ itemId }).populate('userId', 'fullName username avatar');
+    const item = await findItemByIdOrSlug(itemId);
+    if (!item) return res.status(404).json({ message: "Item not found" });
+
+    const _itemId = item._id || itemId;
+    const contributions = await Contribution.find({ _itemId }).populate('userId', 'fullName username avatar');
     res.json(contributions);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch contributions.' });
