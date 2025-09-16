@@ -17,10 +17,12 @@ export const useGlobalStates = () => {
     const [curTheme, setCurTheme] = useState(localStorage.getItem('currentTheme') || 'pastel');
     const [pointsChange, setPointsChange] = useState(0);
     const [allIds, setAllIds] = useState([]);
+    const [isMuted, setIsMuted] = useState(true);
+    const [alwaysAllowSounds, setAlwaysAllowSounds] = useState(false);
     return {
         user, setUser, showModal, setShowModal, loading, setLoading, loadList, setLoadList,
         itemId, setItemId, curItemId, setCurItemId, searchFor, setSearchFor, list, setList,
         loadViewContent, setLoadViewContent, customValues, setCustomValues, curTheme, setCurTheme,
-        pointsChange, setPointsChange, allIds, setAllIds
+        pointsChange, setPointsChange, allIds, setAllIds, isMuted, setIsMuted, alwaysAllowSounds, setAlwaysAllowSounds
     }
 }

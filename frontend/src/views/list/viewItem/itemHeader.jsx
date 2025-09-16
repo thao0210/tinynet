@@ -10,12 +10,15 @@ import { getActiveContent } from "@/utils/lang";
 import { HiSpeakerWave, HiSpeakerXMark } from 'react-icons/hi2';
 import { useEffect, useRef, useState } from 'react';
 import classes from './styles.module.scss';
+import {useStore} from '@/store/useStore';
 
 const ItemHeader = ({ item, user, views, navigate, activeLang }) => {
     const { votes} = useVote();
-    const onToggleMute = () => setIsMuted(!isMuted);
+    
     const audioRef = useRef(null);
-    const [isMuted, setIsMuted] = useState(true);
+    const {isMuted, setIsMuted, alwaysAllowSound, setAlwaysAllowSounds} = useStore();
+    const onToggleMute = () => setIsMuted(!isMuted);
+
     useEffect(() => {
         if (item?.backgroundMusic && audioRef.current) {
             audioRef.current.loop = true;
@@ -38,6 +41,16 @@ const ItemHeader = ({ item, user, views, navigate, activeLang }) => {
             }
         };
     }, [item?.backgroundMusic, isMuted]);
+
+    useEffect(() => {
+        if (isMuted && !alwaysAllowSound) {
+        const ok = window.confirm("Turn on speaker?");
+        if (ok) {
+            setAlwaysAllowSounds(true);
+            setIsMuted(false);
+        }
+        }
+    }, []);
     return (
         <div className={classNames(themeClasses.infos, 'infos')}>
             {views > 0 && <ViewIcon views={views} />}

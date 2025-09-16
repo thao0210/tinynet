@@ -7,13 +7,12 @@ import {useStore} from '@/store/useStore';
 const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick, cardTextContent}) => {
   const [screenIndex, setScreenIndex] = useState(0);
   const [loopKey, setLoopKey] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
   const [isPause, setIsPause] = useState(false);
   const videoRef = useRef();
   const loopTimerRef = useRef(null);
   const screen = data.screens[screenIndex];
   const getSpeedAt = useVideoSpeedEffect(screen.background?.speedEffect || 'speed: 1x', screen.time);
-  const {user} = useStore();
+  const {user, isMuted, setIsMuted} = useStore();
   const [activeLang, setActiveLang] = useState(user?.lang || navigator?.language || 'en-US');
   const [languages, setLanguages] = useState([]);
 
@@ -137,7 +136,6 @@ const CardPreview = ({ data, onClose, uploadedMusicFile, item, commentOnClick, c
     update();
     return () => cancelAnimationFrame(rafId);
   }, [getSpeedAt]);
-
 
   if (!data?.screens?.length) return <div>No preview available</div>;
 

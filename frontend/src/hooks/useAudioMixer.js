@@ -12,6 +12,7 @@ export const useAudioMixer = ({
   const naturalRefs = useRef([]);
   const lastUrl = useRef(null);
   const lastNatural = useRef(null);
+  const timeouts = useRef([]);
 
   const cleanupMusic = () => {
     if (musicRef.current) {
@@ -48,7 +49,7 @@ export const useAudioMixer = ({
           loop: true,
         });
 
-        if (!isPause) {
+        if (!isPause && !isMuted) {
           musicRef.current.play();
         }
       }
@@ -66,9 +67,10 @@ export const useAudioMixer = ({
           loop: sound.loop ?? false,
         });
 
-        if (!isPause) {
+        if (!isPause && !isMuted) {
           if (sound.delay) {
-            setTimeout(() => howl.play(), sound.delay * 1000);
+            const id = setTimeout(() => howl.play(), sound.delay * 1000);
+            timeouts.current.push(id);
           } else {
             howl.play();
           }
@@ -93,12 +95,20 @@ export const useAudioMixer = ({
   // Mute toàn bộ hệ thống
   useEffect(() => {
     Howler.mute(isMuted);
+
+    if (!isMuted && !isPause) {
+      // Khi unmute thì đảm bảo play
+      musicRef.current?.play();
+      naturalRefs.current.forEach(h => h.play());
+    }
   }, [isMuted]);
 
   // Expose stop từ bên ngoài
   const stop = () => {
     cleanupMusic();
     cleanupNaturalSounds();
+    timeouts.current.forEach(id => clearTimeout(id));
+    timeouts.current = [];
   };
 
   return { stop };
